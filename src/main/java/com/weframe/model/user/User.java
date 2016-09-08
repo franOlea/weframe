@@ -19,7 +19,7 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.password = passwordSalt;
+        this.passwordSalt = passwordSalt;
     }
 
     public long getId() {
@@ -60,6 +60,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
     }
 
     @Override
