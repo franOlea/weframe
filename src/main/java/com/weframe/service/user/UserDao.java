@@ -20,6 +20,6 @@ public interface UserDao {
 
     User getByLogin(final String email, final String password);
 
-    Collection<User> getAllWithPagging(final int limit, final int offset);
+    Collection<User> getAll(final int pageNo, final int pageSize);
 
 }

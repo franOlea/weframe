@@ -1,4 +1,4 @@
-package com.weframe.configuration;
+package com.weframe.configuration.database.sql;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,17 +8,14 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
-@Configuration
 @Profile("embedded")
+@Configuration
 public class EmbeddedDatabaseConfiguration {
 
     @Bean
     public DataSource getDataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder
+        return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                //.addScript("db/sql/create-db.sql")
-                //.addScript("db/sql/insert-data.sql")
                 .build();
     }
 

@@ -24,7 +24,9 @@
 
 		<junit.version>4.12</junit.version>
 		<apache.commons.version>3.4</apache.commons.version>
-	</properties>
+        <mysql.connector.version>5.1.9</mysql.connector.version>
+        <slf4j.version>1.7.21</slf4j.version>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -45,8 +47,14 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.9</version>
+			<version>${mysql.connector.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

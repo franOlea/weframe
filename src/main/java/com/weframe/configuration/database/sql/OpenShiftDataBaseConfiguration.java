@@ -1,4 +1,4 @@
-package com.weframe.configuration;
+package com.weframe.configuration.database.sql;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,16 +12,16 @@ import javax.sql.DataSource;
 @Profile("openshift")
 public class OpenShiftDataBaseConfiguration {
 
-    @Value("database.url")
+    @Value("${database.url}")
     private String url;
 
-    @Value("database.user")
+    @Value("${database.user}")
     private String user;
 
-    @Value("database.password")
+    @Value("${database.password}")
     private String password;
 
-    @Value("database.driver.classname")
+    @Value("${database.driver.classname}")
     private String driverClassName;
 
     @Bean
