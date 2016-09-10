@@ -89,6 +89,38 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
+    public void testSelectByEmail() {
+        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+                UserFixture.johnDoe().getId(),
+                UserFixture.johnDoe().getFirstName(),
+                UserFixture.johnDoe().getLastName(),
+                UserFixture.johnDoe().getEmail(),
+                UserFixture.johnDoe().getPassword(),
+                UserFixture.johnDoe().getPasswordSalt(),
+                UserFixture.johnDoe().getRole().getId());
+
+        User user = userDao.getByEmail(UserFixture.johnDoe().getEmail());
+
+        Assert.assertEquals(user, UserFixture.johnDoe());
+    }
+
+    @Test
+    public void testSelectByLogin() {
+        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+                UserFixture.johnDoe().getId(),
+                UserFixture.johnDoe().getFirstName(),
+                UserFixture.johnDoe().getLastName(),
+                UserFixture.johnDoe().getEmail(),
+                UserFixture.johnDoe().getPassword(),
+                UserFixture.johnDoe().getPasswordSalt(),
+                UserFixture.johnDoe().getRole().getId());
+
+        User user = userDao.getByLogin(UserFixture.johnDoe().getEmail(), UserFixture.johnDoe().getPassword());
+
+        Assert.assertEquals(user, UserFixture.johnDoe());
+    }
+
+    @Test
     public void testDelete() {
         exception.expect(EmptyResultDataAccessException.class);
 
@@ -106,6 +138,35 @@ public class UserJdbcTemplateDaoTest {
         jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
                 UserJdbcTemplateDao.USERS_ROW_MAPPER);
+    }
+
+    @Test
+    public void testUpdate() {
+        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+                UserFixture.johnDoe().getId(),
+                UserFixture.johnDoe().getFirstName(),
+                UserFixture.johnDoe().getLastName(),
+                UserFixture.johnDoe().getEmail(),
+                UserFixture.johnDoe().getPassword(),
+                UserFixture.johnDoe().getPasswordSalt(),
+                UserFixture.johnDoe().getRole().getId());
+
+        User updatedUser = UserFixture.johnDoe();
+        updatedUser.setEmail("another@email.com");
+
+        userDao.update(updatedUser);
+
+        User user = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_BY_ID_QUERY,
+                new Object[] { UserFixture.johnDoe().getId() },
+                UserJdbcTemplateDao.USERS_ROW_MAPPER);
+        Role role = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_ROLE_BY_USER_ID,
+                new Object[] { user.getId() },
+                UserJdbcTemplateDao.ROLES_ROW_MAPPER);
+        user.setRole(role);
+
+        Assert.assertNotEquals(UserFixture.johnDoe(), updatedUser);
+        Assert.assertNotEquals(UserFixture.johnDoe(), user);
+        Assert.assertEquals(user, updatedUser);
     }
 
 }

@@ -37,12 +37,6 @@ public class UserJdbcTemplateDao implements UserDao {
 
     }
 
-    public void delete(final User user) {
-        Validate.notNull(user, "The user cannot be null");
-
-        jdbcTemplate.update(DELETE_QUERY, user.getId());
-    }
-
     public void delete(final long id) {
         Validate.notNull(id, "The id cannot be null");
         Validate.isTrue(id >= 0, "The id cannot be a negative number");
@@ -55,7 +49,7 @@ public class UserJdbcTemplateDao implements UserDao {
         Validate.isTrue(id >= 0, "The id cannot be a negative number");
 
         User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY, new Object[] { id }, USERS_ROW_MAPPER);
-        Role role = jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID, new Object[] { user.getId() }, ROLES_ROW_MAPPER);
+        Role role = getUserRole(id);
         user.setRole(role);
 
         return user;
@@ -64,14 +58,22 @@ public class UserJdbcTemplateDao implements UserDao {
     public User getByEmail(final String email) {
         Validate.notBlank(email, "The email cannot be blank");
 
-        return (User) jdbcTemplate.queryForObject(SELECT_BY_EMAIL_QUERY, new Object[] { email }, USERS_ROW_MAPPER);
+        User user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL_QUERY, new Object[] { email }, USERS_ROW_MAPPER);
+        Role role = getUserRole(user.getId());
+        user.setRole(role);
+
+        return user;
     }
 
     public User getByLogin(final String email, final String password) {
         Validate.notBlank(email, "The email cannot be blank");
         Validate.notBlank(password, "The password cannot be blank");
 
-        return (User) jdbcTemplate.queryForObject(SELECT_BY_EMAIL_QUERY, new Object[] { email, password }, USERS_ROW_MAPPER);
+        User user = jdbcTemplate.queryForObject(LOGIN_QUERY, new Object[] { email, password }, USERS_ROW_MAPPER);
+        Role role = getUserRole(user.getId());
+        user.setRole(role);
+
+        return user;
     }
 
     public Collection<User> getAll(final int pageNo, final int pageSize) {
@@ -79,6 +81,10 @@ public class UserJdbcTemplateDao implements UserDao {
         Validate.isTrue(pageSize > 0, "The page size should be aboce 0");
 
         return null;
+    }
+
+    private Role getUserRole(long id) {
+        return jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID, new Object[] { id }, ROLES_ROW_MAPPER);
     }
 
     public static final String INSERT_QUERY = "INSERT INTO USERS " +
