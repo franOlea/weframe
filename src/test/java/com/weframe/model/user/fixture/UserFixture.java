@@ -5,16 +5,41 @@ import com.weframe.model.user.User;
 
 public class UserFixture {
 
-    public static final long ID = 1;
-    public static final String FIRST_NAME = "Jhon";
-    public static final String LAST_NAME = "Doe";
-    public static final String EMAIL = "john.doe@email.com";
-    public static final String PASSWORD = "123456";
-    public static final String PASSWORD_SALT = FIRST_NAME + LAST_NAME;
-    public static final Role ROLE = RoleFixture.user();
+    public static final long JOHN_DOE_ID = 1;
+    public static final String JOHN_DOE_FIRST_NAME = "Jhon";
+    public static final String JOHN_DOE_LAST_NAME = "Doe";
+    public static final String JOHN_DOE_EMAIL = "john.doe@email.com";
+    public static final String JOHN_DOE_PASSWORD = "123456";
+    public static final String JOHN_DOE_PASSWORD_SALT = JOHN_DOE_FIRST_NAME + JOHN_DOE_LAST_NAME;
+    public static final Role JOHN_DOE_ROLE = RoleFixture.user();
+    public static final long JANE_DOE_ID = 2;
+    public static final String JANE_DOE_FIRST_NAME = "Jane";
+    public static final String JANE_DOE_LAST_NAME = "Doe";
+    public static final String JANE_DOE_EMAIL = "jane.doe@email.com";
+    public static final String JANE_DOE_PASSWORD = "789012";
+    public static final String JANE_DOE_PASSWORD_SALT = JANE_DOE_FIRST_NAME + JANE_DOE_LAST_NAME;
+    public static final Role JANE_DOE_ROLE = RoleFixture.admin();
 
     public static User johnDoe() {
-        return new User(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE);
+        return new User(
+                JOHN_DOE_ID,
+                JOHN_DOE_FIRST_NAME,
+                JOHN_DOE_LAST_NAME,
+                JOHN_DOE_EMAIL,
+                JOHN_DOE_PASSWORD,
+                JOHN_DOE_PASSWORD_SALT,
+                JOHN_DOE_ROLE);
+    }
+
+    public static User janeDoe() {
+        return new User(
+                JANE_DOE_ID,
+                JANE_DOE_FIRST_NAME,
+                JANE_DOE_LAST_NAME,
+                JANE_DOE_EMAIL,
+                JANE_DOE_PASSWORD,
+                JANE_DOE_PASSWORD_SALT,
+                JANE_DOE_ROLE);
     }
 
 }

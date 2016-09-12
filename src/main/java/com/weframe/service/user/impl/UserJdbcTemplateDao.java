@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collection;
+import java.util.List;
 
 public class UserJdbcTemplateDao implements UserDao {
 
@@ -34,6 +35,16 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public void update(final User user) {
+        Validate.notNull(user, "The user cannot be null");
+
+        jdbcTemplate.update(UPDATE_BY_ID,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getPasswordSalt(),
+                user.getId(),
+                user.getRole().getId());
 
     }
 
@@ -76,11 +87,18 @@ public class UserJdbcTemplateDao implements UserDao {
         return user;
     }
 
-    public Collection<User> getAll(final int pageNo, final int pageSize) {
-        Validate.isTrue(pageNo > 0, "The page number should be above 0");
-        Validate.isTrue(pageSize > 0, "The page size should be aboce 0");
+    public Collection<User> getAll(final int offset, final int limit) {
+        Validate.isTrue(offset > 0, "The offset number should be above 0");
+        Validate.isTrue(limit > 0, "The limit number should be above 0");
 
-        return null;
+        List<User> users = jdbcTemplate.query(SELECT_ALL_WITH_PAGING,
+                new Object[] { offset, limit }, USERS_ROW_MAPPER);
+
+        users.forEach((user) -> {
+            user.setRole(getUserRole(user.getId()));
+        });
+
+        return users;
     }
 
     private Role getUserRole(long id) {
@@ -91,6 +109,15 @@ public class UserJdbcTemplateDao implements UserDao {
             "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) VALUES " +
             "(?, ?, ?, ?, ?, ?, ?)";
     public static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
+    public static final String SELECT_ALL_WITH_PAGING = "SELECT " +
+            "USERS.ID, " +
+            "USERS.FIRST_NAME, " +
+            "USERS.LAST_NAME, " +
+            "USERS.EMAIL, " +
+            "USERS.PASSWORD, " +
+            "USERS.PASSWORD_SALT " +
+            "FROM USERS " +
+            "LIMIT ?,?";
     public static final String SELECT_BY_ID_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
@@ -109,7 +136,16 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? ";
-
+    public static final String UPDATE_BY_ID = "UPDATE " +
+            "USERS " +
+            "SET " +
+            "FIRST_NAME = ?, " +
+            "LAST_NAME = ?, " +
+            "EMAIL = ?, " +
+            "PASSWORD = ?, " +
+            "PASSWORD_SALT = ?, " +
+            "ROLE = ? " +
+            "WHERE ID = ?;";
     public static final String LOGIN_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
@@ -119,14 +155,6 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? AND USERS.PASSWORD = ?";
-    public static final String SELECT_ALL_WITH_PAGING = "SELECT " +
-            "USERS.ID, " +
-            "USERS.FIRST_NAME, " +
-            "USERS.LAST_NAME, " +
-            "USERS.EMAIL, " +
-            "USERS.PASSWORD, " +
-            "USERS.PASSWORD_SALT " +
-            "FROM USERS ";
     public static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
             "ROLES.ID, " +
             "ROLES.NAME " +
