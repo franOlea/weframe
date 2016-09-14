@@ -1,19 +1,16 @@
 package com.weframe.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.Validate;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     private long id;
     private String firstName;
     private String lastName;
     private String email;
-    @JsonIgnore
     private String password;
-    @JsonIgnore
     private String passwordSalt;
-    @JsonIgnore
     private Role role;
 
     public User() { }
@@ -71,25 +68,22 @@ public class User {
     }
 
     public void setId(final long id) {
-        Validate.isTrue(id >= 0, "The id cannot be negative");
+        Validate.isTrue(id > 0, "The id should be above 0");
 
         this.id = id;
     }
 
     public void setFirstName(String firstName) {
-        Validate.notBlank(firstName, "The first name cannot be blank");
 
         this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
-        Validate.notBlank(lastName, "The last name cannot be blank");
 
         this.lastName = lastName;
     }
 
     public void setEmail(String email) {
-        Validate.notBlank(email, "The email cannot be blank");
 
         this.email = email;
     }

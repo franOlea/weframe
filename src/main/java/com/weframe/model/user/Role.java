@@ -25,13 +25,11 @@ public class Role {
     }
 
     public void setId(final long id) {
-        Validate.isTrue(id >= 0, "The id cannot be negative");
 
         this.id = id;
     }
 
     public void setName(final String name) {
-        Validate.notEmpty(name, "The name cannot be empty");
 
         this.name = name;
     }
