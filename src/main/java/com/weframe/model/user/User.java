@@ -1,5 +1,7 @@
 package com.weframe.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.Validate;
 
 public class User {
@@ -7,8 +9,11 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String passwordSalt;
+    @JsonIgnore
     private Role role;
 
     public User() { }

@@ -33,6 +33,7 @@ public class UserJdbcTemplateDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private UserJdbcTemplateDao userDao;
 
     @Before
@@ -88,8 +89,6 @@ public class UserJdbcTemplateDaoTest {
         jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
                 "VALUES (11, 'Murphy', 'Woodard', " +
                 "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 'GRX00AGH3NC', 1)");
-
-        userDao = new UserJdbcTemplateDao(jdbcTemplate);
     }
 
     @Test
