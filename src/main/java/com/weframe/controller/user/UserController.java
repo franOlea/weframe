@@ -5,7 +5,6 @@ import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public class UserController {
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             logger.error(e);
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }

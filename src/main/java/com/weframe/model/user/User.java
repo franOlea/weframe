@@ -95,19 +95,16 @@ public class User {
     }
 
     public void setPassword(String password) {
-        Validate.notBlank(password, "The password cannot be blank");
 
         this.password = password;
     }
 
     public void setPasswordSalt(String passwordSalt) {
-        Validate.notBlank(passwordSalt, "The password salt cannot be blank");
 
         this.passwordSalt = passwordSalt;
     }
 
     public void setRole(Role role) {
-        Validate.notNull(role, "The role cannot be blank");
 
         this.role = role;
     }
@@ -145,7 +142,11 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordSalt='" + passwordSalt + '\'' +
                 ", role=" + role +
                 '}';
     }

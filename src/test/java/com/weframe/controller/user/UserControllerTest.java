@@ -1,48 +1,33 @@
 package com.weframe.controller.user;
 
-import com.weframe.ResourcesServerApplication;
-import com.weframe.configuration.DataBaseConfiguration;
-import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
+import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("embedded")
-@ContextConfiguration(classes={ ResourcesServerApplication.class, EmbeddedDatabaseConfiguration.class, DataBaseConfiguration.class }, loader=AnnotationConfigContextLoader.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .build();
 
         jdbcTemplate.execute("SET MODE MySQL");
         jdbcTemplate.execute("DROP TABLE USERS IF EXISTS");
@@ -98,13 +83,46 @@ public class UserControllerTest {
     }
 
     @Test
+    public void invalidRequest() throws Exception {
+        ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
+                "/users/byId/-1",
+                ResponseEntity.class);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @Test
     public void userNotFound() throws Exception {
-        mockMvc.perform(get("/users/byId/10"))
-                .andExpect(status().isOk())
-                .andExpect(
-                        content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value("10"))
-                ;
+        ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
+                "/users/byId/2",
+                ResponseEntity.class);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void userFound() throws Exception {
+        User expectedUser = new User(
+                10,
+                UserFixture.janeDoe().getFirstName(),
+                UserFixture.janeDoe().getLastName(),
+                UserFixture.janeDoe().getEmail(),
+                UserFixture.janeDoe().getPassword(),
+                UserFixture.janeDoe().getPasswordSalt(),
+                UserFixture.janeDoe().getRole());
+
+        ResponseEntity<User> responseEntity = this.restTemplate.getForEntity(
+                "/users/byId/10",
+                User.class);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.FOUND);
+        Assert.assertEquals(expectedUser.getId(), responseEntity.getBody().getId());
+        Assert.assertEquals(expectedUser.getEmail(), responseEntity.getBody().getEmail());
+        Assert.assertEquals(expectedUser.getFirstName(), responseEntity.getBody().getFirstName());
+        Assert.assertEquals(expectedUser.getLastName(), responseEntity.getBody().getLastName());
+        Assert.assertEquals(responseEntity.getBody().getPassword(), null);
+        Assert.assertEquals(responseEntity.getBody().getPasswordSalt(), null);
+        Assert.assertEquals(responseEntity.getBody().getRole(), null);
     }
 
 }
