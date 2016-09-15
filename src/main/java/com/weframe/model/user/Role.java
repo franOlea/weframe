@@ -25,12 +25,10 @@ public class Role {
     }
 
     public void setId(final long id) {
-
         this.id = id;
     }
 
     public void setName(final String name) {
-
         this.name = name;
     }
 

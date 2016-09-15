@@ -3,6 +3,7 @@ package com.weframe.controller.user;
 
 import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
+import com.weframe.service.user.exception.InvalidUserException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,19 +23,14 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @RequestMapping(value = "/byId/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/by-id/{userId}", method = RequestMethod.GET)
     private ResponseEntity<User> getUserById(@PathVariable Long userId) {
-        if(userId < 1) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        }
-
         try {
             User user = userDao.getById(userId);
-            user.setRole(null);
-            user.setPassword(null);
-            user.setPasswordSalt(null);
 
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
+        } catch(InvalidUserException e) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -45,13 +41,12 @@ public class UserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     private ResponseEntity<?> create(@RequestBody User user) {
-        if(!isValidUser(user)) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        }
         try {
             userDao.insert(user);
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
+        } catch(InvalidUserException e) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch(DuplicateKeyException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e) {
@@ -59,19 +54,6 @@ public class UserController {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-    }
-
-    private static boolean isValidUser(User user) {
-        return user != null &&
-                user.getId() > 0 &&
-                user.getEmail() != null &&
-                user.getFirstName() != null &&
-                user.getLastName() != null &&
-                user.getPassword() != null &&
-                user.getPasswordSalt() != null &&
-                user.getRole() != null &&
-                user.getRole().getId() > 0 &&
-                user.getRole().getName() != null;
     }
 
 }

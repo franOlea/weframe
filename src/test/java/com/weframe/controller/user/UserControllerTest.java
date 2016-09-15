@@ -3,8 +3,8 @@ package com.weframe.controller.user;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
 import com.weframe.service.user.UserDao;
+import com.weframe.service.user.exception.InvalidUserException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +33,12 @@ public class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Before
-    public void setUp() {
-        given(this.userDao.getById(UserFixture.johnDoe().getId())).willReturn(UserFixture.johnDoe());
-        doThrow(new EmptyResultDataAccessException(1)).when(this.userDao).getById(2);
-        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).getById(3);
-        doThrow(new DuplicateKeyException("Error")).when(this.userDao).insert(UserFixture.johnDoe());
-        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).insert(UserFixture.janeDoe());
-
-    }
-
     @Test
     public void getByIdBadRequest() throws Exception {
+        doThrow(new InvalidUserException()).when(this.userDao).getById(-10);
+
         ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/byId/-1",
+                "/users/by-id/-10",
                 ResponseEntity.class);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST);
@@ -54,8 +46,10 @@ public class UserControllerTest {
 
     @Test
     public void getByIdDataBaseError() throws Exception {
+        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).getById(11);
+
         ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/byId/3",
+                "/users/by-id/11",
                 ResponseEntity.class);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -63,8 +57,10 @@ public class UserControllerTest {
 
     @Test
     public void getUserByIdNotFound() throws Exception {
+        doThrow(new EmptyResultDataAccessException(1)).when(this.userDao).getById(12);
+
         ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/byId/2",
+                "/users/by-id/12",
                 ResponseEntity.class);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
@@ -72,10 +68,12 @@ public class UserControllerTest {
 
     @Test
     public void getByIdFound() throws Exception {
+        given(this.userDao.getById(UserFixture.johnDoe().getId())).willReturn(UserFixture.johnDoe());
+
         User expectedUser = UserFixture.johnDoe();
 
         ResponseEntity<User> responseEntity = this.restTemplate.getForEntity(
-                "/users/byId/"+expectedUser.getId(),
+                "/users/by-id/"+expectedUser.getId(),
                 User.class);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.FOUND);
@@ -90,20 +88,17 @@ public class UserControllerTest {
 
     @Test
     public void insertBadRequest() {
-        User user = new User(
-                1,
-                UserFixture.janeDoe().getFirstName(),
-                UserFixture.janeDoe().getLastName(),
-                UserFixture.janeDoe().getEmail(),
-                UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getPasswordSalt(),
-                UserFixture.janeDoe().getRole());
+        User user = UserFixture.janeDoe();
+        user.setPassword(null);
+        user.setPasswordSalt(null);
         user.setRole(null);
+
+        doThrow(new InvalidUserException()).when(this.userDao).insert(user);
 
         ResponseEntity<?> responseEntity =
                 this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
 
-        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
@@ -127,6 +122,8 @@ public class UserControllerTest {
     public void insertConflict() {
         User user = UserFixture.johnDoe();
 
+        doThrow(new DuplicateKeyException("Error")).when(this.userDao).insert(user);
+
         ResponseEntity<?> responseEntity =
                 this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
 
@@ -136,6 +133,8 @@ public class UserControllerTest {
     @Test
     public void insertDataBaseError() {
         User user = UserFixture.janeDoe();
+
+        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).insert(user);
 
         ResponseEntity<?> responseEntity =
                 this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);

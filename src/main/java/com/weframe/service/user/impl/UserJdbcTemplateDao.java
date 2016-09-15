@@ -3,6 +3,7 @@ package com.weframe.service.user.impl;
 import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
+import com.weframe.service.user.exception.InvalidUserException;
 import org.apache.commons.lang3.Validate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +24,9 @@ public class UserJdbcTemplateDao implements UserDao {
 
     public void insert(final User user) {
         Validate.notNull(user, "The user cannot be null");
+        if(!isValidUser(user)) {
+            throw new InvalidUserException();
+        }
 
         jdbcTemplate.update(INSERT_QUERY,
                 user.getId(),
@@ -36,28 +40,32 @@ public class UserJdbcTemplateDao implements UserDao {
 
     public void update(final User user) {
         Validate.notNull(user, "The user cannot be null");
+        if(user.getFirstName() == null || user.getLastName() == null) {
+            throw new InvalidUserException();
+        }
+
 
         jdbcTemplate.update(UPDATE_BY_ID,
                 user.getFirstName(),
                 user.getLastName(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getPasswordSalt(),
-                user.getId(),
-                user.getRole().getId());
+                user.getId());
 
     }
 
     public void delete(final long id) {
         Validate.notNull(id, "The id cannot be null");
-        Validate.isTrue(id >= 0, "The id cannot be a negative number");
+        if(id < 1) {
+            throw new InvalidUserException();
+        }
 
         jdbcTemplate.update(DELETE_QUERY, id);
     }
 
     public User getById(final long id) {
         Validate.notNull(id, "The id cannot be null");
-        Validate.isTrue(id >= 0, "The id cannot be a negative number");
+        if(id < 1) {
+            throw new InvalidUserException();
+        }
 
         User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY, new Object[] { id }, USERS_ROW_MAPPER);
         Role role = getUserRole(id);
@@ -105,6 +113,19 @@ public class UserJdbcTemplateDao implements UserDao {
         return jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID, new Object[] { id }, ROLES_ROW_MAPPER);
     }
 
+    private static boolean isValidUser(User user) {
+        return user != null &&
+                user.getId() > 0 &&
+                user.getEmail() != null &&
+                user.getFirstName() != null &&
+                user.getLastName() != null &&
+                user.getPassword() != null &&
+                user.getPasswordSalt() != null &&
+                user.getRole() != null &&
+                user.getRole().getId() > 0 &&
+                user.getRole().getName() != null;
+    }
+
     public static final String INSERT_QUERY = "INSERT INTO USERS " +
             "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) VALUES " +
             "(?, ?, ?, ?, ?, ?, ?)";
@@ -140,11 +161,7 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS " +
             "SET " +
             "FIRST_NAME = ?, " +
-            "LAST_NAME = ?, " +
-            "EMAIL = ?, " +
-            "PASSWORD = ?, " +
-            "PASSWORD_SALT = ?, " +
-            "ROLE = ? " +
+            "LAST_NAME = ? " +
             "WHERE ID = ?;";
     public static final String LOGIN_QUERY = "SELECT " +
             "USERS.ID, " +
