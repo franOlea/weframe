@@ -10,9 +10,9 @@ public interface UserDao {
 
     void update(final User user);
 
-    void delete(final long id);
+    void delete(final Long id);
 
-    User getById(final long id);
+    User getById(final Long id);
 
     User getByEmail(final String email);
 

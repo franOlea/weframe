@@ -3,7 +3,7 @@ package com.weframe.service.user.impl;
 import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
-import com.weframe.service.user.exception.InvalidUserException;
+import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.Validate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +25,7 @@ public class UserJdbcTemplateDao implements UserDao {
     public void insert(final User user) {
         Validate.notNull(user, "The user cannot be null");
         if(!isValidUser(user)) {
-            throw new InvalidUserException();
+            throw new InvalidUserPersistenceRequestException();
         }
 
         jdbcTemplate.update(INSERT_QUERY,
@@ -41,7 +41,7 @@ public class UserJdbcTemplateDao implements UserDao {
     public void update(final User user) {
         Validate.notNull(user, "The user cannot be null");
         if(user.getFirstName() == null || user.getLastName() == null) {
-            throw new InvalidUserException();
+            throw new InvalidUserPersistenceRequestException();
         }
 
 
@@ -52,19 +52,19 @@ public class UserJdbcTemplateDao implements UserDao {
 
     }
 
-    public void delete(final long id) {
+    public void delete(final Long id) {
         Validate.notNull(id, "The id cannot be null");
         if(id < 1) {
-            throw new InvalidUserException();
+            throw new InvalidUserPersistenceRequestException();
         }
 
         jdbcTemplate.update(DELETE_QUERY, id);
     }
 
-    public User getById(final long id) {
+    public User getById(final Long id) {
         Validate.notNull(id, "The id cannot be null");
         if(id < 1) {
-            throw new InvalidUserException();
+            throw new InvalidUserPersistenceRequestException();
         }
 
         User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY, new Object[] { id }, USERS_ROW_MAPPER);
@@ -96,8 +96,9 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public Collection<User> getAll(final int offset, final int limit) {
-        Validate.isTrue(offset > 0, "The offset number should be above 0");
-        Validate.isTrue(limit > 0, "The limit number should be above 0");
+        if(offset < 1 || limit < 1) {
+            throw new InvalidUserPersistenceRequestException();
+        }
 
         List<User> users = jdbcTemplate.query(SELECT_ALL_WITH_PAGING,
                 new Object[] { offset, limit }, USERS_ROW_MAPPER);
@@ -109,7 +110,7 @@ public class UserJdbcTemplateDao implements UserDao {
         return users;
     }
 
-    private Role getUserRole(long id) {
+    private Role getUserRole(Long id) {
         return jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID, new Object[] { id }, ROLES_ROW_MAPPER);
     }
 

@@ -3,100 +3,95 @@ package com.weframe.controller.user;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
 import com.weframe.service.user.UserDao;
-import com.weframe.service.user.exception.InvalidUserException;
+import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 
-@ActiveProfiles("embedded")
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(JMockit.class)
 public class UserControllerTest {
 
-    @MockBean
+    @Injectable
     private UserDao userDao;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+    @Tested
+    private UserController userController = new UserController();
 
     @Test
     public void getByIdBadRequest() throws Exception {
-        doThrow(new InvalidUserException()).when(this.userDao).getById(-10);
+        new Expectations() {{
+            userDao.getById(-1L);
+            result = new InvalidUserPersistenceRequestException();
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/by-id/-10",
-                ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.getUserById(-1L);
 
-        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void getByIdDataBaseError() throws Exception {
-        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).getById(11);
+        new Expectations() {{
+            userDao.getById(1L);
+            result = new DataIntegrityViolationException("Error");
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/by-id/11",
-                ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.getUserById(1L);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @Test
     public void getUserByIdNotFound() throws Exception {
-        doThrow(new EmptyResultDataAccessException(1)).when(this.userDao).getById(12);
+        new Expectations() {{
+            userDao.getById(1L);
+            result = new EmptyResultDataAccessException(1);
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity = this.restTemplate.getForEntity(
-                "/users/by-id/12",
-                ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.getUserById(1L);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void getByIdFound() throws Exception {
-        given(this.userDao.getById(UserFixture.johnDoe().getId())).willReturn(UserFixture.johnDoe());
+        new Expectations() {{
+            userDao.getById(1L);
+            result = UserFixture.johnDoe();
+            times = 1;
+        }};
 
-        User expectedUser = UserFixture.johnDoe();
-
-        ResponseEntity<User> responseEntity = this.restTemplate.getForEntity(
-                "/users/by-id/"+expectedUser.getId(),
-                User.class);
+        ResponseEntity<?> responseEntity = userController.getUserById(1L);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.FOUND);
-        Assert.assertEquals(expectedUser.getId(), responseEntity.getBody().getId());
-        Assert.assertEquals(expectedUser.getEmail(), responseEntity.getBody().getEmail());
-        Assert.assertEquals(expectedUser.getFirstName(), responseEntity.getBody().getFirstName());
-        Assert.assertEquals(expectedUser.getLastName(), responseEntity.getBody().getLastName());
-        Assert.assertEquals(responseEntity.getBody().getPassword(), null);
-        Assert.assertEquals(responseEntity.getBody().getPasswordSalt(), null);
-        Assert.assertEquals(responseEntity.getBody().getRole(), null);
+        Assert.assertEquals(UserFixture.johnDoe(), responseEntity.getBody());
     }
 
     @Test
     public void insertBadRequest() {
         User user = UserFixture.janeDoe();
-        user.setPassword(null);
-        user.setPasswordSalt(null);
-        user.setRole(null);
+        user.setFirstName(null);
 
-        doThrow(new InvalidUserException()).when(this.userDao).insert(user);
+        new Expectations() {{
+            userDao.insert(user);
+            result = new InvalidUserPersistenceRequestException();
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity =
-                this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.create(user);
 
         Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -112,8 +107,13 @@ public class UserControllerTest {
                 UserFixture.janeDoe().getPasswordSalt(),
                 UserFixture.janeDoe().getRole());
 
-        ResponseEntity<?> responseEntity =
-                this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
+        new Expectations() {{
+            userDao.insert(user);
+            result = null;
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.create(user);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.CREATED);
     }
@@ -122,24 +122,31 @@ public class UserControllerTest {
     public void insertConflict() {
         User user = UserFixture.johnDoe();
 
-        doThrow(new DuplicateKeyException("Error")).when(this.userDao).insert(user);
+        new Expectations() {{
+            userDao.insert(user);
+            result = new DuplicateKeyException("Error");
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity =
-                this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.create(user);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.CONFLICT);
     }
 
     @Test
-    public void insertDataBaseError() {
-        User user = UserFixture.janeDoe();
+    public void insertDataBaseError() throws Exception {
+        User user = UserFixture.johnDoe();
 
-        doThrow(new DataIntegrityViolationException("Error")).when(this.userDao).insert(user);
+        new Expectations() {{
+            userDao.insert(user);
+            result = new DataIntegrityViolationException("Error");
+            times = 1;
+        }};
 
-        ResponseEntity<?> responseEntity =
-                this.restTemplate.postForEntity("/users/create", user, ResponseEntity.class);
+        ResponseEntity<?> responseEntity = userController.create(user);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
     }
+
 
 }
