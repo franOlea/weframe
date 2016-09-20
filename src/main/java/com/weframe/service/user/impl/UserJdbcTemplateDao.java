@@ -102,8 +102,8 @@ public class UserJdbcTemplateDao implements UserDao {
         return user;
     }
 
-    public Collection<User> getAll(final int offset, final int limit) {
-        if(offset < 1 || limit < 1) {
+    public Collection<User> getAllWithPaging(final int offset, final int limit) {
+        if(offset < 0 || limit < 1) {
             throw new InvalidUserPersistenceRequestException();
         }
 

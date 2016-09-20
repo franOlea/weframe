@@ -296,7 +296,7 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testGetAll() {
-        List<User> users = (List<User>) userDao.getAll(3, 7);
+        List<User> users = (List<User>) userDao.getAllWithPaging(3, 7);
         User fixtureUser = UserFixture.janeDoe();
         fixtureUser.setId(10);
 
@@ -310,13 +310,13 @@ public class UserJdbcTemplateDaoTest {
     @Test
     public void testGetAllWithInvalidLimit() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.getAll(1, 0);
+        userDao.getAllWithPaging(1, 0);
     }
 
     @Test
     public void testGetAllWithInvalidOffset() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.getAll(0, 1);
+        userDao.getAllWithPaging(-1, 1);
     }
 
 }

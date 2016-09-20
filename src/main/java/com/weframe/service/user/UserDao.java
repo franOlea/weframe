@@ -18,6 +18,6 @@ public interface UserDao {
 
     User getByLogin(final String email, final String password);
 
-    Collection<User> getAll(final int offset, final int limit);
+    Collection<User> getAllWithPaging(final int offset, final int limit);
 
 }
