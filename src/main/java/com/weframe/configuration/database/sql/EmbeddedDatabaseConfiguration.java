@@ -16,7 +16,7 @@ public class EmbeddedDatabaseConfiguration {
     public DataSource getDataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                //.addScript("SET MODE MySQL")
+                .addScript("sql/h2.sql")
                 .build();
     }
 
