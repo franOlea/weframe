@@ -7,10 +7,7 @@ import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,20 +36,8 @@ public class UserJdbcTemplateDaoTest {
 
     @Before
     public void setUp() {
-        jdbcTemplate.execute("SET MODE MySQL");
-        jdbcTemplate.execute("DROP TABLE USERS IF EXISTS");
-        jdbcTemplate.execute("CREATE TABLE USERS (" +
-                "ID SERIAL, " +
-                "FIRST_NAME VARCHAR(255), " +
-                "LAST_NAME VARCHAR(255), " +
-                "EMAIL VARCHAR(255), " +
-                "PASSWORD VARCHAR(255), " +
-                "PASSWORD_SALT VARCHAR(255), " +
-                "ROLE INT)");
-        jdbcTemplate.execute("DROP TABLE ROLES IF EXISTS");
-        jdbcTemplate.execute("CREATE TABLE ROLES (" +
-                "ID SERIAL, " +
-                "NAME VARCHAR(255))");
+        jdbcTemplate.update("TRUNCATE TABLE USERS");
+        jdbcTemplate.update("TRUNCATE TABLE ROLES");
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (1, 'USER')");
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (2, 'ADMIN')");
         jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
@@ -87,6 +72,12 @@ public class UserJdbcTemplateDaoTest {
         jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
                 "VALUES (11, 'Murphy', 'Woodard', " +
                 "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 'GRX00AGH3NC', 1)");
+    }
+
+    @After
+    public void setDown() {
+        jdbcTemplate.update("TRUNCATE TABLE USERS");
+        jdbcTemplate.update("TRUNCATE TABLE ROLES");
     }
 
     @Test
