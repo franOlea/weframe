@@ -4,6 +4,7 @@ import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,8 +24,8 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public void insert(final User user) {
-        Validate.notNull(user, "The user cannot be null");
-        if(!isValidUser(user)) {
+        if(user == null ||
+                !isValidUser(user)) {
             throw new InvalidUserPersistenceRequestException();
         }
 
@@ -39,8 +40,10 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public void update(final User user) {
-        Validate.notNull(user, "The user cannot be null");
-        if(user.getFirstName() == null || user.getLastName() == null) {
+        if(user == null ||
+                StringUtils.isBlank(user.getFirstName()) ||
+                StringUtils.isBlank(user.getLastName())) {
+
             throw new InvalidUserPersistenceRequestException();
         }
 
@@ -53,8 +56,8 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public void delete(final Long id) {
-        Validate.notNull(id, "The id cannot be null");
-        if(id < 1) {
+        if(id == null ||
+                id < 1) {
             throw new InvalidUserPersistenceRequestException();
         }
 
@@ -62,8 +65,8 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public User getById(final Long id) {
-        Validate.notNull(id, "The id cannot be null");
-        if(id < 1) {
+        if(id == null ||
+                id < 1) {
             throw new InvalidUserPersistenceRequestException();
         }
 
@@ -75,7 +78,9 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public User getByEmail(final String email) {
-        Validate.notBlank(email, "The email cannot be blank");
+        if(StringUtils.isBlank(email)) {
+            throw new InvalidUserPersistenceRequestException();
+        }
 
         User user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL_QUERY, new Object[] { email }, USERS_ROW_MAPPER);
         Role role = getUserRole(user.getId());
@@ -85,8 +90,10 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     public User getByLogin(final String email, final String password) {
-        Validate.notBlank(email, "The email cannot be blank");
-        Validate.notBlank(password, "The password cannot be blank");
+        if(StringUtils.isBlank(email) ||
+                StringUtils.isBlank(password)) {
+            throw new InvalidUserPersistenceRequestException();
+        }
 
         User user = jdbcTemplate.queryForObject(LOGIN_QUERY, new Object[] { email, password }, USERS_ROW_MAPPER);
         Role role = getUserRole(user.getId());
@@ -115,8 +122,7 @@ public class UserJdbcTemplateDao implements UserDao {
     }
 
     private static boolean isValidUser(User user) {
-        return user != null &&
-                user.getId() > 0 &&
+        return user.getId() > 0 &&
                 user.getEmail() != null &&
                 user.getFirstName() != null &&
                 user.getLastName() != null &&
@@ -127,11 +133,11 @@ public class UserJdbcTemplateDao implements UserDao {
                 user.getRole().getName() != null;
     }
 
-    public static final String INSERT_QUERY = "INSERT INTO USERS " +
+    static final String INSERT_QUERY = "INSERT INTO USERS " +
             "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) VALUES " +
             "(?, ?, ?, ?, ?, ?, ?)";
-    public static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
-    public static final String SELECT_ALL_WITH_PAGING = "SELECT " +
+    static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
+    static final String SELECT_ALL_WITH_PAGING = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
@@ -140,7 +146,7 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "LIMIT ?,?";
-    public static final String SELECT_BY_ID_QUERY = "SELECT " +
+    static final String SELECT_BY_ID_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
@@ -149,7 +155,7 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "WHERE USERS.ID = ? ";
-    public static final String SELECT_BY_EMAIL_QUERY = "SELECT " +
+    static final String SELECT_BY_EMAIL_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
@@ -158,13 +164,13 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? ";
-    public static final String UPDATE_BY_ID = "UPDATE " +
+    static final String UPDATE_BY_ID = "UPDATE " +
             "USERS " +
             "SET " +
             "FIRST_NAME = ?, " +
             "LAST_NAME = ? " +
             "WHERE ID = ?;";
-    public static final String LOGIN_QUERY = "SELECT " +
+    static final String LOGIN_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
@@ -173,7 +179,7 @@ public class UserJdbcTemplateDao implements UserDao {
             "USERS.PASSWORD_SALT " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? AND USERS.PASSWORD = ?";
-    public static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
+    static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
             "ROLES.ID, " +
             "ROLES.NAME " +
             "FROM ROLES " +

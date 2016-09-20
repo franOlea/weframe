@@ -49,15 +49,12 @@ public class UserJdbcTemplateDaoTest {
                 "PASSWORD VARCHAR(255), " +
                 "PASSWORD_SALT VARCHAR(255), " +
                 "ROLE INT)");
-
         jdbcTemplate.execute("DROP TABLE ROLES IF EXISTS");
         jdbcTemplate.execute("CREATE TABLE ROLES (" +
                 "ID SERIAL, " +
                 "NAME VARCHAR(255))");
-
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (1, 'USER')");
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (2, 'ADMIN')");
-
         jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
                 "VALUES (3, 'Quinn', 'Stevenson', " +
                 "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 'IUL44ERZ1XY', 1)");
@@ -116,7 +113,7 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testInsertNullUser() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.insert(null);
     }
 
@@ -144,7 +141,7 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testGetByIdWithNullId() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getById(null);
     }
 
@@ -164,13 +161,13 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testSelectByEmailWithBlankEmail() {
-        exception.expect(IllegalArgumentException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByEmail("");
     }
 
     @Test
     public void testSelectByEmailWithNullEmail() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByEmail(null);
     }
 
@@ -192,25 +189,25 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testSelectByLoginWithBlankEmail() {
-        exception.expect(IllegalArgumentException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("", "123");
     }
 
     @Test
     public void testSelectByLoginWithNullEmail() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin(null, "123");
     }
 
     @Test
     public void testSelectByLoginWithBlankPassword() {
-        exception.expect(IllegalArgumentException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("123", "");
     }
 
     @Test
     public void testSelectByLoginWithNullPassword() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("123", null);
     }
 
@@ -242,7 +239,7 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testDeleteWithNullId() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.delete(null);
     }
 
@@ -277,7 +274,7 @@ public class UserJdbcTemplateDaoTest {
 
     @Test
     public void testUpdateWithNullUser() {
-        exception.expect(NullPointerException.class);
+        exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.update(null);
     }
 
