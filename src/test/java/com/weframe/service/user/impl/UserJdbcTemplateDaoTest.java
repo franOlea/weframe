@@ -7,6 +7,7 @@ import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import mockit.Expectations;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;

@@ -5,7 +5,6 @@ import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -29,14 +28,17 @@ public class UserJdbcTemplateDao implements UserDao {
             throw new InvalidUserPersistenceRequestException();
         }
 
-        jdbcTemplate.update(INSERT_QUERY,
+        if(jdbcTemplate.update(INSERT_QUERY,
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getPasswordSalt(),
-                user.getRole().getId());
+                user.getRole().getId()) < 1) {
+            throw new RuntimeException();
+        }
+
     }
 
     public void update(final User user) {
@@ -48,10 +50,12 @@ public class UserJdbcTemplateDao implements UserDao {
         }
 
 
-        jdbcTemplate.update(UPDATE_BY_ID,
+        if(jdbcTemplate.update(UPDATE_BY_ID,
                 user.getFirstName(),
                 user.getLastName(),
-                user.getId());
+                user.getId()) < 1) {
+            throw new RuntimeException();
+        }
 
     }
 
@@ -61,7 +65,9 @@ public class UserJdbcTemplateDao implements UserDao {
             throw new InvalidUserPersistenceRequestException();
         }
 
-        jdbcTemplate.update(DELETE_QUERY, id);
+        if(jdbcTemplate.update(DELETE_QUERY, id) < 1) {
+            throw new RuntimeException();
+        }
     }
 
     public User getById(final Long id) {
