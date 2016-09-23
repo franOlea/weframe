@@ -82,13 +82,6 @@
 			<version>${mysql.connector.version}</version>
 		</dependency>
 
-		<!-- SLF4J -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
 		<!-- SpringBoot Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
