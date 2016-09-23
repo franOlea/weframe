@@ -3,23 +3,28 @@ package com.weframe.model.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.Validate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "USERS")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     @Id
     @GeneratedValue
+    @Column(name = "ID", nullable = false)
     private Long id;
+    @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
+    @Column(name = "LAST_NAME", nullable = false)
     private String lastName;
+    @Column(name = "EMAIL", nullable = false)
     private String email;
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
+    @Column(name = "PASSWORD_SALT", nullable = false)
     private String passwordSalt;
     @ManyToOne
+    @JoinColumn(name = "ROLE", nullable = false)
     private Role role;
 
     public User() { }

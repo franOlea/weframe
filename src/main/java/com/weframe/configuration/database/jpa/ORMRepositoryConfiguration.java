@@ -41,4 +41,7 @@ public class ORMRepositoryConfiguration {
         txManager.setEntityManagerFactory(entityManagerFactory());
         return txManager;
     }
+
+
+
 }

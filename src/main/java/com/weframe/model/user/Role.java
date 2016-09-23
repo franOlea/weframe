@@ -2,15 +2,16 @@ package com.weframe.model.user;
 
 import org.apache.commons.lang3.Validate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "ROLES")
 public class Role {
     @Id
     @GeneratedValue
+    @Column(name = "ID", nullable = false)
     private Long id;
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     public Role() { }
