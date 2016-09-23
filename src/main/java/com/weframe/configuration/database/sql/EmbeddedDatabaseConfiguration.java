@@ -8,8 +8,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
-@Profile("embedded")
 @Configuration
+@Profile("embedded")
 public class EmbeddedDatabaseConfiguration {
 
     @Bean

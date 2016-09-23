@@ -1,13 +1,13 @@
 package com.weframe.service.user.impl;
 
 
-import com.weframe.configuration.DataBaseConfiguration;
+import com.weframe.configuration.database.jpa.JDBCConfiguration;
 import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
 import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
+import com.weframe.service.user.UserDao;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
-import mockit.Expectations;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -22,8 +22,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("embedded")
-@ContextConfiguration(classes={EmbeddedDatabaseConfiguration.class, DataBaseConfiguration.class}, loader=AnnotationConfigContextLoader.class)
+@ActiveProfiles({"embedded", "jdbc"})
+@ContextConfiguration(classes={EmbeddedDatabaseConfiguration.class, JDBCConfiguration.class}, loader=AnnotationConfigContextLoader.class)
 public class UserJdbcTemplateDaoTest {
 
     @Rule
@@ -33,7 +33,7 @@ public class UserJdbcTemplateDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private UserJdbcTemplateDao userDao;
+    private UserDao userDao;
 
     @Before
     public void setUp() {
