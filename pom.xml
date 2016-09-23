@@ -28,7 +28,9 @@
 		<apache.commons.version>3.4</apache.commons.version>
         <mysql.connector.version>5.1.9</mysql.connector.version>
         <slf4j.version>1.7.21</slf4j.version>
-    </properties>
+		<jmockit.version>1.27</jmockit.version>
+		<maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
+	</properties>
 
 	<dependencies>
 		<!-- Spring Web -->
@@ -95,7 +97,7 @@
 		<dependency>
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
-			<version>1.27</version>
+			<version>${jmockit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -112,7 +114,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>${maven-failsafe-plugin.version}</version>
 				<configuration>
 					<skipITs>${skipITs}</skipITs>
 					<includes>
@@ -128,45 +130,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- CheckStyle -->
-			<!--<plugin>-->
-				<!--<groupId>org.apache.maven.plugins</groupId>-->
-				<!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-				<!--<version>2.17</version>-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<id>validate</id>-->
-						<!--<phase>validate</phase>-->
-						<!--<configuration>-->
-							<!--<configLocation>code-standards/checkstyle.xml</configLocation>-->
-							<!--<encoding>UTF-8</encoding>-->
-							<!--<consoleOutput>true</consoleOutput>-->
-							<!--<failsOnError>true</failsOnError>-->
-						<!--</configuration>-->
-						<!--<goals>-->
-							<!--<goal>check</goal>-->
-						<!--</goals>-->
-					<!--</execution>-->
-				<!--</executions>-->
-			<!--</plugin>-->
-
-			<!-- PMD -->
-			<!--<plugin>-->
-				<!--<groupId>org.apache.maven.plugins</groupId>-->
-				<!--<artifactId>maven-pmd-plugin</artifactId>-->
-				<!--<version>3.6</version>-->
-			<!--</plugin>-->
-
-			<!-- FindBugs -->
-			<!--<plugin>-->
-				<!--<groupId>org.codehaus.mojo</groupId>-->
-				<!--<artifactId>findbugs-maven-plugin</artifactId>-->
-				<!--<version>3.0.4</version>-->
-				<!--<configuration>-->
-					<!--&lt;!&ndash; Optional directory to put findbugs xml report &ndash;&gt;-->
-				<!--</configuration>-->
-			<!--</plugin>-->
 		</plugins>
 	</build>
 </project>
