@@ -5,20 +5,22 @@ import com.weframe.model.user.User;
 import com.weframe.service.user.UserDao;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collection;
 import java.util.List;
 
-public class UserJdbcTemplateDao implements UserDao {
+@Profile("jdbc")
+public class UserJdbcTemplate implements UserDao {
 
     public static final BeanPropertyRowMapper<User> USERS_ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
     public static final BeanPropertyRowMapper<Role> ROLES_ROW_MAPPER = new BeanPropertyRowMapper<>(Role.class);
 
     private JdbcTemplate jdbcTemplate;
 
-    public UserJdbcTemplateDao(final JdbcTemplate jdbcTemplate) {
+    public UserJdbcTemplate(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

@@ -22,15 +22,15 @@ public class UserJdbcTemplateDaoMockedTemplateTest {
     private JdbcTemplate jdbcTemplate;
 
     @Tested
-    private UserJdbcTemplateDao userDao = new UserJdbcTemplateDao(jdbcTemplate);
+    private UserJdbcTemplate userDao = new UserJdbcTemplate(jdbcTemplate);
 
     @Test
-    public void testInsertError() {
+    public void insertError() {
         exception.expect(RuntimeException.class);
 
         User user = UserFixture.johnDoe();
         new Expectations() {{
-            jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+            jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                     user.getId(),
                     user.getFirstName(),
                     user.getLastName(),
@@ -46,12 +46,12 @@ public class UserJdbcTemplateDaoMockedTemplateTest {
     }
 
     @Test
-    public void testUpdateError() {
+    public void updateError() {
         exception.expect(RuntimeException.class);
 
         User user = UserFixture.johnDoe();
         new Expectations() {{
-            jdbcTemplate.update(UserJdbcTemplateDao.UPDATE_BY_ID,
+            jdbcTemplate.update(UserJdbcTemplate.UPDATE_BY_ID,
                     user.getFirstName(),
                     user.getLastName(),
                     user.getId());
@@ -63,12 +63,12 @@ public class UserJdbcTemplateDaoMockedTemplateTest {
     }
 
     @Test
-    public void testDeleteError() {
+    public void deleteError() {
         exception.expect(RuntimeException.class);
 
         User user = UserFixture.johnDoe();
         new Expectations() {{
-            jdbcTemplate.update(UserJdbcTemplateDao.DELETE_QUERY,
+            jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY,
                     user.getId());
             result = 0;
             times = 1;

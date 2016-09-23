@@ -24,7 +24,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles({"embedded", "jdbc"})
 @ContextConfiguration(classes={EmbeddedDatabaseConfiguration.class, JDBCConfiguration.class}, loader=AnnotationConfigContextLoader.class)
-public class UserJdbcTemplateDaoTest {
+public class UserJdbcTemplateTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -82,21 +82,21 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testInsert() {
+    public void insert() {
         userDao.insert(UserFixture.johnDoe());
-        User user = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_BY_ID_QUERY,
+        User user = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplateDao.USERS_ROW_MAPPER);
-        Role role = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_ROLE_BY_USER_ID,
+                UserJdbcTemplate.USERS_ROW_MAPPER);
+        Role role = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_ROLE_BY_USER_ID,
                 new Object[] { user.getId() },
-                UserJdbcTemplateDao.ROLES_ROW_MAPPER);
+                UserJdbcTemplate.ROLES_ROW_MAPPER);
         user.setRole(role);
 
         Assert.assertEquals(user, UserFixture.johnDoe());
     }
 
     @Test
-    public void testInsertInvalidUser() {
+    public void insertInvalidUser() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setFirstName(null);
@@ -104,14 +104,14 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testInsertNullUser() {
+    public void insertNullUser() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.insert(null);
     }
 
     @Test
-    public void testGetById() {
-        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+    public void getById() {
+        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -126,20 +126,20 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testGetByIdWithInvalidId() {
+    public void getByIdWithInvalidId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getById(0L);
     }
 
     @Test
-    public void testGetByIdWithNullId() {
+    public void getByIdWithNullId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getById(null);
     }
 
     @Test
-    public void testSelectByEmail() {
-        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+    public void getByEmail() {
+        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -152,20 +152,20 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testSelectByEmailWithBlankEmail() {
+    public void getByEmailWithBlankEmail() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByEmail("");
     }
 
     @Test
-    public void testSelectByEmailWithNullEmail() {
+    public void getByEmailWithNullEmail() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByEmail(null);
     }
 
     @Test
-    public void testGetByLogin() {
-        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+    public void getByLogin() {
+        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -180,34 +180,34 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testSelectByLoginWithBlankEmail() {
+    public void getByLoginWithBlankEmail() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("", "123");
     }
 
     @Test
-    public void testSelectByLoginWithNullEmail() {
+    public void getByLoginWithNullEmail() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin(null, "123");
     }
 
     @Test
-    public void testSelectByLoginWithBlankPassword() {
+    public void getByLoginWithBlankPassword() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("123", "");
     }
 
     @Test
-    public void testSelectByLoginWithNullPassword() {
+    public void getByLoginWithNullPassword() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getByLogin("123", null);
     }
 
     @Test
-    public void testDelete() {
+    public void delete() {
         exception.expect(EmptyResultDataAccessException.class);
 
-        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -218,26 +218,26 @@ public class UserJdbcTemplateDaoTest {
 
         userDao.delete(UserFixture.johnDoe().getId());
 
-        jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_BY_ID_QUERY,
+        jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplateDao.USERS_ROW_MAPPER);
+                UserJdbcTemplate.USERS_ROW_MAPPER);
     }
 
     @Test
-    public void testDeleteWithInvalidId() {
+    public void deleteWithInvalidId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.delete(0L);
     }
 
     @Test
-    public void testDeleteWithNullId() {
+    public void deleteWithNullId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.delete(null);
     }
 
     @Test
-    public void testUpdate() {
-        jdbcTemplate.update(UserJdbcTemplateDao.INSERT_QUERY,
+    public void update() {
+        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -251,12 +251,12 @@ public class UserJdbcTemplateDaoTest {
 
         userDao.update(updatedUser);
 
-        User user = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_BY_ID_QUERY,
+        User user = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplateDao.USERS_ROW_MAPPER);
-        Role role = jdbcTemplate.queryForObject(UserJdbcTemplateDao.SELECT_ROLE_BY_USER_ID,
+                UserJdbcTemplate.USERS_ROW_MAPPER);
+        Role role = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_ROLE_BY_USER_ID,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplateDao.ROLES_ROW_MAPPER);
+                UserJdbcTemplate.ROLES_ROW_MAPPER);
         user.setRole(role);
 
         Assert.assertNotEquals(UserFixture.johnDoe(), updatedUser);
@@ -265,13 +265,13 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testUpdateWithNullUser() {
+    public void updateWithNullUser() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.update(null);
     }
 
     @Test
-    public void testUpdateWithNullFirstName() {
+    public void updateWithNullFirstName() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setFirstName(null);
@@ -279,7 +279,7 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testUpdateWithNullLastName() {
+    public void updateWithNullLastName() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setLastName(null);
@@ -287,26 +287,26 @@ public class UserJdbcTemplateDaoTest {
     }
 
     @Test
-    public void testGetAll() {
+    public void getAll() {
         List<User> users = (List<User>) userDao.getAllWithPaging(3, 7);
         User fixtureUser = UserFixture.janeDoe();
-        fixtureUser.setId(10);
+        fixtureUser.setId(10L);
 
         users.forEach((user) -> {
-            if(user.getId() == 10) {
+            if(user.getId() == 10L) {
                 Assert.assertEquals(user, fixtureUser);
             }
         });
     }
 
     @Test
-    public void testGetAllWithInvalidLimit() {
+    public void getAllWithInvalidLimit() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getAllWithPaging(1, 0);
     }
 
     @Test
-    public void testGetAllWithInvalidOffset() {
+    public void getAllWithInvalidOffset() {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getAllWithPaging(-1, 1);
     }

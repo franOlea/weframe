@@ -3,14 +3,23 @@ package com.weframe.model.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
-    private long id;
+    @Id
+    @GeneratedValue
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String passwordSalt;
+    @ManyToOne
     private Role role;
 
     public User() { }
@@ -39,7 +48,7 @@ public class User {
         this.role = role;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -67,38 +76,38 @@ public class User {
         return role;
     }
 
-    public void setId(final long id) {
+    public void setId(final Long id) {
         Validate.isTrue(id > 0, "The id should be above 0");
 
         this.id = id;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
-    public void setPasswordSalt(String passwordSalt) {
+    public void setPasswordSalt(final String passwordSalt) {
         this.passwordSalt = passwordSalt;
     }
 
-    public void setRole(Role role) {
+    public void setRole(final Role role) {
         this.role = role;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -116,8 +125,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = result + firstName.hashCode();
+        int result = firstName.hashCode();
         result = result + lastName.hashCode();
         result = result + email.hashCode();
         result = result + password.hashCode();

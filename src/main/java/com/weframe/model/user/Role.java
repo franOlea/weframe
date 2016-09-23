@@ -2,8 +2,15 @@ package com.weframe.model.user;
 
 import org.apache.commons.lang3.Validate;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Role {
-    private long id;
+    @Id
+    @GeneratedValue
+    private Long id;
     private String name;
 
     public Role() { }
@@ -16,7 +23,7 @@ public class Role {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -24,7 +31,7 @@ public class Role {
         return name;
     }
 
-    public void setId(final long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 

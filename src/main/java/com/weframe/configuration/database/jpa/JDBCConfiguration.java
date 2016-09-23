@@ -1,7 +1,7 @@
 package com.weframe.configuration.database.jpa;
 
 import com.weframe.service.user.UserDao;
-import com.weframe.service.user.impl.UserJdbcTemplateDao;
+import com.weframe.service.user.impl.UserJdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +24,6 @@ public class JDBCConfiguration {
 
     @Bean
     public UserDao getUserJdbcTemplateDao() {
-        return new UserJdbcTemplateDao(getJdbcTemplate());
+        return new UserJdbcTemplate(getJdbcTemplate());
     }
 }

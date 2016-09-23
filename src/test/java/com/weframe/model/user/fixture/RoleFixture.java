@@ -6,8 +6,8 @@ public class RoleFixture {
 
     public static final String USER = "USER";
     public static final String ADMIN = "ADMIN";
-    public static final int USER_ID = 1;
-    public static final int ADMIN_ID = 2;
+    public static final Long USER_ID = 1L;
+    public static final Long ADMIN_ID = 2L;
 
     public static Role user() {
         return new Role(USER_ID, USER);
