@@ -38,12 +38,22 @@ public interface UserRepository extends UserDao, JpaRepository<User, Long> {
             throw new InvalidUserPersistenceRequestException();
         }
 
+        User actual = getById(user.getId());
+
+        if(!actual.getEmail().equals(user.getEmail())) {
+            throw new InvalidUserPersistenceRequestException();
+        }
+
+        user.setPassword(actual.getPassword());
+        user.setPasswordSalt(actual.getPasswordSalt());
+        user.setRole(actual.getRole());
+
         save(user);
     }
 
-    default void delete(final Long id) {
+    default void deleteById(final Long id) {
         if(id == null ||
-                id < 1) {
+                id < 1L) {
             throw new InvalidUserPersistenceRequestException();
         }
 

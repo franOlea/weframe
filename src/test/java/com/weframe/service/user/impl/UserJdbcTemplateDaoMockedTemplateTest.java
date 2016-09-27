@@ -74,6 +74,6 @@ public class UserJdbcTemplateDaoMockedTemplateTest {
             times = 1;
         }};
 
-        userDao.delete(user.getId());
+        userDao.deleteById(user.getId());
     }
 }

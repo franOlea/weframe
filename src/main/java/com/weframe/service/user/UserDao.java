@@ -10,7 +10,7 @@ public interface UserDao {
 
     void update(final User user);
 
-    void delete(final Long id);
+    void deleteById(final Long id);
 
     User getById(final Long id);
 

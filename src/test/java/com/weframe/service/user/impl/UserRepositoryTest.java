@@ -6,7 +6,6 @@ import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
 import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
-import com.weframe.service.user.UserDao;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -30,7 +29,6 @@ import java.util.List;
                 ORMRepositoryConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 @EnableJpaRepositories
-@Ignore
 public class UserRepositoryTest {
 
     @Rule
@@ -40,9 +38,7 @@ public class UserRepositoryTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private UserRepository userRepository;
-
-    private UserDao userDao;
+    private UserRepository userDao;
 
     private static boolean setUpIsDone = false;
 
@@ -52,48 +48,15 @@ public class UserRepositoryTest {
             return;
         }
 
-        userDao = userRepository;
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (1, 'USER')");
         jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (2, 'ADMIN')");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (3, 'Quinn', 'Stevenson', " +
-                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 'IUL44ERZ1XY', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (4, 'Chase', 'Grimes', " +
-                "'Nulla.facilisi@massaMaurisvestibulum.com', 'XGG15SLY2JI', 'LZA60FRP3KB', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (5, 'September', 'Atkins', " +
-                "'libero@risus.org', 'ABZ54TRN7FU', 'DTP59DGX8FD', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (6, 'Marah', 'Kirkland', " +
-                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 'AGA25VVZ8NP', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (7, 'Ursa', 'Hester', " +
-                "'metus@ante.ca', 'DBT69CDH2PZ', 'ELS95OWH0ZO', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (8, 'Rebekah', 'Morris', " +
-                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 'WJQ00JPW4QK', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (9, 'Thomas', 'Carney', " +
-                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 'FCX15KPZ2SI', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                        "VALUES (10, ?, ?, ?, ?, ?, ?)",
-                UserFixture.janeDoe().getFirstName(),
-                UserFixture.janeDoe().getLastName(),
-                UserFixture.janeDoe().getEmail(),
-                UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getPasswordSalt(),
-                UserFixture.janeDoe().getRole().getId());
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                "VALUES (11, 'Murphy', 'Woodard', " +
-                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 'GRX00AGH3NC', 1)");
-
         setUpIsDone = true;
     }
 
     @Test
     public void insert() {
         userDao.insert(UserFixture.johnDoe());
+
         User user = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
                 UserJdbcTemplate.USERS_ROW_MAPPER);
@@ -103,6 +66,8 @@ public class UserRepositoryTest {
         user.setRole(role);
 
         Assert.assertEquals(user, UserFixture.johnDoe());
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -133,6 +98,8 @@ public class UserRepositoryTest {
         User user = userDao.getById(UserFixture.johnDoe().getId());
 
         Assert.assertEquals(user, UserFixture.johnDoe());
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -158,7 +125,10 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
         User user = userDao.getByEmail(UserFixture.johnDoe().getEmail());
+
         Assert.assertEquals(user, UserFixture.johnDoe());
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -187,6 +157,8 @@ public class UserRepositoryTest {
         User user = userDao.getByLogin(UserFixture.johnDoe().getEmail(), UserFixture.johnDoe().getPassword());
 
         Assert.assertEquals(user, UserFixture.johnDoe());
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -226,23 +198,25 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
-        userDao.delete(UserFixture.johnDoe().getId());
+        userDao.deleteById(UserFixture.johnDoe().getId());
 
         jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
                 UserJdbcTemplate.USERS_ROW_MAPPER);
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
     public void deleteWithInvalidId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.delete(0L);
+        userDao.deleteById(0L);
     }
 
     @Test
     public void deleteWithNullId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.delete(null);
+        userDao.deleteById(null);
     }
 
     @Test
@@ -272,6 +246,8 @@ public class UserRepositoryTest {
         Assert.assertNotEquals(UserFixture.johnDoe(), updatedUser);
         Assert.assertNotEquals(UserFixture.johnDoe(), user);
         Assert.assertEquals(user, updatedUser);
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -298,6 +274,39 @@ public class UserRepositoryTest {
 
     @Test
     public void getAll() {
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (3, 'Quinn', 'Stevenson', " +
+                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 'IUL44ERZ1XY', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (4, 'Chase', 'Grimes', " +
+                "'Nulla.facilisi@massaMaurisvestibulum.com', 'XGG15SLY2JI', 'LZA60FRP3KB', 2)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (5, 'September', 'Atkins', " +
+                "'libero@risus.org', 'ABZ54TRN7FU', 'DTP59DGX8FD', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (6, 'Marah', 'Kirkland', " +
+                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 'AGA25VVZ8NP', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (7, 'Ursa', 'Hester', " +
+                "'metus@ante.ca', 'DBT69CDH2PZ', 'ELS95OWH0ZO', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (8, 'Rebekah', 'Morris', " +
+                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 'WJQ00JPW4QK', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (9, 'Thomas', 'Carney', " +
+                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 'FCX15KPZ2SI', 2)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                        "VALUES (10, ?, ?, ?, ?, ?, ?)",
+                UserFixture.janeDoe().getFirstName(),
+                UserFixture.janeDoe().getLastName(),
+                UserFixture.janeDoe().getEmail(),
+                UserFixture.janeDoe().getPassword(),
+                UserFixture.janeDoe().getPasswordSalt(),
+                UserFixture.janeDoe().getRole().getId());
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "VALUES (11, 'Murphy', 'Woodard', " +
+                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 'GRX00AGH3NC', 1)");
+
         List<User> users = (List<User>) userDao.getAllWithPaging(3, 7);
         User fixtureUser = UserFixture.janeDoe();
         fixtureUser.setId(10L);
@@ -307,6 +316,16 @@ public class UserRepositoryTest {
                 Assert.assertEquals(user, fixtureUser);
             }
         });
+
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 3);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 4);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 5);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 6);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 7);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 8);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 9);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 10);
+        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 11);
     }
 
     @Test

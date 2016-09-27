@@ -216,7 +216,7 @@ public class UserJdbcTemplateTest {
                 UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
-        userDao.delete(UserFixture.johnDoe().getId());
+        userDao.deleteById(UserFixture.johnDoe().getId());
 
         jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
@@ -226,13 +226,13 @@ public class UserJdbcTemplateTest {
     @Test
     public void deleteWithInvalidId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.delete(0L);
+        userDao.deleteById(0L);
     }
 
     @Test
     public void deleteWithNullId() {
         exception.expect(InvalidUserPersistenceRequestException.class);
-        userDao.delete(null);
+        userDao.deleteById(null);
     }
 
     @Test

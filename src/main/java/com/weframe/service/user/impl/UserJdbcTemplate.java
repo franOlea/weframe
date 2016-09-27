@@ -61,7 +61,7 @@ public class UserJdbcTemplate implements UserDao {
 
     }
 
-    public void delete(final Long id) {
+    public void deleteById(final Long id) {
         if(id == null ||
                 id < 1) {
             throw new InvalidUserPersistenceRequestException();

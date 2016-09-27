@@ -17,11 +17,11 @@ public class User {
     private String firstName;
     @Column(name = "LAST_NAME", nullable = false)
     private String lastName;
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
     @Column(name = "PASSWORD", nullable = false)
     private String password;
-    @Column(name = "PASSWORD_SALT", nullable = false)
+    @Column(name = "PASSWORD_SALT", nullable = false, unique = true)
     private String passwordSalt;
     @ManyToOne
     @JoinColumn(name = "ROLE", nullable = false)
