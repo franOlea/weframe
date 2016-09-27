@@ -42,17 +42,6 @@ public class UserRepositoryTest {
 
     private static boolean setUpIsDone = false;
 
-    @Before
-    public void setUp() {
-        if (setUpIsDone) {
-            return;
-        }
-
-        jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (1, 'USER')");
-        jdbcTemplate.update("INSERT INTO ROLES (ID, NAME)  VALUES (2, 'ADMIN')");
-        setUpIsDone = true;
-    }
-
     @Test
     public void insert() {
         userDao.insert(UserFixture.johnDoe());
