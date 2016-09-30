@@ -1,7 +1,7 @@
 package com.weframe.service.user.impl;
 
 import com.weframe.model.user.User;
-import com.weframe.service.user.UserDao;
+import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Profile;
@@ -11,30 +11,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
 
 @Profile("orm")
-public interface UserRepository extends UserDao, JpaRepository<User, Long> {
+public interface UserRepository extends UserService, JpaRepository<User, Long> {
 
     default void insert(final User user) {
-        if(user == null ||
-                !(user.getId() > 0 &&
-                user.getEmail() != null &&
-                user.getFirstName() != null &&
-                user.getLastName() != null &&
-                user.getPassword() != null &&
-                user.getPasswordSalt() != null &&
-                user.getRole() != null &&
-                user.getRole().getId() > 0 &&
-                user.getRole().getName() != null)) {
+        if(!isValidInsert(user)) {
             throw new InvalidUserPersistenceRequestException();
         }
+
+
 
         save(user);
     }
 
     default void update(final User user) {
-        if(user == null ||
-                StringUtils.isBlank(user.getFirstName()) ||
-                StringUtils.isBlank(user.getLastName())) {
-
+        if(!isValidUpdate(user)) {
             throw new InvalidUserPersistenceRequestException();
         }
 
@@ -45,10 +35,13 @@ public interface UserRepository extends UserDao, JpaRepository<User, Long> {
         }
 
         user.setPassword(actual.getPassword());
-        user.setPasswordSalt(actual.getPasswordSalt());
         user.setRole(actual.getRole());
 
         save(user);
+    }
+
+    default void changePassword(final String oldPassword, final String newPassword, final Long id) {
+
     }
 
     default void deleteById(final Long id) {

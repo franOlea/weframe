@@ -36,7 +36,6 @@ public class UserJdbcTemplateDaoMockedTemplateTest {
                     user.getLastName(),
                     user.getEmail(),
                     user.getPassword(),
-                    user.getPasswordSalt(),
                     user.getRole().getId());
             result = 0;
             times = 1;

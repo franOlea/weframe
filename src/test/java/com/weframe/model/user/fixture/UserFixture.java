@@ -27,7 +27,6 @@ public class UserFixture {
                 JOHN_DOE_LAST_NAME,
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
-                JOHN_DOE_PASSWORD_SALT,
                 JOHN_DOE_ROLE);
     }
 
@@ -38,7 +37,6 @@ public class UserFixture {
                 JANE_DOE_LAST_NAME,
                 JANE_DOE_EMAIL,
                 JANE_DOE_PASSWORD,
-                JANE_DOE_PASSWORD_SALT,
                 JANE_DOE_ROLE);
     }
 

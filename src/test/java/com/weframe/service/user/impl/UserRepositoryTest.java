@@ -81,7 +81,6 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
         User user = userDao.getById(UserFixture.johnDoe().getId());
@@ -111,7 +110,6 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
         User user = userDao.getByEmail(UserFixture.johnDoe().getEmail());
 
@@ -140,7 +138,6 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
         User user = userDao.getByLogin(UserFixture.johnDoe().getEmail(), UserFixture.johnDoe().getPassword());
@@ -184,7 +181,6 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
         userDao.deleteById(UserFixture.johnDoe().getId());
@@ -216,7 +212,6 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getPasswordSalt(),
                 UserFixture.johnDoe().getRole().getId());
 
         User updatedUser = UserFixture.johnDoe();
@@ -263,38 +258,37 @@ public class UserRepositoryTest {
 
     @Test
     public void getAll() {
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (3, 'Quinn', 'Stevenson', " +
-                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 'IUL44ERZ1XY', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (4, 'Chase', 'Grimes', " +
-                "'Nulla.facilisi@massaMaurisvestibulum.com', 'XGG15SLY2JI', 'LZA60FRP3KB', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'Nulla.facilisi@massaMaurisvestibulum.com', 'LZA60FRP3KB', 2)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (5, 'September', 'Atkins', " +
-                "'libero@risus.org', 'ABZ54TRN7FU', 'DTP59DGX8FD', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'libero@risus.org', 'ABZ54TRN7FU', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (6, 'Marah', 'Kirkland', " +
-                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 'AGA25VVZ8NP', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (7, 'Ursa', 'Hester', " +
-                "'metus@ante.ca', 'DBT69CDH2PZ', 'ELS95OWH0ZO', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'metus@ante.ca', 'DBT69CDH2PZ', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (8, 'Rebekah', 'Morris', " +
-                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 'WJQ00JPW4QK', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (9, 'Thomas', 'Carney', " +
-                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 'FCX15KPZ2SI', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
-                        "VALUES (10, ?, ?, ?, ?, ?, ?)",
+                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 2)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                        "VALUES (10, ?, ?, ?, ?, ?)",
                 UserFixture.janeDoe().getFirstName(),
                 UserFixture.janeDoe().getLastName(),
                 UserFixture.janeDoe().getEmail(),
                 UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getPasswordSalt(),
                 UserFixture.janeDoe().getRole().getId());
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) " +
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
                 "VALUES (11, 'Murphy', 'Woodard', " +
-                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 'GRX00AGH3NC', 1)");
+                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 1)");
 
         List<User> users = (List<User>) userDao.getAllWithPaging(3, 7);
         User fixtureUser = UserFixture.janeDoe();

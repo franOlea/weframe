@@ -2,7 +2,7 @@ package com.weframe.controller.user;
 
 
 import com.weframe.model.user.User;
-import com.weframe.service.user.UserDao;
+import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class UserController {
     private final static Logger logger = Logger.getLogger(UserController.class);
 
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
 
     @RequestMapping(value = "/by-id/{userId}", method = RequestMethod.GET)
     ResponseEntity<User> getUserById(@PathVariable Long userId) {
         try {
-            User user = userDao.getById(userId);
+            User user = userService.getById(userId);
 
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
@@ -43,7 +43,7 @@ public class UserController {
     @RequestMapping(value = "/by-email/{userId}", method = RequestMethod.GET)
     ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         try {
-            User user = userDao.getByEmail(email);
+            User user = userService.getByEmail(email);
 
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
@@ -60,7 +60,7 @@ public class UserController {
     ResponseEntity<Collection<User>> getAllUsersWithPaging(@RequestParam(value="offset", defaultValue="0",
             required = false) int offset, @RequestParam(value="limit") int limit) {
         try {
-            Collection<User> users = userDao.getAllWithPaging(offset, limit);
+            Collection<User> users = userService.getAllWithPaging(offset, limit);
 
             return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
@@ -76,7 +76,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     ResponseEntity<?> create(@RequestBody User user) {
         try {
-            userDao.insert(user);
+            userService.insert(user);
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
         } catch(InvalidUserPersistenceRequestException e) {
@@ -84,7 +84,7 @@ public class UserController {
         } catch(DuplicateKeyException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(user.toString(), e);
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
@@ -93,7 +93,7 @@ public class UserController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     ResponseEntity<?> update(@RequestBody User user) {
         try {
-            userDao.update(user);
+            userService.update(user);
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.ACCEPTED);
         } catch(InvalidUserPersistenceRequestException e) {

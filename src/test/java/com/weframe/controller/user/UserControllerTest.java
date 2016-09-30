@@ -2,7 +2,7 @@ package com.weframe.controller.user;
 
 import com.weframe.model.user.User;
 import com.weframe.model.user.fixture.UserFixture;
-import com.weframe.service.user.UserDao;
+import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -26,7 +26,7 @@ import java.util.Collection;
 public class UserControllerTest {
 
     @Injectable
-    private UserDao userDao;
+    private UserService userService;
 
     @Tested
     private UserController userController = new UserController();
@@ -34,7 +34,7 @@ public class UserControllerTest {
     @Test
     public void getByIdBadRequest() throws Exception {
         new Expectations() {{
-            userDao.getById(-1L);
+            userService.getById(-1L);
             result = new InvalidUserPersistenceRequestException();
             times = 1;
         }};
@@ -47,7 +47,7 @@ public class UserControllerTest {
     @Test
     public void getByIdDataBaseError() throws Exception {
         new Expectations() {{
-            userDao.getById(1L);
+            userService.getById(1L);
             result = new DataIntegrityViolationException("Error");
             times = 1;
         }};
@@ -60,7 +60,7 @@ public class UserControllerTest {
     @Test
     public void getUserByIdNotFound() throws Exception {
         new Expectations() {{
-            userDao.getById(1L);
+            userService.getById(1L);
             result = new EmptyResultDataAccessException(1);
             times = 1;
         }};
@@ -73,7 +73,7 @@ public class UserControllerTest {
     @Test
     public void getByIdFound() throws Exception {
         new Expectations() {{
-            userDao.getById(1L);
+            userService.getById(1L);
             result = UserFixture.johnDoe();
             times = 1;
         }};
@@ -87,7 +87,7 @@ public class UserControllerTest {
     @Test
     public void getByEmailBadRequest() throws Exception {
         new Expectations() {{
-            userDao.getByEmail("");
+            userService.getByEmail("");
             result = new InvalidUserPersistenceRequestException();
             times = 1;
         }};
@@ -100,7 +100,7 @@ public class UserControllerTest {
     @Test
     public void getByEmailDataBaseError() throws Exception {
         new Expectations() {{
-            userDao.getByEmail("test@email.com");
+            userService.getByEmail("test@email.com");
             result = new DataIntegrityViolationException("Error");
             times = 1;
         }};
@@ -113,7 +113,7 @@ public class UserControllerTest {
     @Test
     public void getUserByEmailNotFound() throws Exception {
         new Expectations() {{
-            userDao.getByEmail("john.doe@email.com");
+            userService.getByEmail("john.doe@email.com");
             result = new EmptyResultDataAccessException(1);
             times = 1;
         }};
@@ -126,7 +126,7 @@ public class UserControllerTest {
     @Test
     public void getByEmailFound() throws Exception {
         new Expectations() {{
-            userDao.getByEmail("john.doe@email.com");
+            userService.getByEmail("john.doe@email.com");
             result = UserFixture.johnDoe();
             times = 1;
         }};
@@ -140,7 +140,7 @@ public class UserControllerTest {
     @Test
     public void getAllWithPagingBadRequest() throws Exception {
         new Expectations() {{
-            userDao.getAllWithPaging(-1, -1);
+            userService.getAllWithPaging(-1, -1);
             result = new InvalidUserPersistenceRequestException();
             times = 1;
         }};
@@ -153,7 +153,7 @@ public class UserControllerTest {
     @Test
     public void getAllWithPagingDataBaseError() throws Exception {
         new Expectations() {{
-            userDao.getAllWithPaging(1, 1);
+            userService.getAllWithPaging(1, 1);
             result = new DataIntegrityViolationException("Error");
             times = 1;
         }};
@@ -166,7 +166,7 @@ public class UserControllerTest {
     @Test
     public void getAllWithPagingNotFound() throws Exception {
         new Expectations() {{
-            userDao.getAllWithPaging(1, 1);
+            userService.getAllWithPaging(1, 1);
             result = new EmptyResultDataAccessException(1);
             times = 1;
         }};
@@ -179,7 +179,7 @@ public class UserControllerTest {
     @Test
     public void getAllWithPagingFound() throws Exception {
         new Expectations() {{
-            userDao.getAllWithPaging(0, 2);
+            userService.getAllWithPaging(0, 2);
             result = new ArrayList<>(Arrays.asList(UserFixture.janeDoe(), UserFixture.johnDoe()));
             times = 1;
         }};
@@ -198,7 +198,7 @@ public class UserControllerTest {
         user.setFirstName(null);
 
         new Expectations() {{
-            userDao.insert(user);
+            userService.insert(user);
             result = new InvalidUserPersistenceRequestException();
             times = 1;
         }};
@@ -216,11 +216,10 @@ public class UserControllerTest {
                 UserFixture.janeDoe().getLastName(),
                 UserFixture.janeDoe().getEmail(),
                 UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getPasswordSalt(),
                 UserFixture.janeDoe().getRole());
 
         new Expectations() {{
-            userDao.insert(user);
+            userService.insert(user);
             result = null;
             times = 1;
         }};
@@ -235,7 +234,7 @@ public class UserControllerTest {
         User user = UserFixture.johnDoe();
 
         new Expectations() {{
-            userDao.insert(user);
+            userService.insert(user);
             result = new DuplicateKeyException("Error");
             times = 1;
         }};
@@ -250,7 +249,7 @@ public class UserControllerTest {
         User user = UserFixture.johnDoe();
 
         new Expectations() {{
-            userDao.insert(user);
+            userService.insert(user);
             result = new DataIntegrityViolationException("Error");
             times = 1;
         }};
@@ -266,7 +265,7 @@ public class UserControllerTest {
         user.setFirstName(null);
 
         new Expectations() {{
-            userDao.update(user);
+            userService.update(user);
             result = new InvalidUserPersistenceRequestException();
             times = 1;
         }};
@@ -282,7 +281,7 @@ public class UserControllerTest {
         user.setFirstName(null);
 
         new Expectations() {{
-            userDao.update(user);
+            userService.update(user);
             result = new DataIntegrityViolationException("Error");
             times = 1;
         }};
@@ -298,7 +297,7 @@ public class UserControllerTest {
         user.setFirstName(null);
 
         new Expectations() {{
-            userDao.update(user);
+            userService.update(user);
             result = null;
             times = 1;
         }};

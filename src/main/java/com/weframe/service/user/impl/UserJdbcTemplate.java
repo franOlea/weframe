@@ -2,7 +2,7 @@ package com.weframe.service.user.impl;
 
 import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
-import com.weframe.service.user.UserDao;
+import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Profile;
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Profile("jdbc")
-public class UserJdbcTemplate implements UserDao {
+public class UserJdbcTemplate implements UserService {
 
     public static final BeanPropertyRowMapper<User> USERS_ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
     public static final BeanPropertyRowMapper<Role> ROLES_ROW_MAPPER = new BeanPropertyRowMapper<>(Role.class);
@@ -36,7 +36,6 @@ public class UserJdbcTemplate implements UserDao {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getPasswordSalt(),
                 user.getRole().getId()) < 1) {
             throw new RuntimeException();
         }
@@ -58,6 +57,10 @@ public class UserJdbcTemplate implements UserDao {
                 user.getId()) < 1) {
             throw new RuntimeException();
         }
+
+    }
+
+    public void changePassword(String oldPassword, String newPassword, Long id) {
 
     }
 
@@ -135,23 +138,21 @@ public class UserJdbcTemplate implements UserDao {
                 user.getFirstName() != null &&
                 user.getLastName() != null &&
                 user.getPassword() != null &&
-                user.getPasswordSalt() != null &&
                 user.getRole() != null &&
                 user.getRole().getId() > 0 &&
                 user.getRole().getName() != null;
     }
 
     static final String INSERT_QUERY = "INSERT INTO USERS " +
-            "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PASSWORD_SALT, ROLE) VALUES " +
-            "(?, ?, ?, ?, ?, ?, ?)";
+            "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) VALUES " +
+            "(?, ?, ?, ?, ?, ?)";
     static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
     static final String SELECT_ALL_WITH_PAGING = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
             "USERS.EMAIL, " +
-            "USERS.PASSWORD, " +
-            "USERS.PASSWORD_SALT " +
+            "USERS.PASSWORD " +
             "FROM USERS " +
             "LIMIT ?,?";
     static final String SELECT_BY_ID_QUERY = "SELECT " +
@@ -159,8 +160,7 @@ public class UserJdbcTemplate implements UserDao {
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
             "USERS.EMAIL, " +
-            "USERS.PASSWORD, " +
-            "USERS.PASSWORD_SALT " +
+            "USERS.PASSWORD " +
             "FROM USERS " +
             "WHERE USERS.ID = ? ";
     static final String SELECT_BY_EMAIL_QUERY = "SELECT " +
@@ -168,8 +168,7 @@ public class UserJdbcTemplate implements UserDao {
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
             "USERS.EMAIL, " +
-            "USERS.PASSWORD, " +
-            "USERS.PASSWORD_SALT " +
+            "USERS.PASSWORD " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? ";
     static final String UPDATE_BY_ID = "UPDATE " +
@@ -183,8 +182,7 @@ public class UserJdbcTemplate implements UserDao {
             "USERS.FIRST_NAME, " +
             "USERS.LAST_NAME, " +
             "USERS.EMAIL, " +
-            "USERS.PASSWORD, " +
-            "USERS.PASSWORD_SALT " +
+            "USERS.PASSWORD " +
             "FROM USERS " +
             "WHERE USERS.EMAIL = ? AND USERS.PASSWORD = ?";
     static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
