@@ -18,8 +18,6 @@ public interface UserRepository extends UserService, JpaRepository<User, Long> {
             throw new InvalidUserPersistenceRequestException();
         }
 
-
-
         save(user);
     }
 

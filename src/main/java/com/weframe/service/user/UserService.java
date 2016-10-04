@@ -33,17 +33,17 @@ public interface UserService {
 
     default boolean isValidInsert(User user) {
         return user != null &&
-                StringUtils.isBlank(user.getEmail()) &&
-                StringUtils.isBlank(user.getFirstName()) &&
-                StringUtils.isBlank(user.getLastName()) &&
-                StringUtils.isBlank(user.getPassword());
+                !StringUtils.isBlank(user.getEmail()) &&
+                !StringUtils.isBlank(user.getFirstName()) &&
+                !StringUtils.isBlank(user.getLastName()) &&
+                !StringUtils.isBlank(user.getPassword());
     }
 
     default boolean isValidUpdate(User user) {
         return user != null &&
-                StringUtils.isBlank(user.getEmail()) &&
-                StringUtils.isBlank(user.getFirstName()) &&
-                StringUtils.isBlank(user.getLastName());
+                !StringUtils.isBlank(user.getEmail()) &&
+                !StringUtils.isBlank(user.getFirstName()) &&
+                !StringUtils.isBlank(user.getLastName());
     }
 
     default String generateStoringPasswordHash(String password)
