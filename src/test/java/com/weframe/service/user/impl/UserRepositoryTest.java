@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,17 +47,17 @@ public class UserRepositoryTest {
     public void insert() {
         userDao.insert(UserFixture.johnDoe());
 
-        User user = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
+        User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplate.USERS_ROW_MAPPER);
-        Role role = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_ROLE_BY_USER_ID,
+                USERS_ROW_MAPPER);
+        Role role = jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID,
                 new Object[] { user.getId() },
-                UserJdbcTemplate.ROLES_ROW_MAPPER);
+                ROLES_ROW_MAPPER);
         user.setRole(role);
 
         Assert.assertEquals(user, UserFixture.johnDoe());
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -75,7 +76,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getById() {
-        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
+        jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -87,7 +88,7 @@ public class UserRepositoryTest {
 
         Assert.assertEquals(user, UserFixture.johnDoe());
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -104,7 +105,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getByEmail() {
-        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
+        jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -115,7 +116,7 @@ public class UserRepositoryTest {
 
         Assert.assertEquals(user, UserFixture.johnDoe());
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -132,7 +133,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getByLogin() {
-        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
+        jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -144,7 +145,7 @@ public class UserRepositoryTest {
 
         Assert.assertEquals(user, UserFixture.johnDoe());
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -175,7 +176,7 @@ public class UserRepositoryTest {
     public void delete() {
         exception.expect(EmptyResultDataAccessException.class);
 
-        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
+        jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -185,11 +186,11 @@ public class UserRepositoryTest {
 
         userDao.deleteById(UserFixture.johnDoe().getId());
 
-        jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
+        jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplate.USERS_ROW_MAPPER);
+                USERS_ROW_MAPPER);
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -206,7 +207,7 @@ public class UserRepositoryTest {
 
     @Test
     public void update() {
-        jdbcTemplate.update(UserJdbcTemplate.INSERT_QUERY,
+        jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
@@ -219,19 +220,19 @@ public class UserRepositoryTest {
 
         userDao.update(updatedUser);
 
-        User user = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_BY_ID_QUERY,
+        User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplate.USERS_ROW_MAPPER);
-        Role role = jdbcTemplate.queryForObject(UserJdbcTemplate.SELECT_ROLE_BY_USER_ID,
+                USERS_ROW_MAPPER);
+        Role role = jdbcTemplate.queryForObject(SELECT_ROLE_BY_USER_ID,
                 new Object[] { UserFixture.johnDoe().getId() },
-                UserJdbcTemplate.ROLES_ROW_MAPPER);
+                ROLES_ROW_MAPPER);
         user.setRole(role);
 
         Assert.assertNotEquals(UserFixture.johnDoe(), updatedUser);
         Assert.assertNotEquals(UserFixture.johnDoe(), user);
         Assert.assertEquals(user, updatedUser);
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, UserFixture.johnDoe().getId());
+        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
     @Test
@@ -300,15 +301,15 @@ public class UserRepositoryTest {
             }
         });
 
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 3);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 4);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 5);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 6);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 7);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 8);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 9);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 10);
-        jdbcTemplate.update(UserJdbcTemplate.DELETE_QUERY, 11);
+        jdbcTemplate.update(DELETE_QUERY, 3);
+        jdbcTemplate.update(DELETE_QUERY, 4);
+        jdbcTemplate.update(DELETE_QUERY, 5);
+        jdbcTemplate.update(DELETE_QUERY, 6);
+        jdbcTemplate.update(DELETE_QUERY, 7);
+        jdbcTemplate.update(DELETE_QUERY, 8);
+        jdbcTemplate.update(DELETE_QUERY, 9);
+        jdbcTemplate.update(DELETE_QUERY, 10);
+        jdbcTemplate.update(DELETE_QUERY, 11);
     }
 
     @Test
@@ -322,5 +323,56 @@ public class UserRepositoryTest {
         exception.expect(InvalidUserPersistenceRequestException.class);
         userDao.getAllWithPaging(-1, 1);
     }
+
+    private static final String INSERT_QUERY = "INSERT INTO USERS " +
+            "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) VALUES " +
+            "(?, ?, ?, ?, ?, ?)";
+    private static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
+    private static final String SELECT_ALL_WITH_PAGING = "SELECT " +
+            "USERS.ID, " +
+            "USERS.FIRST_NAME, " +
+            "USERS.LAST_NAME, " +
+            "USERS.EMAIL, " +
+            "USERS.PASSWORD " +
+            "FROM USERS " +
+            "LIMIT ?,?";
+    private static final String SELECT_BY_ID_QUERY = "SELECT " +
+            "USERS.ID, " +
+            "USERS.FIRST_NAME, " +
+            "USERS.LAST_NAME, " +
+            "USERS.EMAIL, " +
+            "USERS.PASSWORD " +
+            "FROM USERS " +
+            "WHERE USERS.ID = ? ";
+    private static final String SELECT_BY_EMAIL_QUERY = "SELECT " +
+            "USERS.ID, " +
+            "USERS.FIRST_NAME, " +
+            "USERS.LAST_NAME, " +
+            "USERS.EMAIL, " +
+            "USERS.PASSWORD " +
+            "FROM USERS " +
+            "WHERE USERS.EMAIL = ? ";
+    private static final String UPDATE_BY_ID = "UPDATE " +
+            "USERS " +
+            "SET " +
+            "FIRST_NAME = ?, " +
+            "LAST_NAME = ? " +
+            "WHERE ID = ?;";
+    private static final String LOGIN_QUERY = "SELECT " +
+            "USERS.ID, " +
+            "USERS.FIRST_NAME, " +
+            "USERS.LAST_NAME, " +
+            "USERS.EMAIL, " +
+            "USERS.PASSWORD " +
+            "FROM USERS " +
+            "WHERE USERS.EMAIL = ? AND USERS.PASSWORD = ?";
+    private static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
+            "ROLES.ID, " +
+            "ROLES.NAME " +
+            "FROM ROLES " +
+            "INNER JOIN USERS ON ROLES.ID = USERS.ROLE " +
+            "WHERE USERS.ID = ?";
+    private static final BeanPropertyRowMapper<User> USERS_ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
+    private static final BeanPropertyRowMapper<Role> ROLES_ROW_MAPPER = new BeanPropertyRowMapper<>(Role.class);
 
 }

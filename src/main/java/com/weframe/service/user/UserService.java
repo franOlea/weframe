@@ -1,6 +1,8 @@
 package com.weframe.service.user;
 
+import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
+import com.weframe.service.role.RoleService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.SecretKeyFactory;
@@ -36,7 +38,8 @@ public interface UserService {
                 !StringUtils.isBlank(user.getEmail()) &&
                 !StringUtils.isBlank(user.getFirstName()) &&
                 !StringUtils.isBlank(user.getLastName()) &&
-                !StringUtils.isBlank(user.getPassword());
+                !StringUtils.isBlank(user.getPassword()) &&
+                user.getRole() != null;
     }
 
     default boolean isValidUpdate(User user) {
@@ -59,27 +62,6 @@ public interface UserService {
         return iterations + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
-    default byte[] getSalt() throws NoSuchAlgorithmException
-    {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        byte[] salt = new byte[16];
-        sr.nextBytes(salt);
-        return salt;
-    }
-
-    default String toHex(byte[] array) throws NoSuchAlgorithmException
-    {
-        BigInteger bi = new BigInteger(1, array);
-        String hex = bi.toString(16);
-        int paddingLength = (array.length * 2) - hex.length();
-        if(paddingLength > 0)
-        {
-            return String.format("%0"  +paddingLength + "d", 0) + hex;
-        }else{
-            return hex;
-        }
-    }
-
     default boolean validatePassword(String originalPassword, String storedPassword)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
@@ -98,6 +80,27 @@ public interface UserService {
             diff |= hash[i] ^ testHash[i];
         }
         return diff == 0;
+    }
+
+    default byte[] getSalt() throws NoSuchAlgorithmException
+    {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return salt;
+    }
+
+    default String toHex(byte[] array) throws NoSuchAlgorithmException
+    {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if(paddingLength > 0)
+        {
+            return String.format("%0" + paddingLength + "d", 0) + hex;
+        }else{
+            return hex;
+        }
     }
 
     default byte[] fromHex(String hex) throws NoSuchAlgorithmException

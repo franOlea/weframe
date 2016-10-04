@@ -14,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles({"embedded", "jdbc"})
 @ContextConfiguration(
@@ -25,17 +25,9 @@ public class JDBCConfigurationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private UserService userService;
-
     @Test
     public void testJdbcTemplateNotNull() {
         Assert.assertNotNull(jdbcTemplate);
-    }
-
-    @Test
-    public void testUserDaoNotNull() {
-        Assert.assertNotNull(userService);
     }
 
 }

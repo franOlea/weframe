@@ -17,7 +17,6 @@ public class UserFixture {
     public static final String JANE_DOE_LAST_NAME = "Doe";
     public static final String JANE_DOE_EMAIL = "jane.doe@email.com";
     public static final String JANE_DOE_PASSWORD = "789012";
-    public static final String JANE_DOE_PASSWORD_SALT = JANE_DOE_FIRST_NAME + JANE_DOE_LAST_NAME;
     public static final Role JANE_DOE_ROLE = RoleFixture.admin();
 
     public static User johnDoe() {

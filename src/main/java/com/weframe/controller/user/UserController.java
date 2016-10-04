@@ -2,6 +2,7 @@ package com.weframe.controller.user;
 
 
 import com.weframe.model.user.User;
+import com.weframe.service.role.RoleService;
 import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.log4j.Logger;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @RequestMapping(value = "/by-id/{userId}", method = RequestMethod.GET)
     ResponseEntity<User> getUserById(@PathVariable Long userId) {
@@ -76,6 +80,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     ResponseEntity<?> create(@RequestBody User user) {
         try {
+            user.setRole(roleService.getDefaultRole());
             userService.insert(user);
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
