@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 
 @Profile("orm")
@@ -20,11 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
             throw new InvalidUserPersistenceRequestException();
         }
 
-        try {
-            user.setPassword(generateStoringPasswordHash(user.getPassword()));
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new InvalidUserPersistenceRequestException();
-        }
+        user.setPassword(generateStoringPasswordHash(user.getPassword()));
 
         save(user);
     }
@@ -35,10 +29,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
         }
 
         User actual = getByEmail(user.getEmail());
-
-        if(!actual.getEmail().equals(user.getEmail())) {
-            throw new InvalidUserPersistenceRequestException();
-        }
 
         user.setId(actual.getId());
         user.setPassword(actual.getPassword());
@@ -51,16 +41,12 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
                                 final Long id) throws InvalidUserPersistenceRequestException {
         User user = getById(id);
 
-        try {
-            if(!isValidPassword(oldPassword, user.getPassword())) {
-                throw new InvalidUserPersistenceRequestException();
-            }
-
-            user.setPassword(generateStoringPasswordHash(user.getPassword()));
-            save(user);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+        if(!isValidPassword(oldPassword, user.getPassword())) {
             throw new InvalidUserPersistenceRequestException();
         }
+
+        user.setPassword(generateStoringPasswordHash(newPassword));
+        save(user);
     }
 
     default void deleteById(final Long id) {

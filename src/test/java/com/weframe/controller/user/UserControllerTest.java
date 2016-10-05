@@ -65,6 +65,19 @@ public class UserControllerTest {
     public void getUserByIdNotFound() throws Exception {
         new Expectations() {{
             userService.getById(1L);
+            result = null;
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.getUserById(1L);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void getUserByIdNotFoundException() throws Exception {
+        new Expectations() {{
+            userService.getById(1L);
             result = new EmptyResultDataAccessException(1);
             times = 1;
         }};
@@ -116,6 +129,19 @@ public class UserControllerTest {
 
     @Test
     public void getUserByEmailNotFound() throws Exception {
+        new Expectations() {{
+            userService.getByEmail("john.doe@email.com");
+            result = null;
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.getUserByEmail("john.doe@email.com");
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void getUserByEmailNotFoundException() throws Exception {
         new Expectations() {{
             userService.getByEmail("john.doe@email.com");
             result = new EmptyResultDataAccessException(1);
@@ -254,13 +280,13 @@ public class UserControllerTest {
 
         new Expectations() {{
             userService.insert(user);
-            result = new DataIntegrityViolationException("Error");
+            result = new Exception("Error");
             times = 1;
         }};
 
         ResponseEntity<?> responseEntity = userController.create(user);
 
-        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
+        Assert.assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
     }
 
     @Test
