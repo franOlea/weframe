@@ -6,8 +6,9 @@ import com.weframe.service.role.RoleService;
 import com.weframe.service.user.UserService;
 import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,11 @@ public class UserController {
         try {
             User user = userService.getById(userId);
 
+            if(user == null) {
+                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+
+            logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
@@ -44,11 +50,16 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/by-email/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/by-email/{email:.+}", method = RequestMethod.GET)
     ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         try {
             User user = userService.getByEmail(email);
 
+            if(user == null) {
+                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+
+            logger.info("Retrieved user [" + user + "] by email [" + email + "]");
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
@@ -62,9 +73,11 @@ public class UserController {
 
     @RequestMapping(value = "/get-all-with-paging", method = RequestMethod.GET)
     ResponseEntity<Collection<User>> getAllUsersWithPaging(@RequestParam(value="offset", defaultValue="0",
-            required = false) int offset, @RequestParam(value="limit") int limit) {
+            required = false) int offset, @RequestParam(value="limit", defaultValue = "10") int limit) {
         try {
             Collection<User> users = userService.getAllWithPaging(offset, limit);
+            logger.info("Retrieved user list of size " +
+                    "[" + users.size() + "] by limit [" + limit + "] and offset [" + offset + "].");
 
             return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
@@ -82,11 +95,12 @@ public class UserController {
         try {
             user.setRole(roleService.getDefaultRole());
             userService.insert(user);
+            logger.info("Created user [" + user.getEmail() + "].");
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
         } catch(InvalidUserPersistenceRequestException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } catch(DuplicateKeyException e) {
+        } catch(DataIntegrityViolationException e) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             logger.error(user.toString(), e);
@@ -99,6 +113,7 @@ public class UserController {
     ResponseEntity<?> update(@RequestBody User user) {
         try {
             userService.update(user);
+            logger.info("Updated user [" + getUserByEmail(user.getEmail()) + "].");
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.ACCEPTED);
         } catch(InvalidUserPersistenceRequestException e) {

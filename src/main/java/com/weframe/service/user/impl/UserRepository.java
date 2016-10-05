@@ -8,38 +8,59 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Collection;
 
 @Profile("orm")
-public interface UserRepository extends UserService, JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
-    default void insert(final User user) {
+    default void insert(final User user) throws InvalidUserPersistenceRequestException {
         if(!isValidInsert(user)) {
+            throw new InvalidUserPersistenceRequestException();
+        }
+
+        try {
+            user.setPassword(generateStoringPasswordHash(user.getPassword()));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new InvalidUserPersistenceRequestException();
         }
 
         save(user);
     }
 
-    default void update(final User user) {
+    default void update(final User user) throws InvalidUserPersistenceRequestException {
         if(!isValidUpdate(user)) {
             throw new InvalidUserPersistenceRequestException();
         }
 
-        User actual = getById(user.getId());
+        User actual = getByEmail(user.getEmail());
 
         if(!actual.getEmail().equals(user.getEmail())) {
             throw new InvalidUserPersistenceRequestException();
         }
 
+        user.setId(actual.getId());
         user.setPassword(actual.getPassword());
         user.setRole(actual.getRole());
-
         save(user);
     }
 
-    default void changePassword(final String oldPassword, final String newPassword, final Long id) {
+    default void changePassword(final String oldPassword,
+                                final String newPassword,
+                                final Long id) throws InvalidUserPersistenceRequestException {
+        User user = getById(id);
 
+        try {
+            if(!isValidPassword(oldPassword, user.getPassword())) {
+                throw new InvalidUserPersistenceRequestException();
+            }
+
+            user.setPassword(generateStoringPasswordHash(user.getPassword()));
+            save(user);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new InvalidUserPersistenceRequestException();
+        }
     }
 
     default void deleteById(final Long id) {

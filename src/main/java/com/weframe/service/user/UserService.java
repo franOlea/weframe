@@ -1,10 +1,8 @@
 package com.weframe.service.user;
 
-import com.weframe.model.user.Role;
 import com.weframe.model.user.User;
-import com.weframe.service.role.RoleService;
+import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
@@ -17,11 +15,12 @@ public interface UserService {
 
     int HASH_ITERATIONS = 1000;
 
-    void insert(final User user);
+    void insert(final User user) throws InvalidUserPersistenceRequestException;
 
-    void update(final User user);
+    void update(final User user) throws InvalidUserPersistenceRequestException;
 
-    void changePassword(final String oldPassword, final String newPassword, final Long id);
+    void changePassword(final String oldPassword, final String newPassword, final Long id)
+            throws InvalidUserPersistenceRequestException;
 
     void deleteById(final Long id);
 
@@ -62,7 +61,7 @@ public interface UserService {
         return iterations + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
-    default boolean validatePassword(String originalPassword, String storedPassword)
+    default boolean isValidPassword(String originalPassword, String storedPassword)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         String[] parts = storedPassword.split(":");

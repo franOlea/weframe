@@ -55,7 +55,10 @@ public class UserRepositoryTest {
                 ROLES_ROW_MAPPER);
         user.setRole(role);
 
-        Assert.assertEquals(user, UserFixture.johnDoe());
+        User expected = UserFixture.johnDoe();
+        expected.setPassword(user.getPassword());
+
+        Assert.assertEquals(expected, user);
 
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
@@ -328,14 +331,6 @@ public class UserRepositoryTest {
             "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) VALUES " +
             "(?, ?, ?, ?, ?, ?)";
     private static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
-    private static final String SELECT_ALL_WITH_PAGING = "SELECT " +
-            "USERS.ID, " +
-            "USERS.FIRST_NAME, " +
-            "USERS.LAST_NAME, " +
-            "USERS.EMAIL, " +
-            "USERS.PASSWORD " +
-            "FROM USERS " +
-            "LIMIT ?,?";
     private static final String SELECT_BY_ID_QUERY = "SELECT " +
             "USERS.ID, " +
             "USERS.FIRST_NAME, " +
@@ -344,28 +339,6 @@ public class UserRepositoryTest {
             "USERS.PASSWORD " +
             "FROM USERS " +
             "WHERE USERS.ID = ? ";
-    private static final String SELECT_BY_EMAIL_QUERY = "SELECT " +
-            "USERS.ID, " +
-            "USERS.FIRST_NAME, " +
-            "USERS.LAST_NAME, " +
-            "USERS.EMAIL, " +
-            "USERS.PASSWORD " +
-            "FROM USERS " +
-            "WHERE USERS.EMAIL = ? ";
-    private static final String UPDATE_BY_ID = "UPDATE " +
-            "USERS " +
-            "SET " +
-            "FIRST_NAME = ?, " +
-            "LAST_NAME = ? " +
-            "WHERE ID = ?;";
-    private static final String LOGIN_QUERY = "SELECT " +
-            "USERS.ID, " +
-            "USERS.FIRST_NAME, " +
-            "USERS.LAST_NAME, " +
-            "USERS.EMAIL, " +
-            "USERS.PASSWORD " +
-            "FROM USERS " +
-            "WHERE USERS.EMAIL = ? AND USERS.PASSWORD = ?";
     private static final String SELECT_ROLE_BY_USER_ID = "SELECT " +
             "ROLES.ID, " +
             "ROLES.NAME " +
