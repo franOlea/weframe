@@ -1,18 +1,17 @@
-package com.weframe.model.user;
+package com.weframe.user.model;
 
-import com.weframe.model.user.fixture.UserFixture;
+import com.weframe.user.model.fixture.UserFixture;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_ID;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_FIRST_NAME;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_LAST_NAME;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_EMAIL;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_PASSWORD;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_PASSWORD_SALT;
-import static com.weframe.model.user.fixture.UserFixture.JOHN_DOE_ROLE;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_ID;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_FIRST_NAME;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_LAST_NAME;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_EMAIL;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_PASSWORD;
+import static com.weframe.user.model.fixture.UserFixture.JOHN_DOE_ROLE;
 
 public class UserTest {
 

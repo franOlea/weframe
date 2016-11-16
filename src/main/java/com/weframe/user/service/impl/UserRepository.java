@@ -1,8 +1,8 @@
-package com.weframe.service.user.impl;
+package com.weframe.user.service.impl;
 
-import com.weframe.model.user.User;
-import com.weframe.service.user.UserService;
-import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import com.weframe.user.model.User;
+import com.weframe.user.service.UserService;
+import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;

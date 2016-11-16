@@ -1,14 +1,13 @@
-package com.weframe.service.user.impl;
+package com.weframe.user.service.impl;
 
 import com.weframe.configuration.database.jpa.JDBCConfiguration;
 import com.weframe.configuration.database.jpa.ORMRepositoryConfiguration;
 import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
-import com.weframe.model.user.Role;
-import com.weframe.model.user.User;
-import com.weframe.model.user.fixture.UserFixture;
-import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import com.weframe.user.model.Role;
+import com.weframe.user.model.User;
+import com.weframe.user.model.fixture.UserFixture;
+import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import org.junit.*;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -31,9 +30,6 @@ import java.util.List;
         loader = AnnotationConfigContextLoader.class)
 @EnableJpaRepositories
 public class UserRepositoryTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -63,17 +59,15 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void insertInvalidUser() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setFirstName(null);
         userRepository.insert(user);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void insertNullUser() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.insert(null);
     }
 
@@ -94,15 +88,13 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByIdWithInvalidId() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getById(0L);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByIdWithNullId() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getById(null);
     }
 
@@ -122,15 +114,13 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByEmailWithBlankEmail() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByEmail("");
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByEmailWithNullEmail() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByEmail(null);
     }
 
@@ -151,34 +141,28 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByLoginWithBlankEmail() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByLogin("", "123");
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByLoginWithNullEmail() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByLogin(null, "123");
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByLoginWithBlankPassword() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByLogin("123", "");
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getByLoginWithNullPassword() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getByLogin("123", null);
     }
 
-    @Test
+    @Test(expected = EmptyResultDataAccessException.class)
     public void delete() {
-        exception.expect(EmptyResultDataAccessException.class);
-
         jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
@@ -196,15 +180,13 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void deleteWithInvalidId() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.deleteById(0L);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void deleteWithNullId() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.deleteById(null);
     }
 
@@ -238,23 +220,20 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void updateWithNullUser() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.update(null);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void updateWithNullFirstName() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setFirstName(null);
         userRepository.update(user);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void updateWithNullLastName() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         User user = UserFixture.johnDoe();
         user.setLastName(null);
         userRepository.update(user);
@@ -315,15 +294,13 @@ public class UserRepositoryTest {
         jdbcTemplate.update(DELETE_QUERY, 11);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getAllWithInvalidLimit() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getAllWithPaging(1, 0);
     }
 
-    @Test
+    @Test(expected = InvalidUserPersistenceRequestException.class)
     public void getAllWithInvalidOffset() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
         userRepository.getAllWithPaging(-1, 1);
     }
 
@@ -354,8 +331,6 @@ public class UserRepositoryTest {
 
     @Test
     public void changePasswordWithInvalidOldPassword() {
-        exception.expect(InvalidUserPersistenceRequestException.class);
-
         jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
@@ -364,9 +339,15 @@ public class UserRepositoryTest {
                 userRepository.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
                 UserFixture.johnDoe().getRole().getId());
 
-        userRepository.changePassword("invalidPassword", "invalidPassword", UserFixture.johnDoe().getId());
+        boolean exceptionThrown = false;
+        try {
+            userRepository.changePassword("invalidPassword", "invalidPassword", UserFixture.johnDoe().getId());
+        } catch(InvalidUserPersistenceRequestException e) {
+            exceptionThrown = true;
+        }
 
-        jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
+        Assert.assertTrue(exceptionThrown);
+        Assert.assertEquals(1L, jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId()));
     }
 
     private static final String INSERT_QUERY = "INSERT INTO USERS " +

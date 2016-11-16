@@ -1,10 +1,10 @@
-package com.weframe.controller.user;
+package com.weframe.user.controller;
 
-import com.weframe.model.user.User;
-import com.weframe.model.user.fixture.UserFixture;
-import com.weframe.service.role.RoleService;
-import com.weframe.service.user.UserService;
-import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import com.weframe.user.model.User;
+import com.weframe.user.model.fixture.UserFixture;
+import com.weframe.user.service.RoleService;
+import com.weframe.user.service.UserService;
+import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;

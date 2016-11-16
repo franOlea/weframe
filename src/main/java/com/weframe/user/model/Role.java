@@ -1,4 +1,4 @@
-package com.weframe.model.user;
+package com.weframe.user.model;
 
 import org.apache.commons.lang3.Validate;
 

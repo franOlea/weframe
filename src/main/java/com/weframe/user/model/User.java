@@ -1,4 +1,4 @@
-package com.weframe.model.user;
+package com.weframe.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,6 +1,6 @@
-package com.weframe.service.role;
+package com.weframe.user.service;
 
-import com.weframe.model.user.Role;
+import com.weframe.user.model.Role;
 
 public interface RoleService {
 

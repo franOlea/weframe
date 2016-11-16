@@ -2,9 +2,7 @@ package com.weframe.configuration.database.jpa;
 
 
 import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
-import com.weframe.service.user.UserService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

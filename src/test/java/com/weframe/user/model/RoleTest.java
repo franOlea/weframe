@@ -1,6 +1,6 @@
-package com.weframe.model.user;
+package com.weframe.user.model;
 
-import com.weframe.model.user.fixture.RoleFixture;
+import com.weframe.user.model.fixture.RoleFixture;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

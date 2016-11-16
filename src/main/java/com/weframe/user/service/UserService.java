@@ -1,7 +1,7 @@
-package com.weframe.service.user;
+package com.weframe.user.service;
 
-import com.weframe.model.user.User;
-import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import com.weframe.user.model.User;
+import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import org.apache.commons.lang3.StringUtils;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

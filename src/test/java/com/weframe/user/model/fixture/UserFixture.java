@@ -1,7 +1,7 @@
-package com.weframe.model.user.fixture;
+package com.weframe.user.model.fixture;
 
-import com.weframe.model.user.Role;
-import com.weframe.model.user.User;
+import com.weframe.user.model.Role;
+import com.weframe.user.model.User;
 
 public class UserFixture {
 

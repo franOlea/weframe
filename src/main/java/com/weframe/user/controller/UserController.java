@@ -1,10 +1,10 @@
-package com.weframe.controller.user;
+package com.weframe.user.controller;
 
 
-import com.weframe.model.user.User;
-import com.weframe.service.role.RoleService;
-import com.weframe.service.user.UserService;
-import com.weframe.service.user.exception.InvalidUserPersistenceRequestException;
+import com.weframe.user.model.User;
+import com.weframe.user.service.RoleService;
+import com.weframe.user.service.UserService;
+import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

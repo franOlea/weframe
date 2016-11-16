@@ -1,7 +1,7 @@
-package com.weframe.service.role.impl;
+package com.weframe.user.service.impl;
 
-import com.weframe.model.user.Role;
-import com.weframe.service.role.RoleService;
+import com.weframe.user.model.Role;
+import com.weframe.user.service.RoleService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
