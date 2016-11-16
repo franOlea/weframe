@@ -1,15 +1,11 @@
 package com.weframe.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "USERS")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     @Id
     @GeneratedValue
@@ -21,13 +17,14 @@ public class User {
     private String lastName;
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
-    @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ROLE", nullable = false)
     private Role role;
+    @ManyToOne
+    @JoinColumn(name = "STATE", nullable = false)
+    private State state;
 
     public User() { }
 
@@ -36,13 +33,15 @@ public class User {
                 final String lastName,
                 final String email,
                 final String password,
-                final Role role) {
+                final Role role,
+                final State state) {
         Validate.isTrue(id >= 0, "The id cannot be negative");
         Validate.notBlank(firstName, "The first name cannot be blank");
         Validate.notBlank(lastName, "The last name cannot be blank");
         Validate.notBlank(email, "The email cannot be blank");
         Validate.notBlank(password, "The password cannot be blank");
         Validate.notNull(role, "The role cannot be blank");
+        Validate.notNull(state, "The state cannot be null.");
 
         this.id = id;
         this.firstName = firstName;
@@ -50,6 +49,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.state = state;
     }
 
     public Long getId() {
@@ -68,17 +68,18 @@ public class User {
         return email;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
-    @JsonIgnore
     public Role getRole() {
         return role;
     }
 
-    @JsonIgnore
+    public State getState() {
+        return state;
+    }
+
     public void setId(final Long id) {
         Validate.isTrue(id > 0, "The id should be above 0");
 
@@ -97,39 +98,44 @@ public class User {
         this.email = email;
     }
 
-    @JsonProperty
     public void setPassword(final String password) {
         this.password = password;
     }
 
-    @JsonProperty
     public void setRole(final Role role) {
         this.role = role;
     }
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
-        if (id != user.id) return false;
+        if (!id.equals(user.id)) return false;
         if (!firstName.equals(user.firstName)) return false;
         if (!lastName.equals(user.lastName)) return false;
         if (!email.equals(user.email)) return false;
         if (!password.equals(user.password)) return false;
+        if (!role.equals(user.role)) return false;
+        return state.equals(user.state);
 
-        return role.equals(user.role);
     }
 
     @Override
     public int hashCode() {
-        int result = firstName.hashCode();
-        result = result + lastName.hashCode();
-        result = result + email.hashCode();
-        result = result + password.hashCode();
-        result = result + role.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + role.hashCode();
+        result = 31 * result + state.hashCode();
         return result;
     }
 
@@ -142,6 +148,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", state=" + state +
                 '}';
     }
 }

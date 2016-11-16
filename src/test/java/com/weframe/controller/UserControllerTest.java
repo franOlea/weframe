@@ -1,4 +1,4 @@
-package com.weframe.user.controller;
+package com.weframe.controller;
 
 import com.weframe.user.model.User;
 import com.weframe.user.model.fixture.UserFixture;
@@ -246,7 +246,8 @@ public class UserControllerTest {
                 UserFixture.janeDoe().getLastName(),
                 UserFixture.janeDoe().getEmail(),
                 UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getRole());
+                UserFixture.janeDoe().getRole(),
+                UserFixture.janeDoe().isActive());
 
         new Expectations() {{
             userService.insert(user);

@@ -1,4 +1,4 @@
-package com.weframe.user.controller;
+package com.weframe.controller;
 
 
 import com.weframe.user.model.User;

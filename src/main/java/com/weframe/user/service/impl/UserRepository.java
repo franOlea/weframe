@@ -19,7 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
         }
 
         user.setPassword(generateStoringPasswordHash(user.getPassword()));
-
         save(user);
     }
 
