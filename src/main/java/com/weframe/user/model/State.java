@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Validate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "STATE")
+@Table(name = "STATES")
 public class State {
     @Id
     @GeneratedValue

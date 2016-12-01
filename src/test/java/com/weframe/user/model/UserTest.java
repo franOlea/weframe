@@ -30,7 +30,7 @@ public class UserTest {
         Assert.assertEquals(user.getEmail(), JOHN_DOE_EMAIL);
         Assert.assertEquals(user.getPassword(), JOHN_DOE_PASSWORD);
         Assert.assertEquals(user.getRole(), JOHN_DOE_ROLE);
-        Assert.assertEquals(user.isActive(), JANE_DOE_ACTIVE);
+        Assert.assertEquals(user.getState(), JOHN_DOE_ACTIVE);
     }
 
     @Test

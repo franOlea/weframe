@@ -247,7 +247,7 @@ public class UserControllerTest {
                 UserFixture.janeDoe().getEmail(),
                 UserFixture.janeDoe().getPassword(),
                 UserFixture.janeDoe().getRole(),
-                UserFixture.janeDoe().isActive());
+                UserFixture.janeDoe().getState());
 
         new Expectations() {{
             userService.insert(user);

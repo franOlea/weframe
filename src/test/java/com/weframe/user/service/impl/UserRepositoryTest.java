@@ -4,6 +4,7 @@ import com.weframe.configuration.database.jpa.JDBCConfiguration;
 import com.weframe.configuration.database.jpa.ORMRepositoryConfiguration;
 import com.weframe.configuration.database.sql.EmbeddedDatabaseConfiguration;
 import com.weframe.user.model.Role;
+import com.weframe.user.model.State;
 import com.weframe.user.model.User;
 import com.weframe.user.model.fixture.UserFixture;
 import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
@@ -37,8 +38,6 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    private static boolean setUpIsDone = false;
-
     @Test
     public void insert() {
         userRepository.insert(UserFixture.johnDoe());
@@ -50,6 +49,10 @@ public class UserRepositoryTest {
                 new Object[] { user.getId() },
                 ROLES_ROW_MAPPER);
         user.setRole(role);
+        State state = jdbcTemplate.queryForObject(SELECT_STATE_BY_USER_ID,
+                new Object[] { user.getId() },
+                STATES_ROW_MAPPER);
+        user.setState(state);
 
         User expected = UserFixture.johnDoe();
         expected.setPassword(user.getPassword());
@@ -79,7 +82,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         User user = userRepository.getById(UserFixture.johnDoe().getId());
 
@@ -106,7 +110,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
         User user = userRepository.getByEmail(UserFixture.johnDoe().getEmail());
 
         Assert.assertEquals(user, UserFixture.johnDoe());
@@ -132,7 +137,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         User user = userRepository.getByLogin(UserFixture.johnDoe().getEmail(), UserFixture.johnDoe().getPassword());
 
@@ -169,7 +175,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         userRepository.deleteById(UserFixture.johnDoe().getId());
 
@@ -198,7 +205,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 UserFixture.johnDoe().getPassword(),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         User updatedUser = UserFixture.johnDoe();
         updatedUser.setFirstName("Juan");
@@ -212,6 +220,10 @@ public class UserRepositoryTest {
                 new Object[] { UserFixture.johnDoe().getId() },
                 ROLES_ROW_MAPPER);
         user.setRole(role);
+        State state = jdbcTemplate.queryForObject(SELECT_STATE_BY_USER_ID,
+                new Object[] { UserFixture.johnDoe().getId() },
+                STATES_ROW_MAPPER);
+        user.setState(state);
 
         Assert.assertNotEquals(UserFixture.johnDoe(), updatedUser);
         Assert.assertNotEquals(UserFixture.johnDoe(), user);
@@ -241,37 +253,38 @@ public class UserRepositoryTest {
 
     @Test
     public void getAll() {
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (3, 'Quinn', 'Stevenson', " +
-                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'at.lacus@venenatisamagna.co.uk', 'WLE96XAN1HL', 1, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (4, 'Chase', 'Grimes', " +
-                "'Nulla.facilisi@massaMaurisvestibulum.com', 'LZA60FRP3KB', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'Nulla.facilisi@massaMaurisvestibulum.com', 'LZA60FRP3KB', 2, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (5, 'September', 'Atkins', " +
-                "'libero@risus.org', 'ABZ54TRN7FU', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'libero@risus.org', 'ABZ54TRN7FU', 1, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (6, 'Marah', 'Kirkland', " +
-                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'ullamcorper.eu.euismod@hendreritidante.ca', 'UIL71MVD3DB', 1, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (7, 'Ursa', 'Hester', " +
-                "'metus@ante.ca', 'DBT69CDH2PZ', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'metus@ante.ca', 'DBT69CDH2PZ', 1, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (8, 'Rebekah', 'Morris', " +
-                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 1)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                "'mauris.a.nunc@tinciduntDonec.ca', 'ZBR57MYT5PF', 1, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (9, 'Thomas', 'Carney', " +
-                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 2)");
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
-                        "VALUES (10, ?, ?, ?, ?, ?)",
+                "'eleifend.nunc.risus@Sed.net', 'ZIK00DZF8UP', 2, 1)");
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
+                        "VALUES (10, ?, ?, ?, ?, ?, ?)",
                 UserFixture.janeDoe().getFirstName(),
                 UserFixture.janeDoe().getLastName(),
                 UserFixture.janeDoe().getEmail(),
                 UserFixture.janeDoe().getPassword(),
-                UserFixture.janeDoe().getRole().getId());
-        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) " +
+                UserFixture.janeDoe().getRole().getId(),
+                UserFixture.janeDoe().getState().getId());
+        jdbcTemplate.update("INSERT INTO USERS (ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) " +
                 "VALUES (11, 'Murphy', 'Woodard', " +
-                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 1)");
+                "'ipsum.non.arcu@malesuada.co.uk', 'DYM00AEP8KQ', 1, 1)");
 
         List<User> users = (List<User>) userRepository.getAllWithPaging(3, 7);
         User fixtureUser = UserFixture.janeDoe();
@@ -312,7 +325,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 userRepository.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         userRepository.changePassword(UserFixture.johnDoe().getPassword(), "password", UserFixture.johnDoe().getId());
 
@@ -337,7 +351,8 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
                 userRepository.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
-                UserFixture.johnDoe().getRole().getId());
+                UserFixture.johnDoe().getRole().getId(),
+                UserFixture.johnDoe().getState().getId());
 
         boolean exceptionThrown = false;
         try {
@@ -351,8 +366,8 @@ public class UserRepositoryTest {
     }
 
     private static final String INSERT_QUERY = "INSERT INTO USERS " +
-            "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) VALUES " +
-            "(?, ?, ?, ?, ?, ?)";
+            "(ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE, STATE) VALUES " +
+            "(?, ?, ?, ?, ?, ?, ?)";
     private static final String  DELETE_QUERY = "DELETE FROM USERS WHERE ID = ?";
     private static final String SELECT_BY_ID_QUERY = "SELECT " +
             "USERS.ID, " +
@@ -368,7 +383,14 @@ public class UserRepositoryTest {
             "FROM ROLES " +
             "INNER JOIN USERS ON ROLES.ID = USERS.ROLE " +
             "WHERE USERS.ID = ?";
+    private static final String SELECT_STATE_BY_USER_ID = "SELECT " +
+            "STATES.ID, " +
+            "STATES.NAME " +
+            "FROM STATES " +
+            "INNER JOIN USERS ON STATES.ID = USERS.STATE " +
+            "WHERE USERS.ID = ?";
     private static final BeanPropertyRowMapper<User> USERS_ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
     private static final BeanPropertyRowMapper<Role> ROLES_ROW_MAPPER = new BeanPropertyRowMapper<>(Role.class);
+    private static final BeanPropertyRowMapper<State> STATES_ROW_MAPPER = new BeanPropertyRowMapper<>(State.class);
 
 }
