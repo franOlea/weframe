@@ -223,7 +223,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void insertBadRequest() {
+    public void insertBadRequest() throws Exception {
         User user = UserFixture.janeDoe();
         user.setFirstName(null);
 
@@ -239,7 +239,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void insertCreated() {
+    public void insertCreated() throws Exception {
         User user = new User(
                 4,
                 UserFixture.janeDoe().getFirstName(),
@@ -261,7 +261,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void insertConflict() {
+    public void insertConflict() throws Exception {
         User user = UserFixture.johnDoe();
 
         new Expectations() {{

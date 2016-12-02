@@ -8,12 +8,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.security.GeneralSecurityException;
 import java.util.Collection;
 
 @Profile("orm")
 public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
-    default void insert(final User user) throws InvalidUserPersistenceRequestException {
+    default void insert(final User user) throws InvalidUserPersistenceRequestException, GeneralSecurityException {
         if(!isValidInsert(user)) {
             throw new InvalidUserPersistenceRequestException();
         }
@@ -37,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
     default void changePassword(final String oldPassword,
                                 final String newPassword,
-                                final Long id) throws InvalidUserPersistenceRequestException {
+                                final Long id) throws InvalidUserPersistenceRequestException, GeneralSecurityException {
         User user = getById(id);
 
         if(!isValidPassword(oldPassword, user.getPassword())) {

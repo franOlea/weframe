@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -15,12 +16,12 @@ public interface UserService {
 
     int HASH_ITERATIONS = 1000;
 
-    void insert(final User user) throws InvalidUserPersistenceRequestException;
+    void insert(final User user) throws InvalidUserPersistenceRequestException, GeneralSecurityException;
 
     void update(final User user) throws InvalidUserPersistenceRequestException;
 
     void changePassword(final String oldPassword, final String newPassword, final Long id)
-            throws InvalidUserPersistenceRequestException;
+            throws InvalidUserPersistenceRequestException, GeneralSecurityException;
 
     void deleteById(final Long id);
 
@@ -38,7 +39,8 @@ public interface UserService {
                 !StringUtils.isBlank(user.getFirstName()) &&
                 !StringUtils.isBlank(user.getLastName()) &&
                 !StringUtils.isBlank(user.getPassword()) &&
-                user.getRole() != null;
+                user.getRole() != null &&
+                user.getState() != null;
     }
 
     default boolean isValidUpdate(User user) {
@@ -48,20 +50,18 @@ public interface UserService {
                 !StringUtils.isBlank(user.getLastName());
     }
 
-    default String generateStoringPasswordHash(String password) {
+    default String generateStoringPasswordHash(String password) throws GeneralSecurityException {
         int iterations = HASH_ITERATIONS;
         char[] chars = password.toCharArray();
         byte[] salt = getSalt();
 
         PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
-        SecretKeyFactory skf = null;
         try {
-            skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = skf.generateSecret(spec).getEncoded();
             return iterations + ":" + toHex(salt) + ":" + toHex(hash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
-            return null;
+            throw new GeneralSecurityException(e);
         }
     }
 

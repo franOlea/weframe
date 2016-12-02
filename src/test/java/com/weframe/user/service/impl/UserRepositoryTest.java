@@ -39,7 +39,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    public void insert() {
+    public void insert() throws Exception {
         userRepository.insert(UserFixture.johnDoe());
 
         User user = jdbcTemplate.queryForObject(SELECT_BY_ID_QUERY,
@@ -63,14 +63,14 @@ public class UserRepositoryTest {
     }
 
     @Test(expected = InvalidUserPersistenceRequestException.class)
-    public void insertInvalidUser() {
+    public void insertInvalidUser() throws Exception {
         User user = UserFixture.johnDoe();
         user.setFirstName(null);
         userRepository.insert(user);
     }
 
     @Test(expected = InvalidUserPersistenceRequestException.class)
-    public void insertNullUser() {
+    public void insertNullUser() throws Exception {
         userRepository.insert(null);
     }
 
@@ -318,7 +318,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void changePasswordWithValidOldPassword() {
+    public void changePasswordWithValidOldPassword() throws Exception {
         jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),
@@ -344,7 +344,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void changePasswordWithInvalidOldPassword() {
+    public void changePasswordWithInvalidOldPassword() throws Exception {
         jdbcTemplate.update(INSERT_QUERY,
                 UserFixture.johnDoe().getId(),
                 UserFixture.johnDoe().getFirstName(),

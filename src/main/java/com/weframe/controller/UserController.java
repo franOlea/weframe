@@ -34,7 +34,7 @@ public class UserController {
             User user = userService.getById(userId);
 
             if(user == null) {
-                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                throw new EmptyResultDataAccessException(1);
             }
 
             logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
@@ -55,7 +55,7 @@ public class UserController {
             User user = userService.getByEmail(email);
 
             if(user == null) {
-                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+                throw new EmptyResultDataAccessException(1);
             }
 
             logger.info("Retrieved user [" + user + "] by email [" + email + "]");
