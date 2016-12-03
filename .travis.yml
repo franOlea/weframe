@@ -1,5 +1,14 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 sudo: false
 script: mvn clean install
+deploy:
+  provider: openshift
+  user: fran.aztk@gmail.com
+  password:
+    secure: LR4MelSBwfbLdG7LPKRBI4ezvv3bTueL60Mhli7yBQm/6xIsC5LE52fnw7kkr0qKuXgDy4UNIym1Al789L6aMLCUkgHEa4bIk15YVDc1uPzD4KGkCulRmbBpEdojsFPhfBFP23MpRAGMBJnQO2TTazWj3QsdB2U/ssS2+fFDEoSd8ANyPL8jWFQ8Pg3U7xBqTc7HM8pGghJwfK24QSv0E+q4s6ZPWWKKjgRIf51YXjYQ5SfNIYv30zCmWZX8ur16Gdgb0jC+L8p8XQnFvsykJ9FT09vUfPq7NiTtgJId3GR0quwcmR3BnPkrCDFKnxkUHqTmMEux/wUJ2UDd6B1W7XwdkSJT92XwBIKNT4VR7ugCmTPidj3fFbm+Bt/SF2275sOszJ16SQyRjPV4ntS80rA4tfCg4yc4cW+v2Kr5SUUkmX4E82CKj2SUDT5kZ77Qfhw+zUXWyYSkPfb8ha5hm3jzcRQL20eEdiiBfOXURGHZU8fZlN2rRSDfEN1sIi982Ro8ACzdl6nKRGFAsKiCbjLtjDafSLAmpusT1Ce8+tOPVF70P6HkeF8egeGa8WMuqmb+NK+2aC79NxpQREzdDxuXdSBJ7Qx34AY50w6R0lwAWs+jfI6c+uQ572O+xdvhJoClIWJTttvcX9ZDR/7jpXo7N9USH1lBvfatW7pDFC4=
+  app: weframeresources
+  domain: ''
+  on:
+    repo: franOlea/weframe-resources-server
