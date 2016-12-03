@@ -32,7 +32,7 @@
 		<maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
 		<hibernate-core.version>5.2.2.Final</hibernate-core.version>
 		<spring-data-jpa.version>1.10.3.RELEASE</spring-data-jpa.version>
-		<postgresql.version>7.4.1</postgresql.version>
+		<postgresql.version>9.4.1212.jre7</postgresql.version>
 	</properties>
 
 	<dependencies>
@@ -79,7 +79,7 @@
 
 		<!-- PostgreSQL -->
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
 		</dependency>
