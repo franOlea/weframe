@@ -32,6 +32,7 @@
 		<maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
 		<hibernate-core.version>5.2.2.Final</hibernate-core.version>
 		<spring-data-jpa.version>1.10.3.RELEASE</spring-data-jpa.version>
+		<postgresql.version>7.4.1</postgresql.version>
 	</properties>
 
 	<dependencies>
@@ -73,14 +74,16 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 
-		<!-- MySQL -->
+		<!-- PostgreSQL -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.connector.version}</version>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
 		</dependency>
+
 
 		<!-- SpringBoot Test -->
 		<dependency>
@@ -101,6 +104,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- JMockit -->
