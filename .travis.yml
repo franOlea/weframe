@@ -12,3 +12,4 @@ deploy:
   domain: 'franolea'
   on:
     repo: franOlea/weframe-resources-server
+  skip_cleanup: true
