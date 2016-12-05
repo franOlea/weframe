@@ -3,6 +3,7 @@ package com.weframe.controller;
 import com.weframe.user.model.User;
 import com.weframe.user.model.fixture.UserFixture;
 import com.weframe.user.service.RoleService;
+import com.weframe.user.service.StateService;
 import com.weframe.user.service.UserService;
 import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import mockit.Expectations;
@@ -31,6 +32,9 @@ public class UserControllerTest {
 
     @Injectable
     private RoleService roleService;
+
+    @Injectable
+    private StateService stateService;
 
     @Tested
     private UserController userController = new UserController();
