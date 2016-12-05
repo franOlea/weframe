@@ -30,10 +30,11 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
         User actual = getByEmail(user.getEmail());
 
-        user.setId(actual.getId());
-        user.setPassword(actual.getPassword());
-        user.setRole(actual.getRole());
-        save(user);
+        actual.setFirstName(user.getFirstName());
+        actual.setLastName(user.getLastName());
+        actual.setEmail(user.getEmail());
+
+        save(actual);
     }
 
     default void changePassword(final String oldPassword,
