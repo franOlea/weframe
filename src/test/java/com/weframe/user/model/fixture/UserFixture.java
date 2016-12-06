@@ -12,14 +12,14 @@ public class UserFixture {
     public static final String JOHN_DOE_EMAIL = "john.doe@email.com";
     public static final String JOHN_DOE_PASSWORD = "123456";
     public static final Role JOHN_DOE_ROLE = RoleFixture.user();
-    public static final State JOHN_DOE_ACTIVE = StateFixture.active();
+    public static final State JOHN_DOE_STATE = StateFixture.pendingActivation();
     public static final Long JANE_DOE_ID = 2L;
     public static final String JANE_DOE_FIRST_NAME = "Jane";
     public static final String JANE_DOE_LAST_NAME = "Doe";
     public static final String JANE_DOE_EMAIL = "jane.doe@email.com";
     public static final String JANE_DOE_PASSWORD = "789012";
     public static final Role JANE_DOE_ROLE = RoleFixture.admin();
-    public static final State JANE_DOE_ACTIVE = StateFixture.inactive();
+    public static final State JANE_DOE_STATE = StateFixture.pendingActivation();
 
     public static User johnDoe() {
         return new User(
@@ -29,7 +29,7 @@ public class UserFixture {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     public static User janeDoe() {
@@ -40,7 +40,7 @@ public class UserFixture {
                 JANE_DOE_EMAIL,
                 JANE_DOE_PASSWORD,
                 JANE_DOE_ROLE,
-                JANE_DOE_ACTIVE);
+                JANE_DOE_STATE);
     }
 
 }

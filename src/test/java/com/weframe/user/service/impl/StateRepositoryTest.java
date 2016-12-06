@@ -33,16 +33,16 @@ public class StateRepositoryTest {
 
     @Test
     public void getDefaultState() {
-        Assert.assertEquals(stateRepository.getDefaultState(), new State(3, "PENDING_ACTIVATION"));
+        Assert.assertEquals(stateRepository.getDefaultState(), new State(1, "PENDING_ACTIVATION"));
     }
 
     @Test
     public void getByName() {
-        Assert.assertEquals(stateRepository.getByName("ACTIVE"), new State(1, "ACTIVE"));
+        Assert.assertEquals(stateRepository.getByName("ACTIVE"), new State(2, "ACTIVE"));
     }
 
     @Test
     public void getById() {
-        Assert.assertEquals(stateRepository.getById(1L), new State(1, "ACTIVE"));
+        Assert.assertEquals(stateRepository.getById(1L), new State(1, "PENDING_ACTIVATION"));
     }
 }

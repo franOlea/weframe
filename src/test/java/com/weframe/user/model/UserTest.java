@@ -23,14 +23,14 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
         Assert.assertEquals(user.getId(), JOHN_DOE_ID);
         Assert.assertEquals(user.getFirstName(), JOHN_DOE_FIRST_NAME);
         Assert.assertEquals(user.getLastName(), JOHN_DOE_LAST_NAME);
         Assert.assertEquals(user.getEmail(), JOHN_DOE_EMAIL);
         Assert.assertEquals(user.getPassword(), JOHN_DOE_PASSWORD);
         Assert.assertEquals(user.getRole(), JOHN_DOE_ROLE);
-        Assert.assertEquals(user.getState(), JOHN_DOE_ACTIVE);
+        Assert.assertEquals(user.getState(), JOHN_DOE_STATE);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class UserTest {
                 null,
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class UserTest {
                 "",
                 JOHN_DOE_PASSWORD,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 null,
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class UserTest {
                 JOHN_DOE_PASSWORD,
                 "",
                 JOHN_DOE_ROLE,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class UserTest {
                 JOHN_DOE_EMAIL,
                 JOHN_DOE_PASSWORD,
                 null,
-                JOHN_DOE_ACTIVE);
+                JOHN_DOE_STATE);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class UserTest {
                         UserFixture.JOHN_DOE_EMAIL,
                         UserFixture.JOHN_DOE_PASSWORD,
                         UserFixture.JOHN_DOE_ROLE,
-                        UserFixture.JOHN_DOE_ACTIVE));
+                        UserFixture.JOHN_DOE_STATE));
     }
 
     @Test
@@ -196,7 +196,7 @@ public class UserTest {
                         UserFixture.JOHN_DOE_EMAIL,
                         UserFixture.JOHN_DOE_PASSWORD,
                         UserFixture.JOHN_DOE_ROLE,
-                        UserFixture.JOHN_DOE_ACTIVE).toString());
+                        UserFixture.JOHN_DOE_STATE).toString());
     }
 
     @Test
@@ -209,7 +209,7 @@ public class UserTest {
                         UserFixture.JOHN_DOE_EMAIL,
                         UserFixture.JOHN_DOE_PASSWORD,
                         UserFixture.JOHN_DOE_ROLE,
-                        UserFixture.JOHN_DOE_ACTIVE).hashCode());
+                        UserFixture.JOHN_DOE_STATE).hashCode());
     }
 
 }
