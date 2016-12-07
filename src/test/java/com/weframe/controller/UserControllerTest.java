@@ -56,7 +56,7 @@ public class UserControllerTest {
     public void getByIdDataBaseError() throws Exception {
         new Expectations() {{
             userService.getById(1L);
-            result = new DataIntegrityViolationException("Error");
+            result = new DataIntegrityViolationException("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
@@ -122,7 +122,7 @@ public class UserControllerTest {
     public void getByEmailDataBaseError() throws Exception {
         new Expectations() {{
             userService.getByEmail("test@email.com");
-            result = new DataIntegrityViolationException("Error");
+            result = new DataIntegrityViolationException("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
@@ -188,7 +188,7 @@ public class UserControllerTest {
     public void getAllWithPagingDataBaseError() throws Exception {
         new Expectations() {{
             userService.getAllWithPaging(1, 1);
-            result = new DataIntegrityViolationException("Error");
+            result = new DataIntegrityViolationException("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
@@ -270,7 +270,7 @@ public class UserControllerTest {
 
         new Expectations() {{
             userService.insert(user);
-            result = new DuplicateKeyException("Error");
+            result = new DuplicateKeyException("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
@@ -285,7 +285,7 @@ public class UserControllerTest {
 
         new Expectations() {{
             userService.insert(user);
-            result = new Exception("Error");
+            result = new Exception("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
@@ -317,7 +317,7 @@ public class UserControllerTest {
 
         new Expectations() {{
             userService.update(user);
-            result = new DataIntegrityViolationException("Error");
+            result = new DataIntegrityViolationException("Expected error test < Ignore this exception.");
             times = 1;
         }};
 
