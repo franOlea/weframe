@@ -342,4 +342,43 @@ public class UserControllerTest {
         Assert.assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
     }
 
+    @Test
+    public void deleteDataBaseError() throws Exception {
+        new Expectations() {{
+            userService.deleteById(1L);
+            result = new DataIntegrityViolationException("Expected error test < Ignore this exception.");
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.delete(1L);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @Test
+    public void deleteBadRequest() throws Exception {
+        new Expectations() {{
+            userService.deleteById(1L);
+            result = new InvalidUserPersistenceRequestException();
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.delete(1L);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void delete() throws Exception {
+        new Expectations() {{
+            userService.deleteById(1L);
+            result = null;
+            times = 1;
+        }};
+
+        ResponseEntity<?> responseEntity = userController.delete(1L);
+
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+    }
+
 }

@@ -130,4 +130,19 @@ public class UserController {
 
     }
 
+    @RequestMapping(value = "/delete/{userId}", method = RequestMethod.DELETE)
+    ResponseEntity<?> delete(@PathVariable Long userId) {
+        try {
+            userService.deleteById(userId);
+            logger.info("Deleted user [" + userId + "].");
+
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+        } catch(InvalidUserPersistenceRequestException e) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
 }
