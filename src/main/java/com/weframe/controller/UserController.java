@@ -2,6 +2,8 @@ package com.weframe.controller;
 
 
 import com.weframe.user.model.User;
+import com.weframe.user.resource.UserResource;
+import com.weframe.user.resource.UserResourceAssembler;
 import com.weframe.user.service.RoleService;
 import com.weframe.user.service.StateService;
 import com.weframe.user.service.UserService;
@@ -25,12 +27,33 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private RoleService roleService;
-
     @Autowired
     private StateService stateService;
+    @Autowired
+    private UserResourceAssembler userResourceAssembler;
+
+    @RequestMapping(value = "/byid/{userId}", method = RequestMethod.GET)
+    ResponseEntity<UserResource> getUser(@PathVariable Long userId) {
+        try {
+            User user = userService.getById(userId);
+
+            if(user == null) {
+                throw new EmptyResultDataAccessException(1);
+            }
+
+            logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
+            return new ResponseEntity<>(userResourceAssembler.toResource(user), new HttpHeaders(), HttpStatus.FOUND);
+        } catch(InvalidUserPersistenceRequestException e) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error(e);
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 
     @RequestMapping(value = "/by-id/{userId}", method = RequestMethod.GET)
     ResponseEntity<User> getUserById(@PathVariable Long userId) {
