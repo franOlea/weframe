@@ -2,7 +2,9 @@ package com.weframe.product.model;
 
 public class BackMat {
 
-    private String type;
-    private String color;
+    private MatType type;
+    private MatColor color;
+    private float outerHorizontalBezel;
+    private float outerVerticalBezel;
 
 }

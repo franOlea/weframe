@@ -6,7 +6,7 @@ public class PictureFrame {
 
     private BackBoard backBoard;
     private BackMat backMat;
-    private Set<Picture> picture;
+    private Set<LocatedPicture> locatedPictures;
     private WindowMat windowMat;
     private Glazing glazing;
     private Frame frame;
