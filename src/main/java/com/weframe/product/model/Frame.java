@@ -35,7 +35,7 @@ public class Frame {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -43,7 +43,7 @@ public class Frame {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -51,7 +51,7 @@ public class Frame {
         return height;
     }
 
-    public void setHeight(float height) {
+    public void setHeight(final float height) {
         this.height = height;
     }
 
@@ -59,12 +59,12 @@ public class Frame {
         return length;
     }
 
-    public void setLength(float length) {
+    public void setLength(final float length) {
         this.length = length;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -94,5 +94,5 @@ public class Frame {
                 ", length=" + length +
                 '}';
     }
-    
+
 }

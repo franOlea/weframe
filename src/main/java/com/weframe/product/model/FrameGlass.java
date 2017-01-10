@@ -3,8 +3,8 @@ package com.weframe.product.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "MAT_COLORS")
-public class MatColor {
+@Table(name = "FRAME_GLASSES")
+public class FrameGlass {
 
     @Id
     @GeneratedValue
@@ -13,11 +13,10 @@ public class MatColor {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    public MatColor() {
+    public FrameGlass() {
     }
 
-    public MatColor(final Long id,
-                    final String name) {
+    public FrameGlass(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -43,10 +42,10 @@ public class MatColor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MatColor matColor = (MatColor) o;
+        FrameGlass that = (FrameGlass) o;
 
-        if (!id.equals(matColor.id)) return false;
-        return name.equals(matColor.name);
+        if (!id.equals(that.id)) return false;
+        return name.equals(that.name);
     }
 
     @Override
@@ -58,7 +57,7 @@ public class MatColor {
 
     @Override
     public String toString() {
-        return "MatColor{" +
+        return "FrameGlass{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
