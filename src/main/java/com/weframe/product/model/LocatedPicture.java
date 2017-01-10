@@ -10,9 +10,11 @@ public class LocatedPicture {
     @GeneratedValue
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "PICTURE", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "PICTURE", nullable = false)
     private Picture picture;
-    @Column(name = "PICTURE_MASK", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "PICTURE_MASK", nullable = false)
     private PictureMask pictureMask;
     @Column(name = "LENGTH", nullable = false)
     private float length;
