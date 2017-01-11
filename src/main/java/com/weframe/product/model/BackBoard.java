@@ -14,16 +14,20 @@ public class BackBoard {
     private String name;
     @Column(name = "COLOR", nullable = false)
     private String color;
+    @Column(name = "IMAGE_FILE_PATH", nullable = false)
+    private String imageFilePath;
 
     public BackBoard() {
     }
 
     public BackBoard(final Long id,
                      final String name,
-                     final String color) {
+                     final String color,
+                     final String imageFilePath) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.imageFilePath = imageFilePath;
     }
 
     public Long getId() {
@@ -50,6 +54,14 @@ public class BackBoard {
         this.color = color;
     }
 
+    public String getImageFilePath() {
+        return imageFilePath;
+    }
+
+    public void setImageFilePath(final String imageFilePath) {
+        this.imageFilePath = imageFilePath;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -59,7 +71,8 @@ public class BackBoard {
 
         if (!id.equals(backBoard.id)) return false;
         if (!name.equals(backBoard.name)) return false;
-        return color.equals(backBoard.color);
+        if (!color.equals(backBoard.color)) return false;
+        return imageFilePath.equals(backBoard.imageFilePath);
     }
 
     @Override
@@ -67,6 +80,7 @@ public class BackBoard {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + color.hashCode();
+        result = 31 * result + imageFilePath.hashCode();
         return result;
     }
 
@@ -76,6 +90,7 @@ public class BackBoard {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", imageFilePath='" + imageFilePath + '\'' +
                 '}';
     }
 }

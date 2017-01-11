@@ -3,7 +3,6 @@ package com.weframe.product.model;
 import com.weframe.user.model.User;
 
 import javax.persistence.*;
-import java.io.File;
 
 @Entity
 @Table(name = "PICTURES")
@@ -13,8 +12,8 @@ public class Picture {
     @GeneratedValue
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "FILE_PATH", nullable = false)
-    private String filePath;
+    @Column(name = "IMAGE_FILE_PATH", nullable = false)
+    private String imageFilePath;
     @ManyToOne
     @JoinColumn(name = "USER", nullable = false)
     private User user;
@@ -23,10 +22,10 @@ public class Picture {
     }
 
     public Picture(final Long id,
-                   final String filePath,
+                   final String imageFilePath,
                    final User user) {
         this.id = id;
-        this.filePath = filePath;
+        this.imageFilePath = imageFilePath;
         this.user = user;
     }
 
@@ -38,12 +37,12 @@ public class Picture {
         this.id = id;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getImageFilePath() {
+        return imageFilePath;
     }
 
-    public void setFilePath(final String filePath) {
-        this.filePath = filePath;
+    public void setImageFilePath(final String imageFilePath) {
+        this.imageFilePath = imageFilePath;
     }
 
     public User getUser() {
@@ -62,14 +61,14 @@ public class Picture {
         Picture picture = (Picture) o;
 
         if (!id.equals(picture.id)) return false;
-        if (!filePath.equals(picture.filePath)) return false;
+        if (!imageFilePath.equals(picture.imageFilePath)) return false;
         return user.equals(picture.user);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + filePath.hashCode();
+        result = 31 * result + imageFilePath.hashCode();
         result = 31 * result + user.hashCode();
         return result;
     }
@@ -78,7 +77,7 @@ public class Picture {
     public String toString() {
         return "Picture{" +
                 "id=" + id +
-                ", filePath='" + filePath + '\'' +
+                ", imageFilePath='" + imageFilePath + '\'' +
                 ", user=" + user +
                 '}';
     }

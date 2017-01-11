@@ -13,9 +13,6 @@ public class WindowMat {
     @ManyToOne
     @JoinColumn(name = "MAT_TYPE", nullable = false)
     private MatType type;
-    @ManyToOne
-    @JoinColumn(name = "MAT_COLOR", nullable = false)
-    private MatColor color;
     @Column(name = "INNER_HORIZONTAL_BEZEL", nullable = false)
     private float innerHorizontalBezel;
     @Column(name = "INNER_VERTICAL_BEZEL", nullable = false)
@@ -26,12 +23,10 @@ public class WindowMat {
 
     public WindowMat(final Long id,
                      final MatType type,
-                     final MatColor color,
                      final float innerHorizontalBezel,
                      final float innerVerticalBezel) {
         this.id = id;
         this.type = type;
-        this.color = color;
         this.innerHorizontalBezel = innerHorizontalBezel;
         this.innerVerticalBezel = innerVerticalBezel;
     }
@@ -50,14 +45,6 @@ public class WindowMat {
 
     public void setType(final MatType type) {
         this.type = type;
-    }
-
-    public MatColor getColor() {
-        return color;
-    }
-
-    public void setColor(final MatColor color) {
-        this.color = color;
     }
 
     public float getInnerHorizontalBezel() {
@@ -86,15 +73,13 @@ public class WindowMat {
         if (Float.compare(windowMat.innerHorizontalBezel, innerHorizontalBezel) != 0) return false;
         if (Float.compare(windowMat.innerVerticalBezel, innerVerticalBezel) != 0) return false;
         if (!id.equals(windowMat.id)) return false;
-        if (!type.equals(windowMat.type)) return false;
-        return color.equals(windowMat.color);
+        return type.equals(windowMat.type);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + type.hashCode();
-        result = 31 * result + color.hashCode();
         result = 31 * result + (innerHorizontalBezel != +0.0f ? Float.floatToIntBits(innerHorizontalBezel) : 0);
         result = 31 * result + (innerVerticalBezel != +0.0f ? Float.floatToIntBits(innerVerticalBezel) : 0);
         return result;
@@ -105,7 +90,6 @@ public class WindowMat {
         return "WindowMat{" +
                 "id=" + id +
                 ", type=" + type +
-                ", color=" + color +
                 ", innerHorizontalBezel=" + innerHorizontalBezel +
                 ", innerVerticalBezel=" + innerVerticalBezel +
                 '}';

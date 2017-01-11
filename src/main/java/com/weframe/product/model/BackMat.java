@@ -13,9 +13,6 @@ public class BackMat {
     @ManyToOne
     @JoinColumn(name = "MAT_TYPE", nullable = false)
     private MatType type;
-    @ManyToOne
-    @JoinColumn(name = "MAT_COLOR", nullable = false)
-    private MatColor color;
     @Column(name = "OUTER_HORIZONTAL_BEZEL", nullable = false)
     private float outerHorizontalBezel;
     @Column(name = "OUTER_VERTICAL_BEZEL", nullable = false)
@@ -26,12 +23,10 @@ public class BackMat {
 
     public BackMat(final Long id,
                    final MatType type,
-                   final MatColor color,
                    final float outerHorizontalBezel,
                    final float outerVerticalBezel) {
         this.id = id;
         this.type = type;
-        this.color = color;
         this.outerHorizontalBezel = outerHorizontalBezel;
         this.outerVerticalBezel = outerVerticalBezel;
     }
@@ -50,14 +45,6 @@ public class BackMat {
 
     public void setType(final MatType type) {
         this.type = type;
-    }
-
-    public MatColor getColor() {
-        return color;
-    }
-
-    public void setColor(final MatColor color) {
-        this.color = color;
     }
 
     public float getOuterHorizontalBezel() {
@@ -86,15 +73,13 @@ public class BackMat {
         if (Float.compare(backMat.outerHorizontalBezel, outerHorizontalBezel) != 0) return false;
         if (Float.compare(backMat.outerVerticalBezel, outerVerticalBezel) != 0) return false;
         if (!id.equals(backMat.id)) return false;
-        if (!type.equals(backMat.type)) return false;
-        return color.equals(backMat.color);
+        return type.equals(backMat.type);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + type.hashCode();
-        result = 31 * result + color.hashCode();
         result = 31 * result + (outerHorizontalBezel != +0.0f ? Float.floatToIntBits(outerHorizontalBezel) : 0);
         result = 31 * result + (outerVerticalBezel != +0.0f ? Float.floatToIntBits(outerVerticalBezel) : 0);
         return result;
@@ -105,7 +90,6 @@ public class BackMat {
         return "BackMat{" +
                 "id=" + id +
                 ", type=" + type +
-                ", color=" + color +
                 ", outerHorizontalBezel=" + outerHorizontalBezel +
                 ", outerVerticalBezel=" + outerVerticalBezel +
                 '}';
