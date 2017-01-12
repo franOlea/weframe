@@ -5,7 +5,7 @@ import com.weframe.product.service.PictureService;
 import com.weframe.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Set;
 
 public interface PictureRepository extends JpaRepository<Picture, Long>, PictureService {
 
@@ -13,7 +13,7 @@ public interface PictureRepository extends JpaRepository<Picture, Long>, Picture
         return findOne(id);
     }
 
-    default List<Picture> getByUser(User user) {
+    default Set<Picture> getByUser(User user) {
         return findByUser(user);
     }
 
@@ -25,5 +25,5 @@ public interface PictureRepository extends JpaRepository<Picture, Long>, Picture
         delete(id);
     }
 
-    List<Picture> findByUser(User user);
+    Set<Picture> findByUser(User user);
 }
