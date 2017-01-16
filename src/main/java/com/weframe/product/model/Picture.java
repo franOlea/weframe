@@ -12,8 +12,10 @@ public class Picture {
     @GeneratedValue
     @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "IMAGE_FILE_PATH", nullable = false)
-    private String imageFilePath;
+    @Column(name = "IMAGE_KEY", nullable = false)
+    private String imageKey;
+    @Column(name = "IMAGE_URL", nullable = false)
+    private String imageUrl;
     @ManyToOne
     @JoinColumn(name = "USER", nullable = false)
     private User user;
@@ -22,10 +24,12 @@ public class Picture {
     }
 
     public Picture(final Long id,
-                   final String imageFilePath,
+                   final String imageKey,
+                   final String imageUrl,
                    final User user) {
         this.id = id;
-        this.imageFilePath = imageFilePath;
+        this.imageKey = imageKey;
+        this.imageUrl = imageUrl;
         this.user = user;
     }
 
@@ -37,20 +41,28 @@ public class Picture {
         this.id = id;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
-    }
-
-    public void setImageFilePath(final String imageFilePath) {
-        this.imageFilePath = imageFilePath;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(final User user) {
         this.user = user;
+    }
+
+    public String getImageKey() {
+        return imageKey;
+    }
+
+    public void setImageKey(final String imageKey) {
+        this.imageKey = imageKey;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -61,14 +73,16 @@ public class Picture {
         Picture picture = (Picture) o;
 
         if (!id.equals(picture.id)) return false;
-        if (!imageFilePath.equals(picture.imageFilePath)) return false;
+        if (!imageKey.equals(picture.imageKey)) return false;
+        if (!imageUrl.equals(picture.imageUrl)) return false;
         return user.equals(picture.user);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + imageFilePath.hashCode();
+        result = 31 * result + imageKey.hashCode();
+        result = 31 * result + imageUrl.hashCode();
         result = 31 * result + user.hashCode();
         return result;
     }
@@ -77,7 +91,8 @@ public class Picture {
     public String toString() {
         return "Picture{" +
                 "id=" + id +
-                ", imageFilePath='" + imageFilePath + '\'' +
+                ", imageKey='" + imageKey + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 ", user=" + user +
                 '}';
     }

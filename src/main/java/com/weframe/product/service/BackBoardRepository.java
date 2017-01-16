@@ -1,4 +1,4 @@
-package com.weframe.product.service.impl;
+package com.weframe.product.service;
 
 import com.weframe.product.model.BackBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +11,7 @@ import java.util.Set;
 @RepositoryRestResource(collectionResourceRel = "backboards", path = "backboards")
 public interface BackBoardRepository extends JpaRepository<BackBoard, Long> {
 
-    @RestResource(path = "likeName", rel = "likeName")
+    @RestResource(path = "like-name", rel = "like-name")
     Set<BackBoard> findLikeNameIgnoreCaseByOrderByNameAsc(@Param("name") String name);
 
 }
