@@ -12,18 +12,22 @@ public class MatType {
     private Long id;
     @Column(name = "NAME", nullable = false)
     private String name;
-    @Column(name = "IMAGE_FILE_PATH", nullable = false)
-    private String imageFilePath;
+    @Column(name = "IMAGE_KEY", nullable = false)
+    private String imageKey;
+    @Column(name = "IMAGE_URL", nullable = false)
+    private String imageUrl;
 
     public MatType() {
     }
 
     public MatType(final Long id,
                    final String name,
-                   final String imageFilePath) {
+                   final String imageKey,
+                   final String imageUrl) {
         this.id = id;
         this.name = name;
-        this.imageFilePath = imageFilePath;
+        this.imageKey = imageKey;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -42,12 +46,20 @@ public class MatType {
         this.name = name;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
+    public String getImageKey() {
+        return imageKey;
     }
 
-    public void setImageFilePath(final String imageFilePath) {
-        this.imageFilePath = imageFilePath;
+    public void setImageKey(final String imageKey) {
+        this.imageKey = imageKey;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -59,14 +71,16 @@ public class MatType {
 
         if (!id.equals(matType.id)) return false;
         if (!name.equals(matType.name)) return false;
-        return imageFilePath.equals(matType.imageFilePath);
+        if (!imageKey.equals(matType.imageKey)) return false;
+        return imageUrl.equals(matType.imageUrl);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + imageFilePath.hashCode();
+        result = 31 * result + imageKey.hashCode();
+        result = 31 * result + imageUrl.hashCode();
         return result;
     }
 
@@ -75,7 +89,8 @@ public class MatType {
         return "MatType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", imageFilePath='" + imageFilePath + '\'' +
+                ", imageKey='" + imageKey + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }
