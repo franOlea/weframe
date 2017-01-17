@@ -17,8 +17,10 @@ public class Frame {
     private float height;
     @Column(name = "LENGTH", nullable = false)
     private float length;
-    @Column(name = "IMAGE_FILE_PATH", nullable = false)
-    private String imageFilePath;
+    @Column(name = "IMAGE_KEY", nullable = false)
+    private String imageKey;
+    @Column(name = "IMAGE_URL", nullable = false)
+    private String imageUrl;
 
     public Frame() {
     }
@@ -27,12 +29,14 @@ public class Frame {
                  final String name,
                  final float height,
                  final float length,
-                 final String imageFilePath) {
+                 final String imageKey,
+                 final String imageUrl) {
         this.id = id;
         this.name = name;
         this.height = height;
         this.length = length;
-        this.imageFilePath = imageFilePath;
+        this.imageKey = imageKey;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -67,12 +71,20 @@ public class Frame {
         this.length = length;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
+    public String getImageKey() {
+        return imageKey;
     }
 
-    public void setImageFilePath(final String imageFilePath) {
-        this.imageFilePath = imageFilePath;
+    public void setImageKey(final String imageKey) {
+        this.imageKey = imageKey;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -86,7 +98,8 @@ public class Frame {
         if (Float.compare(frame.length, length) != 0) return false;
         if (!id.equals(frame.id)) return false;
         if (!name.equals(frame.name)) return false;
-        return imageFilePath.equals(frame.imageFilePath);
+        if (!imageKey.equals(frame.imageKey)) return false;
+        return imageUrl.equals(frame.imageUrl);
     }
 
     @Override
@@ -95,7 +108,8 @@ public class Frame {
         result = 31 * result + name.hashCode();
         result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
         result = 31 * result + (length != +0.0f ? Float.floatToIntBits(length) : 0);
-        result = 31 * result + imageFilePath.hashCode();
+        result = 31 * result + imageKey.hashCode();
+        result = 31 * result + imageUrl.hashCode();
         return result;
     }
 
@@ -106,7 +120,8 @@ public class Frame {
                 ", name='" + name + '\'' +
                 ", height=" + height +
                 ", length=" + length +
-                ", imageFilePath='" + imageFilePath + '\'' +
+                ", imageKey='" + imageKey + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }
