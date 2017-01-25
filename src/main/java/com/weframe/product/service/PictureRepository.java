@@ -14,7 +14,4 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
     @RestResource(path = "by-user", rel = "by-user")
     Set<Picture> findByUserEmail(String email);
 
-    @RestResource(path = "by-image-key", rel = "by-image-key")
-    Picture findByImageKey(String imageKey);
-
 }
