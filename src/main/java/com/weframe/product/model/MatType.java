@@ -16,6 +16,8 @@ public class MatType {
     private String imageKey;
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
+    @Column(name = "M2_PRICE", nullable = false)
+    private float m2Price;
 
     public MatType() {
     }
@@ -23,11 +25,13 @@ public class MatType {
     public MatType(final Long id,
                    final String name,
                    final String imageKey,
-                   final String imageUrl) {
+                   final String imageUrl,
+                   final float m2Price) {
         this.id = id;
         this.name = name;
         this.imageKey = imageKey;
         this.imageUrl = imageUrl;
+        this.m2Price = m2Price;
     }
 
     public Long getId() {
@@ -62,6 +66,14 @@ public class MatType {
         this.imageUrl = imageUrl;
     }
 
+    public float getM2Price() {
+        return m2Price;
+    }
+
+    public void setM2Price(final float m2Price) {
+        this.m2Price = m2Price;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -69,6 +81,7 @@ public class MatType {
 
         MatType matType = (MatType) o;
 
+        if (Float.compare(matType.m2Price, m2Price) != 0) return false;
         if (!id.equals(matType.id)) return false;
         if (!name.equals(matType.name)) return false;
         if (!imageKey.equals(matType.imageKey)) return false;
@@ -81,6 +94,7 @@ public class MatType {
         result = 31 * result + name.hashCode();
         result = 31 * result + imageKey.hashCode();
         result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + (m2Price != +0.0f ? Float.floatToIntBits(m2Price) : 0);
         return result;
     }
 
@@ -91,6 +105,7 @@ public class MatType {
                 ", name='" + name + '\'' +
                 ", imageKey='" + imageKey + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", m2Price=" + m2Price +
                 '}';
     }
 }

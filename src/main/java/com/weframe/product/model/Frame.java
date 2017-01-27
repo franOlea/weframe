@@ -21,6 +21,8 @@ public class Frame {
     private String imageKey;
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
+    @Column(name= "PRICE", nullable = false)
+    private float price;
 
     public Frame() {
     }
@@ -30,13 +32,15 @@ public class Frame {
                  final float height,
                  final float length,
                  final String imageKey,
-                 final String imageUrl) {
+                 final String imageUrl,
+                 final float price) {
         this.id = id;
         this.name = name;
         this.height = height;
         this.length = length;
         this.imageKey = imageKey;
         this.imageUrl = imageUrl;
+        this.price = price;
     }
 
     public Long getId() {
@@ -87,6 +91,14 @@ public class Frame {
         this.imageUrl = imageUrl;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(final float price) {
+        this.price = price;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -99,17 +111,19 @@ public class Frame {
         if (!id.equals(frame.id)) return false;
         if (!name.equals(frame.name)) return false;
         if (!imageKey.equals(frame.imageKey)) return false;
-        return imageUrl.equals(frame.imageUrl);
+        if (!imageUrl.equals(frame.imageUrl)) return false;
+        return price == frame.price;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (height != +0.0f ? Float.floatToIntBits(height) : 0);
         result = 31 * result + (length != +0.0f ? Float.floatToIntBits(length) : 0);
-        result = 31 * result + imageKey.hashCode();
-        result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + (imageKey != null ? imageKey.hashCode() : 0);
+        result = 31 * result + (imageUrl != null ? imageUrl.hashCode() : 0);
+        result = 31 * result + (price != +0.0f ? Float.floatToIntBits(price) : 0);
         return result;
     }
 
@@ -122,6 +136,7 @@ public class Frame {
                 ", length=" + length +
                 ", imageKey='" + imageKey + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", price=" + price +
                 '}';
     }
 }
