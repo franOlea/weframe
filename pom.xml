@@ -65,7 +65,6 @@
 			<version>${spring-hateoas.version}</version>
 		</dependency>
 
-
 		<!-- Apache Commons Lang 3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
