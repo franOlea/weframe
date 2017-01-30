@@ -18,7 +18,7 @@ public class LocatedPicture {
     @JoinColumn(name = "PICTURE", nullable = false)
     private Picture picture;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "PICTURE_MASK", nullable = false)
     private PictureMask pictureMask;
 

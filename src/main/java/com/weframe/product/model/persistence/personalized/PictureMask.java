@@ -23,6 +23,10 @@ public class PictureMask {
     @Column(name = "HEIGHT", nullable = false)
     private float height;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "LOCATED_PICTURE", nullable = false)
+    private LocatedPicture pictureFrame;
+
     public PictureMask() {
     }
 
