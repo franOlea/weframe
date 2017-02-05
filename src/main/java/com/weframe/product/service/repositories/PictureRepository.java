@@ -1,4 +1,4 @@
-package com.weframe.product.service;
+package com.weframe.product.service.repositories;
 
 import com.weframe.product.model.Picture;
 import com.weframe.user.model.User;
