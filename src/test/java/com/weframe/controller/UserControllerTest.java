@@ -2,6 +2,8 @@ package com.weframe.controller;
 
 import com.weframe.user.model.User;
 import com.weframe.user.model.fixture.UserFixture;
+import com.weframe.user.resource.UserResource;
+import com.weframe.user.resource.UserResourceAssembler;
 import com.weframe.user.service.RoleService;
 import com.weframe.user.service.StateService;
 import com.weframe.user.service.UserService;
@@ -35,6 +37,9 @@ public class UserControllerTest {
 
     @Injectable
     private StateService stateService;
+
+    @Injectable
+    private UserResourceAssembler userResourceAssembler;
 
     @Tested
     private UserController userController = new UserController();
