@@ -1,4 +1,4 @@
-package com.weframe.product.model.persistence.personalized;
+package com.weframe.product.model.personalized;
 
 import javax.persistence.*;
 

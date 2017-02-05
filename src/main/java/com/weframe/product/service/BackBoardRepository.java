@@ -1,6 +1,6 @@
-package com.weframe.product.service.repositories;
+package com.weframe.product.service;
 
-import com.weframe.product.model.persistence.generic.BackBoard;
+import com.weframe.product.model.generic.BackBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

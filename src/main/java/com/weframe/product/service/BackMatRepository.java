@@ -1,6 +1,6 @@
-package com.weframe.product.service.repositories;
+package com.weframe.product.service;
 
-import com.weframe.product.model.persistence.personalized.BackMat;
+import com.weframe.product.model.personalized.BackMat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

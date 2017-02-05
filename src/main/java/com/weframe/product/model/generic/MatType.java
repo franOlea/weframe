@@ -1,11 +1,10 @@
-package com.weframe.product.model.persistence.generic;
-
+package com.weframe.product.model.generic;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "FRAMES")
-public class Frame {
+@Table(name = "MAT_TYPES")
+public class MatType {
 
     @Id
     @GeneratedValue
@@ -21,22 +20,16 @@ public class Frame {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "HEIGHT", nullable = false)
-    private float height;
-
-    @Column(name = "LENGTH", nullable = false)
-    private float length;
-
     @Column(name = "IMAGE_KEY", nullable = false, unique = true)
     private String imageKey;
 
     @Column(name = "IMAGE_URL", nullable = false, unique = true)
     private String imageUrl;
 
-    @Column(name= "PRICE", nullable = false)
-    private float price;
+    @Column(name = "M2_PRICE", nullable = false)
+    private float m2Price;
 
-    public Frame() {
+    public MatType() {
     }
 
 }

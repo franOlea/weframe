@@ -1,6 +1,6 @@
-package com.weframe.product.model.persistence.personalized;
+package com.weframe.product.model.personalized;
 
-import com.weframe.product.model.Picture;
+import com.weframe.picture.model.Picture;
 import com.weframe.product.model.PictureFrame;
 
 import javax.persistence.*;

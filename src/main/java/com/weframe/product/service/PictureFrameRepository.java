@@ -1,4 +1,4 @@
-package com.weframe.product.service.repositories;
+package com.weframe.product.service;
 
 import com.weframe.product.model.PictureFrame;
 import org.springframework.data.jpa.repository.JpaRepository;

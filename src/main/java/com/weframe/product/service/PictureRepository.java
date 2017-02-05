@@ -1,7 +1,6 @@
-package com.weframe.product.service.repositories;
+package com.weframe.product.service;
 
-import com.weframe.product.model.Picture;
-import com.weframe.user.model.User;
+import com.weframe.picture.model.Picture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
