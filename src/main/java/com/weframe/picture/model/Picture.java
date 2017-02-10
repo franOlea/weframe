@@ -1,4 +1,4 @@
-package com.weframe.product.model;
+package com.weframe.picture.model;
 
 import com.weframe.user.model.User;
 

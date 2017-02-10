@@ -1,7 +1,7 @@
 package com.weframe.product.service;
 
 
-import com.weframe.product.model.persistence.generic.MatType;
+import com.weframe.product.model.generic.MatType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

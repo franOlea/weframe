@@ -1,7 +1,7 @@
-package com.weframe.product.model.persistence.personalized;
+package com.weframe.product.model.personalized;
 
 import com.weframe.product.model.PictureFrame;
-import com.weframe.product.model.persistence.generic.MatType;
+import com.weframe.product.model.generic.MatType;
 
 import javax.persistence.*;
 

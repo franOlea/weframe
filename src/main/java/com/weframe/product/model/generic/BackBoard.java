@@ -1,10 +1,10 @@
-package com.weframe.product.model.persistence.generic;
+package com.weframe.product.model.generic;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "FRAME_GLASSES")
-public class FrameGlass {
+@Table(name = "BACK_BOARDS")
+public class BackBoard {
 
     @Id
     @GeneratedValue
@@ -20,10 +20,17 @@ public class FrameGlass {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "M2_PRICE", nullable = false)
+    @Column(name = "IMAGE_KEY", nullable = false, unique = true)
+    private String imageKey;
+
+    @Column(name = "IMAGE_URL", nullable = false, unique = true)
+    private String imageUrl;
+
+    @Column(name= "M2_PRICE", nullable = false)
     private float m2Price;
 
-    public FrameGlass() {
+    public BackBoard() {
     }
+
 
 }

@@ -1,11 +1,11 @@
 package com.weframe.product.model;
 
-import com.weframe.product.model.persistence.generic.BackBoard;
-import com.weframe.product.model.persistence.generic.Frame;
-import com.weframe.product.model.persistence.generic.FrameGlass;
-import com.weframe.product.model.persistence.personalized.BackMat;
-import com.weframe.product.model.persistence.personalized.LocatedPicture;
-import com.weframe.product.model.persistence.personalized.WindowMat;
+import com.weframe.product.model.generic.BackBoard;
+import com.weframe.product.model.generic.Frame;
+import com.weframe.product.model.generic.FrameGlass;
+import com.weframe.product.model.personalized.BackMat;
+import com.weframe.product.model.personalized.LocatedPicture;
+import com.weframe.product.model.personalized.WindowMat;
 import com.weframe.user.model.User;
 
 import javax.persistence.*;
