@@ -16,15 +16,15 @@ import java.io.IOException;
 @Controller
 public class PictureController {
 
-    private static String tempDir;
-    private static String storageUnit;
-    private static String fileKey;
+    private String tempDir;
+    private String storageUnit;
+    private String fileKey;
     private PictureService pictureService;
 
-    @Autowired
-    public PictureController(PictureService pictureService) {
-        this.pictureService = pictureService;
-    }
+//    @Autowired
+//    public PictureController(final PictureService pictureService) {
+//        this.pictureService = pictureService;
+//    }
 
     @PostMapping("/pictures/")
     public ResponseEntity<String> uploadPicture(@RequestParam("file") MultipartFile multipartFile) {
@@ -35,7 +35,7 @@ public class PictureController {
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (PicturePutException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
