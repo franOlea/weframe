@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-@RestController
-@RequestMapping("/users/")
+//@RestController
+//@RequestMapping("/users/")
 public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);

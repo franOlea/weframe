@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 
-@Profile("orm")
+@Profile("orma")
 public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
     default void insert(final User user) throws InvalidUserPersistenceRequestException, GeneralSecurityException {
