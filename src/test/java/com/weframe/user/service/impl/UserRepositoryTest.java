@@ -30,6 +30,7 @@ import java.util.List;
                 ORMRepositoryConfiguration.class},
         loader = AnnotationConfigContextLoader.class)
 @EnableJpaRepositories
+@Ignore
 public class UserRepositoryTest {
 
     @Autowired
