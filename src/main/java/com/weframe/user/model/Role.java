@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "ROLES")
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "NAME", nullable = false, unique = true)

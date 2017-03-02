@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "STATES")
 public class State {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
     @Column(name = "NAME", nullable = false, unique = true)
