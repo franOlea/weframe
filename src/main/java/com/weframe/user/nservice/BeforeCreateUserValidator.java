@@ -28,7 +28,7 @@ public class BeforeCreateUserValidator implements Validator {
         User user = (User) object;
 
         if(userRepository.findByEmail(user.getEmail()) != null) {
-            errors.rejectValue("email.used", "The email is already in use.");
+            errors.rejectValue("email", "email.used");
         }
     }
 }

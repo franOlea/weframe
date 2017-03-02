@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class created to workaround the auto discovery bug in event validator. More in: https://jira.spring.io/browse/DATAREST-524
+ */
 @Configuration
 public class ValidatorEventRegister implements InitializingBean {
 
