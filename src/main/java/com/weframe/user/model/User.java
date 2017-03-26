@@ -1,5 +1,7 @@
 package com.weframe.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
@@ -17,11 +19,14 @@ public class User {
     private String lastName;
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ROLE", nullable = false)
     private Role role;
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "STATE", nullable = false)
     private State state;
@@ -68,6 +73,7 @@ public class User {
         return email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -98,6 +104,7 @@ public class User {
         this.email = email;
     }
 
+    @JsonProperty
     public void setPassword(final String password) {
         this.password = password;
     }

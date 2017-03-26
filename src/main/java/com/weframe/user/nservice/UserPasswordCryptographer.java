@@ -11,9 +11,11 @@ import java.security.spec.InvalidKeySpecException;
 public class UserPasswordCryptographer {
 
     private final int HASH_ITERATIONS;
+    private final SecretKeyFactory secretKeyFactory;
 
-    public UserPasswordCryptographer(final int hashIterations) {
+    public UserPasswordCryptographer(final int hashIterations) throws GeneralSecurityException {
         this.HASH_ITERATIONS = hashIterations;
+        this.secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
     }
 
     public String generateStoringPasswordHash(final String password) throws GeneralSecurityException {
@@ -22,13 +24,9 @@ public class UserPasswordCryptographer {
         byte[] salt = generateSalt();
 
         PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
-        try {
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = skf.generateSecret(spec).getEncoded();
-            return iterations + ":" + bytesToHex(salt) + ":" + bytesToHex(hash);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new GeneralSecurityException(e);
-        }
+
+        byte[] hash = secretKeyFactory.generateSecret(spec).getEncoded();
+        return iterations + ":" + bytesToHex(salt) + ":" + bytesToHex(hash);
     }
 
     public boolean isValidPassword(String originalPassword, String storedPassword) throws GeneralSecurityException {

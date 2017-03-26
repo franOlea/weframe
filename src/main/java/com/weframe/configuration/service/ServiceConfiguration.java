@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.security.GeneralSecurityException;
+
 @Configuration
 public class ServiceConfiguration {
 
@@ -18,7 +20,7 @@ public class ServiceConfiguration {
     private int userPasswordCryptographerHashIterations;
 
     @Bean
-    public UserPasswordCryptographer getUserPasswordCryptographer() {
+    public UserPasswordCryptographer getUserPasswordCryptographer() throws GeneralSecurityException {
         return new UserPasswordCryptographer(userPasswordCryptographerHashIterations);
     }
 
@@ -26,11 +28,6 @@ public class ServiceConfiguration {
     public UserResourceAssembler getUserResourceAssembler() {
         return new UserResourceAssembler();
     }
-
-//    @Bean(name = "beforeCreateUserValidator")
-//    public BeforeCreateUserValidator getBeforeCreateUserValidator() {
-//        return new BeforeCreateUserValidator();
-//    }
 
     @Bean
     public Role getUserInitialRole(RoleRepository roleRepository) {
