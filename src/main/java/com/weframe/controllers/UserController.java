@@ -1,8 +1,9 @@
-package com.weframe.controller;
+package com.weframe.controllers;
 
 
+import com.weframe.user.UserPasswordCryptographer;
+import com.weframe.user.UserValidator;
 import com.weframe.user.model.User;
-import com.weframe.user.nservice.UserPasswordCryptographer;
 import com.weframe.user.service.RoleService;
 import com.weframe.user.service.StateService;
 import com.weframe.user.service.UserService;
@@ -21,7 +22,7 @@ import java.util.Collection;
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/users")
-public class UserController {
+class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
 
@@ -33,125 +34,128 @@ public class UserController {
     private StateService stateService;
     @Autowired
     private UserPasswordCryptographer passwordCryptographer;
+    @Autowired
+    private UserValidator userValidator;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    ResponseEntity getUsers(
+    private ResponseEntity getUsers(
             @RequestParam(value="offset", defaultValue="0",required = false) final int offset,
             @RequestParam(value="limit", defaultValue = "10", required = false) final int limit,
             @RequestParam(value="email", required = false) final String email) {
         try {
             if(email != null) {
-                return getUserByEmail(email);
+                return successfulUnitRequest(getUserByEmail(email));
             }
             Collection<User> users = userService.getAllWithPaging(offset, limit);
             logger.info("Retrieved user list of size " +
                     "[" + users.size() + "] by limit [" + limit + "] and offset [" + offset + "].");
-
             return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.OK);
         } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
+            return failedRequest(HttpStatus.BAD_REQUEST);
         } catch (EmptyResultDataAccessException e) {
-            return failedResponse(HttpStatus.NOT_FOUND);
+            return failedRequest(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error(e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
-    ResponseEntity getUserByEmail(String email) {
-        try {
-            User user = userService.getByEmail(email);
-
-            if(user == null) {
-                throw new EmptyResultDataAccessException(1);
-            }
-
-            logger.info("Retrieved user [" + user + "] by email [" + email + "]");
-            return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
-        } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
-        } catch (EmptyResultDataAccessException e) {
-            return failedResponse(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            logger.error(e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+            return failedRequest(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    ResponseEntity<?> create(@RequestBody User user) {
+    private ResponseEntity create(@RequestBody User user) {
         try {
             user.setRole(roleService.getDefaultRole());
             user.setState(stateService.getDefaultState());
             user.setPassword(passwordCryptographer.generateStoringPasswordHash(user.getPassword()));
-            userService.insert(user);
-            logger.info("Created user [" + user.getEmail() + "].");
-
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
+            if(userValidator.isValidInsert(user)) {
+                userService.insert(user);
+                logger.info("Created user [" + user.getEmail() + "].");
+                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+            } else {
+                throw new InvalidUserPersistenceRequestException();
+            }
         } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
+            return failedRequest(HttpStatus.BAD_REQUEST);
         } catch(DataIntegrityViolationException e) {
-            return failedResponse(HttpStatus.CONFLICT);
+            return failedRequest(HttpStatus.CONFLICT);
         } catch (Exception e) {
             logger.error(user.toString(), e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+            return failedRequest(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
     }
 
     @RequestMapping(value = "", method = RequestMethod.PATCH)
-    ResponseEntity<?> update(@RequestBody User user) {
+    private ResponseEntity update(@RequestBody User user) {
         try {
-            userService.update(user);
-            logger.info("Updated user [" + getUserByEmail(user.getEmail()) + "].");
-
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.ACCEPTED);
+            if(userValidator.isValidUpdate(user)) {
+                userService.update(user);
+                logger.info("Updated user [" + getUserByEmail(user.getEmail()) + "].");
+                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+            } else {
+                throw new InvalidUserPersistenceRequestException();
+            }
         } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
+            return failedRequest(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             logger.error(e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+            return failedRequest(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    ResponseEntity getUserById(@PathVariable Long userId) {
+    private ResponseEntity getUserById(@PathVariable Long userId) {
         try {
             User user = userService.getById(userId);
-
             if(user == null) {
                 throw new EmptyResultDataAccessException(1);
             }
-
             logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
-            return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.OK);
+            return successfulUnitRequest(user);
         } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
+            return failedRequest(HttpStatus.BAD_REQUEST);
         } catch (EmptyResultDataAccessException e) {
-            return failedResponse(HttpStatus.NOT_FOUND);
+            return failedRequest(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error(e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+            return failedRequest(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-    ResponseEntity delete(@PathVariable Long userId) {
+    private ResponseEntity delete(@PathVariable Long userId) {
         try {
             userService.deleteById(userId);
             logger.info("Deleted user [" + userId + "].");
-
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
         } catch(InvalidUserPersistenceRequestException e) {
-            return failedResponse(HttpStatus.BAD_REQUEST);
+            return failedRequest(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             logger.error(e);
-            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+            return failedRequest(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    private ResponseEntity failedResponse(HttpStatus httpStatus) {
+    private ResponseEntity successfulUnitRequest(User user) {
+        return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    private ResponseEntity successfulCollectionRequest(Collection<User> users) {
+        return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    private ResponseEntity failedRequest(HttpStatus httpStatus) {
         return new ResponseEntity<>(null, new HttpHeaders(), httpStatus);
+    }
+
+    private User getUserByEmail(String email) {
+        User user = userService.getByEmail(email);
+
+        if(user == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
+        logger.info("Retrieved user [" + user + "] by email [" + email + "]");
+        return user;
     }
 
 }

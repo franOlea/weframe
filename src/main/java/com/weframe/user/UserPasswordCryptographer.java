@@ -1,4 +1,4 @@
-package com.weframe.user.nservice;
+package com.weframe.user;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
