@@ -1,8 +1,8 @@
-package com.weframe.user.service;
+package com.weframe.user.service.persistence;
 
 import com.weframe.user.model.State;
 
-public interface StateService {
+public interface StateRepository {
 
     State getById(Long id);
 

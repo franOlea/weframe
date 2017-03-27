@@ -1,12 +1,12 @@
-package com.weframe.user.service.impl;
+package com.weframe.user.service.persistence.impl;
 
 import com.weframe.user.model.State;
-import com.weframe.user.service.StateService;
+import com.weframe.user.service.persistence.StateRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Profile("orm")
-public interface StateRepository extends StateService, JpaRepository<State, Long> {
+public interface StateJpaRepository extends StateRepository, JpaRepository<State, Long> {
 
     default State getByName(String name) {
         return findByName(name);

@@ -1,4 +1,4 @@
-package com.weframe.user;
+package com.weframe.user.service;
 
 import com.weframe.user.model.User;
 import org.apache.commons.lang3.StringUtils;

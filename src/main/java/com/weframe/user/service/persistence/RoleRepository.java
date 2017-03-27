@@ -1,8 +1,8 @@
-package com.weframe.user.service;
+package com.weframe.user.service.persistence;
 
 import com.weframe.user.model.Role;
 
-public interface RoleService {
+public interface RoleRepository {
 
     Role getById(Long id);
 
