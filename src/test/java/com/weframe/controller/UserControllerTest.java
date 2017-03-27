@@ -184,7 +184,7 @@ public class UserControllerTest {
             times = 1;
         }};
 
-        ResponseEntity<?> responseEntity = userController.getAllUsersWithPaging(-1, -1);
+        ResponseEntity<?> responseEntity = userController.getUsers(-1, -1, null);
 
         Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -197,7 +197,7 @@ public class UserControllerTest {
             times = 1;
         }};
 
-        ResponseEntity<?> responseEntity = userController.getAllUsersWithPaging(1, 1);
+        ResponseEntity<?> responseEntity = userController.getUsers(1, 1, null);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE);
     }
@@ -210,7 +210,7 @@ public class UserControllerTest {
             times = 1;
         }};
 
-        ResponseEntity<?> responseEntity = userController.getAllUsersWithPaging(1, 1);
+        ResponseEntity<?> responseEntity = userController.getUsers(1, 1, null);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
     }
@@ -223,7 +223,7 @@ public class UserControllerTest {
             times = 1;
         }};
 
-        ResponseEntity<Collection<User>> responseEntity = userController.getAllUsersWithPaging(0, 2);
+        ResponseEntity responseEntity = userController.getUsers(0, 2, null);
 
         Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.FOUND);
         Assert.assertEquals(

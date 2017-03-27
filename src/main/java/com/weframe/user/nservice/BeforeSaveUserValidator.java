@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-@Component("beforeSaveUserValidator")
+//@Component("beforeSaveUserValidator")
 public class BeforeSaveUserValidator implements Validator {
 
     @Autowired

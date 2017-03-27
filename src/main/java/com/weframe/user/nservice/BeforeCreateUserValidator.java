@@ -10,7 +10,7 @@ import org.springframework.validation.Validator;
 
 import java.security.GeneralSecurityException;
 
-@Component("beforeCreateUserValidator")
+//@Component("beforeCreateUserValidator")
 public class BeforeCreateUserValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(BeforeCreateUserValidator.class);

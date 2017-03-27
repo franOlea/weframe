@@ -2,8 +2,7 @@ package com.weframe.controller;
 
 
 import com.weframe.user.model.User;
-import com.weframe.user.resource.UserResource;
-import com.weframe.user.resource.UserResourceAssembler;
+import com.weframe.user.nservice.UserPasswordCryptographer;
 import com.weframe.user.service.RoleService;
 import com.weframe.user.service.StateService;
 import com.weframe.user.service.UserService;
@@ -19,8 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-//@RestController
-//@RequestMapping("/users/")
+@SuppressWarnings("unused")
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
@@ -32,52 +32,33 @@ public class UserController {
     @Autowired
     private StateService stateService;
     @Autowired
-    private UserResourceAssembler userResourceAssembler;
+    private UserPasswordCryptographer passwordCryptographer;
 
-    @RequestMapping(value = "/byid/{userId}", method = RequestMethod.GET)
-    ResponseEntity<UserResource> getUser(@PathVariable Long userId) {
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    ResponseEntity getUsers(
+            @RequestParam(value="offset", defaultValue="0",required = false) final int offset,
+            @RequestParam(value="limit", defaultValue = "10", required = false) final int limit,
+            @RequestParam(value="email", required = false) final String email) {
         try {
-            User user = userService.getById(userId);
-
-            if(user == null) {
-                throw new EmptyResultDataAccessException(1);
+            if(email != null) {
+                return getUserByEmail(email);
             }
+            Collection<User> users = userService.getAllWithPaging(offset, limit);
+            logger.info("Retrieved user list of size " +
+                    "[" + users.size() + "] by limit [" + limit + "] and offset [" + offset + "].");
 
-            logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
-            return new ResponseEntity<>(userResourceAssembler.toResource(user), new HttpHeaders(), HttpStatus.FOUND);
+            return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.OK);
         } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return failedResponse(HttpStatus.BAD_REQUEST);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            return failedResponse(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    @RequestMapping(value = "/by-id/{userId}", method = RequestMethod.GET)
-    ResponseEntity<User> getUserById(@PathVariable Long userId) {
-        try {
-            User user = userService.getById(userId);
-
-            if(user == null) {
-                throw new EmptyResultDataAccessException(1);
-            }
-
-            logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
-            return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
-        } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
-    @RequestMapping(value = "/by-email/{email:.+}", method = RequestMethod.GET)
-    ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    ResponseEntity getUserByEmail(String email) {
         try {
             User user = userService.getByEmail(email);
 
@@ -88,56 +69,37 @@ public class UserController {
             logger.info("Retrieved user [" + user + "] by email [" + email + "]");
             return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.FOUND);
         } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return failedResponse(HttpStatus.BAD_REQUEST);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            return failedResponse(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    @RequestMapping(value = "/get-all-with-paging", method = RequestMethod.GET)
-    ResponseEntity<Collection<User>> getAllUsersWithPaging(@RequestParam(value="offset", defaultValue="0",
-            required = false) int offset, @RequestParam(value="limit", defaultValue = "10") int limit) {
-        try {
-            Collection<User> users = userService.getAllWithPaging(offset, limit);
-            logger.info("Retrieved user list of size " +
-                    "[" + users.size() + "] by limit [" + limit + "] and offset [" + offset + "].");
-
-            return new ResponseEntity<>(users, new HttpHeaders(), HttpStatus.FOUND);
-        } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     ResponseEntity<?> create(@RequestBody User user) {
         try {
             user.setRole(roleService.getDefaultRole());
             user.setState(stateService.getDefaultState());
-
+            user.setPassword(passwordCryptographer.generateStoringPasswordHash(user.getPassword()));
             userService.insert(user);
             logger.info("Created user [" + user.getEmail() + "].");
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CREATED);
         } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return failedResponse(HttpStatus.BAD_REQUEST);
         } catch(DataIntegrityViolationException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
+            return failedResponse(HttpStatus.CONFLICT);
         } catch (Exception e) {
             logger.error(user.toString(), e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.PATCH)
     ResponseEntity<?> update(@RequestBody User user) {
         try {
             userService.update(user);
@@ -145,27 +107,51 @@ public class UserController {
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.ACCEPTED);
         } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return failedResponse(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
         }
-
     }
 
-    @RequestMapping(value = "/delete/{userId}", method = RequestMethod.DELETE)
-    ResponseEntity<?> delete(@PathVariable Long userId) {
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    ResponseEntity getUserById(@PathVariable Long userId) {
+        try {
+            User user = userService.getById(userId);
+
+            if(user == null) {
+                throw new EmptyResultDataAccessException(1);
+            }
+
+            logger.info("Retrieved user [" + user + "] by id [" + userId + "]");
+            return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.OK);
+        } catch(InvalidUserPersistenceRequestException e) {
+            return failedResponse(HttpStatus.BAD_REQUEST);
+        } catch (EmptyResultDataAccessException e) {
+            return failedResponse(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error(e);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    ResponseEntity delete(@PathVariable Long userId) {
         try {
             userService.deleteById(userId);
             logger.info("Deleted user [" + userId + "].");
 
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
         } catch(InvalidUserPersistenceRequestException e) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return failedResponse(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             logger.error(e);
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE);
+            return failedResponse(HttpStatus.SERVICE_UNAVAILABLE);
         }
+    }
+
+    private ResponseEntity failedResponse(HttpStatus httpStatus) {
+        return new ResponseEntity<>(null, new HttpHeaders(), httpStatus);
     }
 
 }

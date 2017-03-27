@@ -25,10 +25,6 @@ public class RestConfiguration {
                 config.setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED);
                 config.setReturnBodyOnUpdate(false);
                 config.setReturnBodyOnCreate(false);
-                config.setDefaultMediaType(MediaType.APPLICATION_JSON_UTF8);
-                config.exposeIdsFor(User.class);
-                config.exposeIdsFor(State.class);
-                config.exposeIdsFor(Role.class);
             }
         };
     }

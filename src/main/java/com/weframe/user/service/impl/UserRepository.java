@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.security.GeneralSecurityException;
 import java.util.Collection;
 
-@Profile("orma")
+@Profile("orm")
 public interface UserRepository extends JpaRepository<User, Long>, UserService {
 
     default void insert(final User user) throws InvalidUserPersistenceRequestException, GeneralSecurityException {
@@ -19,7 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
             throw new InvalidUserPersistenceRequestException();
         }
 
-        user.setPassword(generateStoringPasswordHash(user.getPassword()));
         save(user);
     }
 
@@ -42,11 +41,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserService {
                                 final Long id) throws InvalidUserPersistenceRequestException, GeneralSecurityException {
         User user = getById(id);
 
-        if(!isValidPassword(oldPassword, user.getPassword())) {
-            throw new InvalidUserPersistenceRequestException();
-        }
-
-        user.setPassword(generateStoringPasswordHash(newPassword));
         save(user);
     }
 

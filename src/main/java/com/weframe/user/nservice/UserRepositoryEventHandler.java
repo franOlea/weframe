@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.GeneralSecurityException;
 
-@Component
-@RepositoryEventHandler(User.class)
+//@Component
+//@RepositoryEventHandler(User.class)
 public class UserRepositoryEventHandler {
 
     private static final Logger logger = Logger.getLogger(UserRepositoryEventHandler.class);

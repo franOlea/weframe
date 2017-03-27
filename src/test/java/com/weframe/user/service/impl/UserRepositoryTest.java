@@ -7,6 +7,7 @@ import com.weframe.user.model.Role;
 import com.weframe.user.model.State;
 import com.weframe.user.model.User;
 import com.weframe.user.model.fixture.UserFixture;
+import com.weframe.user.nservice.UserPasswordCryptographer;
 import com.weframe.user.service.exception.InvalidUserPersistenceRequestException;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -38,6 +39,9 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserPasswordCryptographer passwordCryptographer;
 
     @Test
     public void insert() throws Exception {
@@ -325,7 +329,7 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
-                userRepository.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
+                passwordCryptographer.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
                 UserFixture.johnDoe().getRole().getId(),
                 UserFixture.johnDoe().getState().getId());
 
@@ -339,7 +343,7 @@ public class UserRepositoryTest {
                 ROLES_ROW_MAPPER);
         user.setRole(role);
 
-        Assert.assertTrue(userRepository.isValidPassword("password", user.getPassword()));
+        Assert.assertTrue(passwordCryptographer.isValidPassword("password", user.getPassword()));
 
         jdbcTemplate.update(DELETE_QUERY, UserFixture.johnDoe().getId());
     }
@@ -351,7 +355,7 @@ public class UserRepositoryTest {
                 UserFixture.johnDoe().getFirstName(),
                 UserFixture.johnDoe().getLastName(),
                 UserFixture.johnDoe().getEmail(),
-                userRepository.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
+                passwordCryptographer.generateStoringPasswordHash(UserFixture.johnDoe().getPassword()),
                 UserFixture.johnDoe().getRole().getId(),
                 UserFixture.johnDoe().getState().getId());
 
