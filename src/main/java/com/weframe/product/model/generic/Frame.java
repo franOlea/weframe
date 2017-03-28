@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Frame {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 

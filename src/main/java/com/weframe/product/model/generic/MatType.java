@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class MatType {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 

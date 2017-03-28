@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class PictureMask {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
