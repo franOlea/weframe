@@ -7,9 +7,11 @@ import com.weframe.user.service.persistence.RoleRepository;
 import com.weframe.user.service.persistence.StateRepository;
 import com.weframe.user.service.persistence.UserRepository;
 import com.weframe.user.service.persistence.UserService;
+import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
 import com.weframe.user.service.persistence.exception.EmptyResultException;
 import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
 import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.security.GeneralSecurityException;
 import java.util.Collection;
@@ -55,9 +57,12 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException {
+    public void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException {
         User persisted = userRepository.get(user.getEmail());
-        if(persisted == null && userValidator.isValidInsert(user)) {
+        if(persisted != null) {
+            throw new EmailAlreadyUsedException();
+        }
+        if(userValidator.isValidInsert(user)) {
             user.setRole(roleRepository.getDefaultRole());
             user.setState(stateRepository.getDefaultState());
             try {
@@ -65,7 +70,11 @@ public class UserServiceImpl extends UserService {
             } catch (GeneralSecurityException e) {
                 throw new InvalidUserPersistenceException(e);
             }
-            userRepository.persist(user);
+            try {
+                userRepository.persist(user);
+            } catch(DataIntegrityViolationException e) {
+                throw new ForbiddenOperationException();
+            }
         } else {
             throw new ForbiddenOperationException();
         }
@@ -74,7 +83,11 @@ public class UserServiceImpl extends UserService {
     @Override
     public void update(User user) throws InvalidUserPersistenceException, ForbiddenOperationException {
         User persisted = userRepository.get(user.getEmail());
-        if(persisted != null && userValidator.isValidUpdate(user)) {
+
+        if(userValidator.isValidUpdate(user)) {
+            if(persisted == null) {
+                throw new InvalidUserPersistenceException();
+            }
             persisted.setFirstName(user.getFirstName());
             persisted.setLastName(user.getLastName());
             userRepository.persist(persisted);
