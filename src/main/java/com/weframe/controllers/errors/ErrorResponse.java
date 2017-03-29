@@ -9,8 +9,11 @@ public class ErrorResponse {
     public ErrorResponse() {
     }
 
-    public ErrorResponse(Collection<Error> errors) {
+    public ErrorResponse(final Collection<Error> errors) {
         this.errors = errors;
     }
 
+    public Collection<Error> getErrors() {
+        return errors;
+    }
 }

@@ -3,6 +3,7 @@ package com.weframe.user.model;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "STATES")
@@ -47,9 +48,8 @@ public class State {
 
         State state = (State) o;
 
-        if (id != state.id) return false;
-
-        return name.equals(state.name);
+        return Objects.equals(id, state.id)
+                && name.equals(state.name);
 
     }
 

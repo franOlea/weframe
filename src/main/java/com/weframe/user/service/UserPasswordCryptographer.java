@@ -50,17 +50,11 @@ public class UserPasswordCryptographer {
         }
     }
 
-    private byte[] generateSalt()
-    {
-        try {
-            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-            byte[] salt = new byte[16];
-            sr.nextBytes(salt);
-            return salt;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private byte[] generateSalt() throws NoSuchAlgorithmException {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return salt;
     }
 
     private String bytesToHex(byte[] array) {
