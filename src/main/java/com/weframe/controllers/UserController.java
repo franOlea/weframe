@@ -21,7 +21,7 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
-class UserController {
+public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
 
