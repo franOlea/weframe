@@ -3,10 +3,7 @@ package com.weframe.user.service.persistence;
 import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
-import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
-import com.weframe.user.service.persistence.exception.EmptyResultException;
-import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
-import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
+import com.weframe.user.service.persistence.exception.*;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
@@ -41,7 +38,7 @@ public abstract class UserService {
 
     public abstract Collection<User> getAll(final int size, final int page) throws EmptyResultException, InvalidUserPersistenceException;
 
-    public abstract void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException;
+    public abstract void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException, InvalidFieldException;
 
     public abstract void update(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException;
 

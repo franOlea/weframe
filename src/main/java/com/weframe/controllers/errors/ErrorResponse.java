@@ -1,5 +1,7 @@
 package com.weframe.controllers.errors;
 
+import org.apache.commons.lang3.Validate;
+
 import java.util.Collection;
 
 public class ErrorResponse {
@@ -10,6 +12,8 @@ public class ErrorResponse {
     }
 
     public ErrorResponse(final Collection<Error> errors) {
+        Validate.notEmpty(errors, "The errors cannot be empty.");
+
         this.errors = errors;
     }
 

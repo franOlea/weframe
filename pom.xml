@@ -37,6 +37,7 @@
 		<mysql-connector-java.version>6.0.5</mysql-connector-java.version>
 		<spring-hateoas.version>0.21.0.RELEASE</spring-hateoas.version>
 		<aws-java-sdk.version>1.11.86</aws-java-sdk.version>
+		<commons-validator.version>1.4.1</commons-validator.version>
 	</properties>
 
 	<dependencies>
@@ -66,12 +67,17 @@
 			<version>${spring-data-jpa.version}</version>
 		</dependency>
 
-		<!-- Apache Commons Lang 3 -->
+		<!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons.version}</version>
         </dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>${commons-validator.version}</version>
+		</dependency>
 
 		<!-- Hibernate Core -->
 		<dependency>

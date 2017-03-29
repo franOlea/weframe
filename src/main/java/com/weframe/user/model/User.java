@@ -124,13 +124,13 @@ public class User {
 
         User user = (User) o;
 
-        if (!id.equals(user.id)) return false;
-        if (!firstName.equals(user.firstName)) return false;
-        if (!lastName.equals(user.lastName)) return false;
-        if (!email.equals(user.email)) return false;
-        if (!password.equals(user.password)) return false;
-        if (!role.equals(user.role)) return false;
-        return state.equals(user.state);
+        return id.equals(user.id)
+                && firstName.equals(user.firstName)
+                && lastName.equals(user.lastName)
+                && email.equals(user.email)
+                && password.equals(user.password)
+                && role.equals(user.role)
+                && state.equals(user.state);
 
     }
 
@@ -153,7 +153,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", role=" + role +
                 ", state=" + state +
                 '}';

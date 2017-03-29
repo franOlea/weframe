@@ -7,10 +7,8 @@ import com.weframe.user.service.persistence.RoleRepository;
 import com.weframe.user.service.persistence.StateRepository;
 import com.weframe.user.service.persistence.UserRepository;
 import com.weframe.user.service.persistence.UserService;
-import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
-import com.weframe.user.service.persistence.exception.EmptyResultException;
-import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
-import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
+import com.weframe.user.service.persistence.exception.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.security.GeneralSecurityException;
@@ -57,31 +55,42 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException {
+    public void create(final User user) throws InvalidUserPersistenceException,
+                                               ForbiddenOperationException,
+                                               EmailAlreadyUsedException,
+                                               InvalidFieldException {
+        userValidator.validateInsert(user);
         User persisted = userRepository.get(user.getEmail());
         if(persisted != null) {
             throw new EmailAlreadyUsedException();
         }
-        if(userValidator.isValidInsert(user)) {
-            user.setRole(roleRepository.getDefaultRole());
-            user.setState(stateRepository.getDefaultState());
-            try {
-                user.setPassword(passwordCryptographer.generateStoringPasswordHash(user.getPassword()));
-            } catch (GeneralSecurityException e) {
-                throw new InvalidUserPersistenceException(e);
-            }
-            try {
-                userRepository.persist(user);
-            } catch(DataIntegrityViolationException e) {
-                throw new ForbiddenOperationException();
-            }
-        } else {
+        User created = new User();
+        created.setFirstName(user.getFirstName());
+        created.setLastName(user.getLastName());
+        created.setEmail(user.getEmail());
+        created.setRole(roleRepository.getDefaultRole());
+        created.setState(stateRepository.getDefaultState());
+        try {
+            created.setPassword(
+                    passwordCryptographer.generateStoringPasswordHash(
+                            user.getPassword()
+                    )
+            );
+        } catch (GeneralSecurityException e) {
+            throw new InvalidUserPersistenceException(e);
+        }
+        try {
+            userRepository.persist(created);
+        } catch(DataIntegrityViolationException e) {
             throw new ForbiddenOperationException();
+        } catch(DataAccessException e) {
+            throw new InvalidUserPersistenceException(e);
         }
     }
 
     @Override
-    public void update(User user) throws InvalidUserPersistenceException, ForbiddenOperationException {
+    public void update(User user) throws InvalidUserPersistenceException,
+                                         ForbiddenOperationException {
         User persisted = userRepository.get(user.getEmail());
 
         if(userValidator.isValidUpdate(user)) {

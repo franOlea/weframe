@@ -106,6 +106,6 @@
     <module name="RegexpSingleline">
         <property name="severity" value="ignore"/>
         <property name="format" value="\s+$"/>
-        <property name="message" value="Line has trailing spaces."/>
+        <property name="details" value="Line has trailing spaces."/>
     </module>
 </module>

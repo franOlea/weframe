@@ -5,10 +5,7 @@ import com.weframe.controllers.errors.ErrorResponse;
 import com.weframe.controllers.errors.Error;
 import com.weframe.user.model.User;
 import com.weframe.user.service.persistence.UserService;
-import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
-import com.weframe.user.service.persistence.exception.EmptyResultException;
-import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
-import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
+import com.weframe.user.service.persistence.exception.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +45,17 @@ class UserController {
             userService.create(user);
             logger.info("Created user [" + user.getEmail() + "].");
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
-        } catch(EmailAlreadyUsedException e) {
+        } catch(InvalidFieldException e) {
+            Error error = new Error(
+                    String.format("invalid-%s", e.getField()),
+                    String.format(
+                            "The %s %s given is invalid, please try again.",
+                            e.getField(),
+                            e.getFieldContent()
+                    )
+            );
+            return generateErrorResponse(Collections.singleton(error), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (EmailAlreadyUsedException e) {
             Error error = new Error("email-already-in-use", "The email given is already in use.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.UNPROCESSABLE_ENTITY);
         } catch(ForbiddenOperationException e) {
@@ -82,7 +89,8 @@ class UserController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a user by id [%d].",
-                            userId),
+                            userId
+                    ),
                     e);
             Error error = new Error(
                     "internal-serer-error",
