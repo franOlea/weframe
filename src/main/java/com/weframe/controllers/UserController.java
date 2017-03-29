@@ -20,6 +20,7 @@ import java.util.Collections;
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);

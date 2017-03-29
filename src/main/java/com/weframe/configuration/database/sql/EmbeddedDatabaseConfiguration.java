@@ -13,11 +13,13 @@ import javax.sql.DataSource;
 public class EmbeddedDatabaseConfiguration {
 
     @Bean
+    @Profile("local")
     public DataSource getDataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("sql/h2.sql")
-                .addScript("sql/database.sql")
+                .addScript("sql/schema.sql")
+                .addScript("sql/inserts.sql")
                 .build();
     }
 
