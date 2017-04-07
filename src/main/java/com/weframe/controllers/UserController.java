@@ -71,7 +71,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("There was an unexpected error trying to create a user.", e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -94,7 +94,7 @@ public class UserController {
                     ),
                     e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -115,7 +115,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("There was an unexpected error trying to update a user.", e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -134,7 +134,7 @@ public class UserController {
                             userId),
                     e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
