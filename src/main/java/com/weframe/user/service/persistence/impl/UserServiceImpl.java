@@ -21,7 +21,13 @@ public class UserServiceImpl extends UserService {
                            final StateRepository stateRepository,
                            final UserPasswordCryptographer passwordCryptographer,
                            final UserValidator userValidator) {
-        super(userRepository, roleRepository, stateRepository, passwordCryptographer, userValidator);
+        super(
+                userRepository,
+                roleRepository,
+                stateRepository,
+                passwordCryptographer,
+                userValidator
+        );
     }
 
     @Override
@@ -45,7 +51,8 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public Collection<User> getAll(final int size, final int page) throws EmptyResultException, InvalidUserPersistenceException {
+    public Collection<User> getAll(final int size, final int page)
+            throws EmptyResultException, InvalidUserPersistenceException {
         final Collection<User> users = userRepository.getAll(size, page);
         if(users == null || users.isEmpty()) {
             throw new EmptyResultException();
