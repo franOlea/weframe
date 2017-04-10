@@ -2,6 +2,7 @@ package com.weframe.controllers.errors;
 
 import org.apache.commons.lang3.Validate;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Error {
 
     private String title;

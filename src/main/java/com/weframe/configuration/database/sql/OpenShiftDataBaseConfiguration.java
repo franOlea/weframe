@@ -26,7 +26,7 @@ public class OpenShiftDataBaseConfiguration {
     private String driverClassName;
 
     @Bean
-    public DataSource getDatasource() {
+    public DataSource getDataSource() {
         DriverManagerDataSource dataSource =  new DriverManagerDataSource(url, user, password);
         dataSource.setDriverClassName(driverClassName);
 

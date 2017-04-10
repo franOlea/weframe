@@ -16,7 +16,7 @@ public class PictureMask {
     private float xOffset;
 
     @Column(name = "LENGTH", nullable = false)
-    private float lenght;
+    private float length;
 
     @Column(name = "Y_OFFSET", nullable = false)
     private float yOffset;

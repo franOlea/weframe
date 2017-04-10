@@ -8,6 +8,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
 
+@SuppressWarnings({"WeakerAccess"})
 public abstract class UserService {
 
     protected final UserRepository userRepository;

@@ -43,14 +43,6 @@ public class UserValidator {
 
     }
 
-    public boolean isValidInsert(User user) {
-        return user != null &&
-                !StringUtils.isBlank(user.getEmail()) &&
-                !StringUtils.isBlank(user.getFirstName()) &&
-                !StringUtils.isBlank(user.getLastName()) &&
-                !StringUtils.isBlank(user.getPassword());
-    }
-
     public boolean isValidUpdate(User user) {
         return user != null &&
                 !StringUtils.isBlank(user.getEmail()) &&

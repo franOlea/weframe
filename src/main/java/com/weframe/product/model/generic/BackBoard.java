@@ -4,6 +4,7 @@ import com.weframe.product.model.Picture;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "BACK_BOARDS")
 public class BackBoard {

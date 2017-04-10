@@ -5,6 +5,7 @@ import com.weframe.user.service.persistence.RoleRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Profile("orm")
 public interface RoleJpaRepository extends RoleRepository, JpaRepository<Role, Long> {
 

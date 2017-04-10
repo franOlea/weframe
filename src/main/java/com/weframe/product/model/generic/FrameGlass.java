@@ -2,6 +2,7 @@ package com.weframe.product.model.generic;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "FRAME_GLASSES")
 public class FrameGlass {
