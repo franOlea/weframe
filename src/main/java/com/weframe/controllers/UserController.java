@@ -32,10 +32,17 @@ public class UserController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     private ResponseEntity getUsers(
-            @RequestParam(value="page", defaultValue="0",required = false) final int page,
+            @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="email", required = false) final String email) {
         if(StringUtils.isBlank(email)) {
+            if(page < 0 || size < 0) {
+                Error error = new Error(
+                        "invalid-request",
+                        "The page and size parameters must be above zero."
+                );
+                return generateErrorResponse(Collections.singleton(error), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             return getUsersWithPaging(page, size);
         } else {
             return getUserByEmail(email);
