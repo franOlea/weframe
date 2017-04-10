@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
+@SuppressWarnings("unused")
 @Configuration
 @Profile("embedded")
 public class EmbeddedDatabaseConfiguration {

@@ -8,7 +8,6 @@ import com.weframe.user.service.persistence.UserService;
 import com.weframe.user.service.persistence.exception.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -25,8 +24,11 @@ public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
 
-    @Autowired
     private UserService userService;
+
+    public UserController(final UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     private ResponseEntity getUsers(

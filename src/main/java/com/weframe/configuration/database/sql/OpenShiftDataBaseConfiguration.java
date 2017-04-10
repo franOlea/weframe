@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
+@SuppressWarnings("unused")
 @Configuration
 @Profile("openshift")
 public class OpenShiftDataBaseConfiguration {

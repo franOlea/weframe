@@ -2,6 +2,7 @@ package com.weframe.product.model.personalized;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "PICTURE_MASKS")
 public class PictureMask {
