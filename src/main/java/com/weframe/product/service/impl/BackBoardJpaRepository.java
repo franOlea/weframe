@@ -4,7 +4,10 @@ import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.service.BackBoardRepository;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Collection;
 
 public interface BackBoardJpaRepository extends JpaRepository<BackBoard, Long>, BackBoardRepository {
 
@@ -39,6 +42,15 @@ public interface BackBoardJpaRepository extends JpaRepository<BackBoard, Long>, 
     default BackBoard get(final String uniqueName)throws InvalidGenericProductPersistenceException {
         try {
             return findByUniqueName(uniqueName);
+        } catch(DataAccessException e) {
+            throw new InvalidGenericProductPersistenceException(e);
+        }
+    }
+
+    @Override
+    default Collection<BackBoard> getAll(final int size, final int page) throws InvalidGenericProductPersistenceException {
+        try {
+            return findAll(new PageRequest(page, size)).getContent();
         } catch(DataAccessException e) {
             throw new InvalidGenericProductPersistenceException(e);
         }

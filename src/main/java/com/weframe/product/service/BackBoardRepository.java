@@ -3,6 +3,8 @@ package com.weframe.product.service;
 import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
+import java.util.Collection;
+
 public interface BackBoardRepository {
 
     void persist(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
@@ -13,4 +15,5 @@ public interface BackBoardRepository {
 
     BackBoard get(final String uniqueName) throws InvalidGenericProductPersistenceException;
 
+    Collection<BackBoard> getAll(int size, int page) throws InvalidGenericProductPersistenceException;
 }
