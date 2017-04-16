@@ -6,6 +6,7 @@ import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "USERS")
 public class User {
@@ -22,11 +23,11 @@ public class User {
     @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
-//    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "ROLE", nullable = false)
     private Role role;
-//    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "STATE", nullable = false)
     private State state;

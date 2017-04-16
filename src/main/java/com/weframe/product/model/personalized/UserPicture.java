@@ -5,6 +5,7 @@ import com.weframe.user.model.User;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "USER_PICTURES")
 public class UserPicture {

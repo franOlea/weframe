@@ -8,7 +8,6 @@ import com.weframe.user.service.persistence.UserService;
 import com.weframe.user.service.persistence.exception.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Collections;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -25,15 +24,25 @@ public class UserController {
 
     private final static Logger logger = Logger.getLogger(UserController.class);
 
-    @Autowired
     private UserService userService;
+
+    public UserController(final UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     private ResponseEntity getUsers(
-            @RequestParam(value="page", defaultValue="0",required = false) final int page,
+            @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="email", required = false) final String email) {
         if(StringUtils.isBlank(email)) {
+            if(page < 0 || size < 0) {
+                Error error = new Error(
+                        "invalid-request",
+                        "The page and size parameters must be above zero."
+                );
+                return generateErrorResponse(Collections.singleton(error), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             return getUsersWithPaging(page, size);
         } else {
             return getUserByEmail(email);
@@ -71,7 +80,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("There was an unexpected error trying to create a user.", e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -94,7 +103,7 @@ public class UserController {
                     ),
                     e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -115,7 +124,7 @@ public class UserController {
         } catch (Exception e) {
             logger.error("There was an unexpected error trying to update a user.", e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -134,7 +143,7 @@ public class UserController {
                             userId),
                     e);
             Error error = new Error(
-                    "internal-serer-error",
+                    "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }

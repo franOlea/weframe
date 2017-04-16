@@ -11,6 +11,7 @@ import com.weframe.user.model.User;
 import javax.persistence.*;
 import java.util.Set;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "PICTURE_FRAMES")
 public class PictureFrame {

@@ -4,6 +4,7 @@ import com.weframe.product.model.PictureFrame;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "LOCATED_PICTURES")
 public class LocatedPicture {

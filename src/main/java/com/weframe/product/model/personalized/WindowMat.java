@@ -5,6 +5,7 @@ import com.weframe.product.model.generic.MatType;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "WINDOW_MATS")
 public class WindowMat {

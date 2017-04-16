@@ -5,6 +5,7 @@ import org.apache.commons.lang3.Validate;
 import javax.persistence.*;
 import java.util.Objects;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "STATES")
 public class State {
