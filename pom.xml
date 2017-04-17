@@ -37,22 +37,24 @@
 		<mysql-connector-java.version>6.0.5</mysql-connector-java.version>
 		<spring-hateoas.version>0.21.0.RELEASE</spring-hateoas.version>
 		<aws-java-sdk.version>1.11.86</aws-java-sdk.version>
+		<commons-validator.version>1.4.1</commons-validator.version>
 	</properties>
 
 	<dependencies>
+		<!--<dependency>-->
+			<!--<groupId>com.amazonaws</groupId>-->
+			<!--<artifactId>aws-java-sdk</artifactId>-->
+			<!--<version>${aws-java-sdk.version}</version>-->
+		<!--</dependency>-->
+
+		<!-- Spring Security -->
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk</artifactId>
-			<version>${aws-java-sdk.version}</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>3.1.0.RELEASE</version>
 		</dependency>
 
 		<!-- String Data Rest -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-
-		<!-- Spring Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -65,31 +67,23 @@
 			<version>${spring-data-jpa.version}</version>
 		</dependency>
 
-		<!-- Spring HATEOAS -->
-		<dependency>
-			<groupId>org.springframework.hateoas</groupId>
-			<artifactId>spring-hateoas</artifactId>
-			<version>${spring-hateoas.version}</version>
-		</dependency>
-
-		<!-- Apache Commons Lang 3 -->
+		<!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons.version}</version>
         </dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>${commons-validator.version}</version>
+		</dependency>
 
 		<!-- Hibernate Core -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate-core.version}</version>
-		</dependency>
-
-		<!-- Spring JDBC -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 
 		<!-- H2 -->
@@ -116,6 +110,11 @@
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path-assert</artifactId>
 			<scope>test</scope>
 		</dependency>
 

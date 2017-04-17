@@ -2,12 +2,13 @@ package com.weframe.product.model.personalized;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "PICTURE_MASKS")
 public class PictureMask {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -15,7 +16,7 @@ public class PictureMask {
     private float xOffset;
 
     @Column(name = "LENGTH", nullable = false)
-    private float lenght;
+    private float length;
 
     @Column(name = "Y_OFFSET", nullable = false)
     private float yOffset;

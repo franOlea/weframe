@@ -1,22 +1,22 @@
 package com.weframe.product.model.personalized;
 
-import com.weframe.picture.model.Picture;
 import com.weframe.product.model.PictureFrame;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "LOCATED_PICTURES")
 public class LocatedPicture {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "PICTURE", nullable = false)
-    private Picture picture;
+    @JoinColumn(name = "USER_PICTURE", nullable = false)
+    private UserPicture userPicture;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "PICTURE_MASK", nullable = false)

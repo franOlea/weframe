@@ -1,13 +1,16 @@
 package com.weframe.product.model.generic;
 
+import com.weframe.product.model.Picture;
+
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "BACK_BOARDS")
 public class BackBoard {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -20,11 +23,12 @@ public class BackBoard {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "IMAGE_KEY", nullable = false, unique = true)
-    private String imageKey;
-
-    @Column(name = "IMAGE_URL", nullable = false, unique = true)
-    private String imageUrl;
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true)
+    @JoinColumn(name = "PICTURE", nullable = false)
+    private Picture picture;
 
     @Column(name= "M2_PRICE", nullable = false)
     private float m2Price;

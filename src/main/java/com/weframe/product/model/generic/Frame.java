@@ -1,14 +1,17 @@
 package com.weframe.product.model.generic;
 
 
+import com.weframe.product.model.Picture;
+
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "FRAMES")
 public class Frame {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -27,11 +30,12 @@ public class Frame {
     @Column(name = "LENGTH", nullable = false)
     private float length;
 
-    @Column(name = "IMAGE_KEY", nullable = false, unique = true)
-    private String imageKey;
-
-    @Column(name = "IMAGE_URL", nullable = false, unique = true)
-    private String imageUrl;
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true)
+    @JoinColumn(name = "PICTURE", nullable = false)
+    private Picture picture;
 
     @Column(name= "PRICE", nullable = false)
     private float price;
