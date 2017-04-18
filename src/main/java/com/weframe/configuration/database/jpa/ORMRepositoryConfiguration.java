@@ -1,6 +1,5 @@
 package com.weframe.configuration.database.jpa;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -12,19 +11,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+@SuppressWarnings("unused")
 @Configuration
 @Profile("orm")
 public class ORMRepositoryConfiguration {
 
-    @Autowired
-    private DataSource dataSource;
-
     @Bean
-    public EntityManagerFactory entityManagerFactory() {
-
+    public EntityManagerFactory entityManagerFactory(final DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
-
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.weframe");
@@ -35,13 +30,11 @@ public class ORMRepositoryConfiguration {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-
+    public PlatformTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory());
+        txManager.setEntityManagerFactory(entityManagerFactory);
+
         return txManager;
     }
-
-
 
 }

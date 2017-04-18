@@ -1,9 +1,12 @@
 package com.weframe.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "USERS")
 public class User {
@@ -17,11 +20,14 @@ public class User {
     private String lastName;
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
     @ManyToOne
     @JoinColumn(name = "ROLE", nullable = false)
     private Role role;
+
     @ManyToOne
     @JoinColumn(name = "STATE", nullable = false)
     private State state;
@@ -68,6 +74,7 @@ public class User {
         return email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -98,6 +105,7 @@ public class User {
         this.email = email;
     }
 
+    @JsonProperty
     public void setPassword(final String password) {
         this.password = password;
     }
@@ -117,13 +125,13 @@ public class User {
 
         User user = (User) o;
 
-        if (!id.equals(user.id)) return false;
-        if (!firstName.equals(user.firstName)) return false;
-        if (!lastName.equals(user.lastName)) return false;
-        if (!email.equals(user.email)) return false;
-        if (!password.equals(user.password)) return false;
-        if (!role.equals(user.role)) return false;
-        return state.equals(user.state);
+        return id.equals(user.id)
+                && firstName.equals(user.firstName)
+                && lastName.equals(user.lastName)
+                && email.equals(user.email)
+                && password.equals(user.password)
+                && role.equals(user.role)
+                && state.equals(user.state);
 
     }
 
@@ -146,7 +154,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", role=" + role +
                 ", state=" + state +
                 '}';

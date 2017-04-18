@@ -11,12 +11,13 @@ import com.weframe.user.model.User;
 import javax.persistence.*;
 import java.util.Set;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "PICTURE_FRAMES")
 public class PictureFrame {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 
@@ -24,14 +25,23 @@ public class PictureFrame {
     @JoinColumn(name = "BACK_BOARD", nullable = false)
     private BackBoard backBoard;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true)
     @JoinColumn(name = "BACK_MAT", nullable = false)
     private BackMat backMat;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, mappedBy = "pictureFrame")
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            mappedBy = "pictureFrame")
     private Set<LocatedPicture> locatedPictures;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true)
     @JoinColumn(name = "WINDOW_MAT", nullable = false)
     private WindowMat windowMat;
 

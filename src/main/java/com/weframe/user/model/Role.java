@@ -3,7 +3,9 @@ package com.weframe.user.model;
 import org.apache.commons.lang3.Validate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "ROLES")
 public class Role {
@@ -47,10 +49,8 @@ public class Role {
 
         Role role = (Role) o;
 
-        if (id != role.id) return false;
-
-        return name.equals(role.name);
-
+        return Objects.equals(id, role.id)
+                && name.equals(role.name);
     }
 
     @Override

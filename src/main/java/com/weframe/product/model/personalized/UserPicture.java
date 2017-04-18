@@ -1,27 +1,19 @@
-package com.weframe.product.model.generic;
+package com.weframe.product.model.personalized;
 
 import com.weframe.product.model.Picture;
+import com.weframe.user.model.User;
 
 import javax.persistence.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
-@Table(name = "MAT_TYPES")
-public class MatType {
+@Table(name = "USER_PICTURES")
+public class UserPicture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
-
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @Column(name = "UNIQUE_NAME", nullable = false, unique = true)
-    private String uniqueName;
-
-    @Column(name = "DESCRIPTION", nullable = false)
-    private String description;
 
     @OneToOne(
             fetch = FetchType.EAGER,
@@ -30,10 +22,8 @@ public class MatType {
     @JoinColumn(name = "PICTURE", nullable = false)
     private Picture picture;
 
-    @Column(name = "M2_PRICE", nullable = false)
-    private float m2Price;
-
-    public MatType() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "USER", nullable = false)
+    private User user;
 
 }

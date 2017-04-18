@@ -1,23 +1,19 @@
 package com.weframe.product.service;
 
 import com.weframe.product.model.generic.BackBoard;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.data.rest.core.annotation.RestResource;
+import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
-import java.util.Set;
+import java.util.Collection;
 
-@RepositoryRestResource(collectionResourceRel = "backboards", path = "backboards")
-public interface BackBoardRepository extends JpaRepository<BackBoard, Long> {
+public interface BackBoardRepository {
 
-    @RestResource(path = "like-name", rel = "like-name")
-    Set<BackBoard> findLikeNameIgnoreCaseByOrderByNameAsc(@Param("name") String name);
+    void persist(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
-    @RestResource(path = "like-description", rel = "like-description")
-    Set<BackBoard> findLikeDescriptionIgnoreCaseByOrderByNameAsc(@Param("description") String description);
+    void remove(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
-    @RestResource(path = "unique-name", rel = "unique-name")
-    BackBoard findByUniqueName(@Param("unique-name") String uniqueName);
+    BackBoard get(final Long id) throws InvalidGenericProductPersistenceException;
 
+    BackBoard get(final String uniqueName) throws InvalidGenericProductPersistenceException;
+
+    Collection<BackBoard> getAll(int size, int page) throws InvalidGenericProductPersistenceException;
 }
