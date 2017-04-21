@@ -67,7 +67,7 @@
 			<version>${spring-data-jpa.version}</version>
 		</dependency>
 
-		<!-- Apache Commons -->
+		<!-- Apache Commons ->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

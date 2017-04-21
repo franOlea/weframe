@@ -29,13 +29,16 @@ public class BackBoardServiceImpl extends BackBoardService {
     }
 
     @Override
-    public void create(BackBoard backBoard) {
-
+    public void create(BackBoard backBoard) throws InvalidGenericProductPersistenceException {
+        backBoardRepository.persist(backBoard);
     }
 
     @Override
-    public void update(BackBoard backBoard) {
+    public void update(BackBoard backBoard) throws InvalidGenericProductPersistenceException {
+        BackBoard persisted = backBoardRepository.get(backBoard.getUniqueName());
+        if(persisted != null) {
 
+        }
     }
 
     @Override

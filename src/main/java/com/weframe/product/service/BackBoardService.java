@@ -19,9 +19,9 @@ public abstract class BackBoardService {
 
     public abstract Collection<BackBoard> getAll(final int size, final int page);
 
-    public abstract void create(final BackBoard backBoard);
+    public abstract void create(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
-    public abstract void update(final BackBoard backBoard);
+    public abstract void update(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
     public abstract void delete(final Long id);
 

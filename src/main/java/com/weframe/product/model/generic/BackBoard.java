@@ -36,5 +36,23 @@ public class BackBoard {
     public BackBoard() {
     }
 
+    public String getUniqueName() {
+        return uniqueName;
+    }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public void setPicture(final Picture picture) {
+        this.picture = picture;
+    }
+
+    public void setM2Price(final float m2Price) {
+        this.m2Price = m2Price;
+    }
 }
