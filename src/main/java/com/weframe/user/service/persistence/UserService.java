@@ -37,6 +37,8 @@ public abstract class UserService {
 
     public abstract User getByEmail(final String email) throws EmptyResultException, InvalidUserPersistenceException;
 
+    public abstract User getByLogin(final String email, final String password) throws EmptyResultException, InvalidUserPersistenceException;
+
     public abstract Collection<User> getAll(final int size, final int page) throws EmptyResultException, InvalidUserPersistenceException;
 
     public abstract void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException, InvalidFieldException;
