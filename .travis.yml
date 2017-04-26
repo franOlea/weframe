@@ -13,3 +13,4 @@ deploy:
   on:
     repo: franOlea/weframe-resources-server
   skip_cleanup: true
+  
