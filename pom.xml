@@ -27,7 +27,7 @@
 		<junit.version>4.12</junit.version>
 		<apache.commons.version>3.4</apache.commons.version>
         <mysql.connector.version>5.1.9</mysql.connector.version>
-        <slf4j.version>1.7.21</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
 		<jmockit.version>1.27</jmockit.version>
 		<maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
 		<hibernate-core.version>5.2.2.Final</hibernate-core.version>
@@ -65,6 +65,13 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 			<version>${spring-data-jpa.version}</version>
+		</dependency>
+
+		<!-- Log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 
 		<!-- Apache Commons -->
