@@ -1,4 +1,4 @@
-package com.weframe.product.model;
+package com.weframe.picture.model;
 
 import javax.persistence.*;
 
@@ -21,4 +21,17 @@ public class Picture {
     public Picture() {
     }
 
+    public Picture(String imageKey, String imageUrl) {
+        this.imageKey = imageKey;
+        this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Picture{" +
+                "id=" + id +
+                ", imageKey='" + imageKey + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }

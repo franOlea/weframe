@@ -1,6 +1,6 @@
 package com.weframe.product.model.generic;
 
-import com.weframe.product.model.Picture;
+import com.weframe.picture.model.Picture;
 
 import javax.persistence.*;
 
