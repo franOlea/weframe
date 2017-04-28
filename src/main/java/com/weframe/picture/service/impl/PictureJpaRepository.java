@@ -38,11 +38,11 @@ public interface PictureJpaRepository extends PictureRepository, JpaRepository<P
     @Override
     default Picture get(final String uniqueName) throws InvalidPicturePersistenceException {
         try {
-            return findByUniqueName(uniqueName);
+            return findByImageKey(uniqueName);
         } catch(DataAccessException e) {
             throw new InvalidPicturePersistenceException(e);
         }
     }
 
-    Picture findByUniqueName(final String uniqueName);
+    Picture findByImageKey(final String uniqueName);
 }
