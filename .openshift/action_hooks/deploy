@@ -29,4 +29,4 @@ cd $OPENSHIFT_REPO_DIR
 
 
 $M2/mvn --version
-$M2/mvn -s settings.xml clean install
+$M2/mvn -s settings.xml clean install -Dmaven.test.skip=true
