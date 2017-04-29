@@ -17,12 +17,12 @@ public abstract class BackBoardService {
 
     public abstract BackBoard getByUniqueName(final String uniqueName) throws InvalidGenericProductPersistenceException;
 
-    public abstract Collection<BackBoard> getAll(final int size, final int page);
+    public abstract Collection<BackBoard> getAll(final int size, final int page) throws InvalidGenericProductPersistenceException;
 
     public abstract void create(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
     public abstract void update(final BackBoard backBoard) throws InvalidGenericProductPersistenceException;
 
-    public abstract void delete(final Long id);
+    public abstract void delete(final Long id) throws InvalidGenericProductPersistenceException;
 
 }

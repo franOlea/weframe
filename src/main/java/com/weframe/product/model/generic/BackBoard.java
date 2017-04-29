@@ -36,23 +36,47 @@ public class BackBoard {
     public BackBoard() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getUniqueName() {
         return uniqueName;
     }
 
-    public void setName(final String name) {
+    public void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setDescription(final String description) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setPicture(final Picture picture) {
+    public Picture getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Picture picture) {
         this.picture = picture;
     }
 
-    public void setM2Price(final float m2Price) {
+    public float getM2Price() {
+        return m2Price;
+    }
+
+    public void setM2Price(float m2Price) {
         this.m2Price = m2Price;
     }
 }
