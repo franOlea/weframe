@@ -1,5 +1,10 @@
 package com.weframe.configuration;
 
+import com.weframe.controllers.ResponseGenerator;
+import com.weframe.product.model.generic.BackBoard;
+import com.weframe.product.service.BackBoardRepository;
+import com.weframe.product.service.BackBoardService;
+import com.weframe.product.service.impl.BackBoardServiceImpl;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
 import com.weframe.user.service.persistence.RoleRepository;
@@ -36,5 +41,15 @@ public class ControllerConfiguration {
                                       final UserPasswordCryptographer passwordCryptographer,
                                       final UserValidator userValidator) {
         return new UserServiceImpl(userRepository, roleRepository, stateRepository, passwordCryptographer, userValidator);
+    }
+
+    @Bean
+    public BackBoardService getBackBoardService(final BackBoardRepository backBoardRepository) {
+        return new BackBoardServiceImpl(backBoardRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<BackBoard> getBackBoardResponseGenerator() {
+        return new ResponseGenerator<>();
     }
 }

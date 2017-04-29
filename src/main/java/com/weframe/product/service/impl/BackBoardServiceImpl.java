@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class BackBoardServiceImpl extends BackBoardService {
 
-    public BackBoardServiceImpl(BackBoardRepository backBoardRepository) {
+    public BackBoardServiceImpl(final BackBoardRepository backBoardRepository) {
         super(backBoardRepository);
     }
 
