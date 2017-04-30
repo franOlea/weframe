@@ -1,0 +1,35 @@
+package com.weframe.product.service;
+
+import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
+
+import java.util.Collection;
+
+public abstract class GenericProductService<T> {
+
+    protected final GenericProductRepository<T> repository;
+
+    public GenericProductService(final GenericProductRepository<T> repository) {
+        this.repository = repository;
+    }
+
+    public abstract T getById(final Long id)
+            throws InvalidGenericProductPersistenceException;
+
+    public abstract T getByUniqueName(final String uniqueName)
+            throws InvalidGenericProductPersistenceException;
+
+    public abstract Collection<T> getAll(final int page,
+                                         final int size)
+            throws InvalidGenericProductPersistenceException;
+
+    public abstract Collection<T> getAllWithNameLike(final String name,
+                                         final int page,
+                                         final int size)
+            throws InvalidGenericProductPersistenceException;
+
+    public abstract void persist(T t)
+            throws InvalidGenericProductPersistenceException;
+
+    public abstract void delete(Long id)
+            throws InvalidGenericProductPersistenceException;
+}

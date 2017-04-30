@@ -78,7 +78,7 @@ public class UserController {
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
-            logger.error("There was an unexpected error trying to create a user.", e);
+            logger.error("There was an unexpected error trying to persist a user.", e);
             Error error = new Error(
                     "internal-server-error",
                     "There has been an internal server error. Please try again later.");
