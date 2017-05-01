@@ -1,6 +1,6 @@
 package com.weframe.product.service.impl;
 
-import com.weframe.product.model.generic.BackBoard;
+import com.weframe.product.model.generic.Frame;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import org.springframework.dao.DataAccessException;
@@ -11,12 +11,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 
-public interface BackBoardJpaRepository extends GenericProductRepository<BackBoard>, JpaRepository<BackBoard, Long> {
+public interface FrameJpaRepository extends GenericProductRepository<Frame>, JpaRepository<Frame, Long> {
 
     @Override
-    default void persist(final BackBoard backBoard) throws InvalidGenericProductPersistenceException {
+    default void persist(final Frame frame) throws InvalidGenericProductPersistenceException {
         try {
-            save(backBoard);
+            save(frame);
         } catch(DataAccessException e) {
             throw new InvalidGenericProductPersistenceException(e);
         }
@@ -32,7 +32,7 @@ public interface BackBoardJpaRepository extends GenericProductRepository<BackBoa
     }
 
     @Override
-    default BackBoard get(final Long id) throws InvalidGenericProductPersistenceException {
+    default Frame get(final Long id) throws InvalidGenericProductPersistenceException {
         try {
             return findOne(id);
         } catch(DataAccessException e) {
@@ -41,7 +41,7 @@ public interface BackBoardJpaRepository extends GenericProductRepository<BackBoa
     }
 
     @Override
-    default BackBoard get(final String uniqueName) throws InvalidGenericProductPersistenceException {
+    default Frame get(final String uniqueName) throws InvalidGenericProductPersistenceException {
         try {
             return findByUniqueName(uniqueName);
         } catch(DataAccessException e) {
@@ -50,7 +50,7 @@ public interface BackBoardJpaRepository extends GenericProductRepository<BackBoa
     }
 
     @Override
-    default Collection<BackBoard> getAll(final int size,
+    default Collection<Frame> getAll(final int size,
                                          final int page) throws InvalidGenericProductPersistenceException {
         try {
             return findAll(new PageRequest(page, size)).getContent();
@@ -60,7 +60,7 @@ public interface BackBoardJpaRepository extends GenericProductRepository<BackBoa
     }
 
     @Override
-    default Collection<BackBoard> getAllWtihNameLike(final String name, final int size, final int page) throws InvalidGenericProductPersistenceException {
+    default Collection<Frame> getAllWtihNameLike(final String name, final int size, final int page) throws InvalidGenericProductPersistenceException {
         try {
             return findByName(name, new PageRequest(page, size)).getContent();
         } catch(DataAccessException e) {
@@ -68,7 +68,7 @@ public interface BackBoardJpaRepository extends GenericProductRepository<BackBoa
         }
     }
 
-    BackBoard findByUniqueName(final String uniqueName);
-    Page<BackBoard> findByName(final String name, final Pageable pageable);
+    Frame findByUniqueName(final String uniqueName);
+    Page<Frame> findByName(final String name, final Pageable pageable);
 
 }
