@@ -1,10 +1,11 @@
 package com.weframe.product.service;
 
+import com.weframe.product.model.GenericProduct;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
 import java.util.Collection;
 
-public interface GenericProductRepository<T> {
+public interface GenericProductRepository<T extends GenericProduct> {
 
     void persist(final T t)
             throws InvalidGenericProductPersistenceException;

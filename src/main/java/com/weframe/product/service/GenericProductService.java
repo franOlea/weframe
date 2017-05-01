@@ -1,10 +1,11 @@
 package com.weframe.product.service;
 
+import com.weframe.product.model.GenericProduct;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
 import java.util.Collection;
 
-public abstract class GenericProductService<T> {
+public abstract class GenericProductService<T extends GenericProduct> {
 
     protected final GenericProductRepository<T> repository;
 
