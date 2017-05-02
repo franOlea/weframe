@@ -1,43 +1,43 @@
 package com.weframe.product.service.impl;
 
-import com.weframe.product.model.GenericProduct;
+import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.GenericProductService;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
 import java.util.Collection;
 
-public class DefaultGenericProductService extends GenericProductService<GenericProduct> {
+public class BackBoardService extends GenericProductService<BackBoard> {
 
-    public DefaultGenericProductService(final GenericProductRepository<GenericProduct> repository) {
+    public BackBoardService(final GenericProductRepository<BackBoard> repository) {
         super(repository);
     }
 
     @Override
-    public GenericProduct getById(final Long id) throws InvalidGenericProductPersistenceException {
+    public BackBoard getById(final Long id) throws InvalidGenericProductPersistenceException {
         return repository.get(id);
     }
 
     @Override
-    public GenericProduct getByUniqueName(final String uniqueName) throws InvalidGenericProductPersistenceException {
+    public BackBoard getByUniqueName(final String uniqueName) throws InvalidGenericProductPersistenceException {
         return repository.get(uniqueName);
     }
 
     @Override
-    public Collection<GenericProduct> getAll(final int page,
+    public Collection<BackBoard> getAll(final int page,
                                              final int size) throws InvalidGenericProductPersistenceException {
         return repository.getAll(size, page);
     }
 
     @Override
-    public Collection<GenericProduct> getAllWithNameLike(final String name,
+    public Collection<BackBoard> getAllWithNameLike(final String name,
                                                          final int page,
                                                          final int size) throws InvalidGenericProductPersistenceException {
         return repository.getAllWtihNameLike(name, size, page);
     }
 
     @Override
-    public void persist(final GenericProduct genericProduct) throws InvalidGenericProductPersistenceException {
+    public void persist(final BackBoard genericProduct) throws InvalidGenericProductPersistenceException {
         repository.persist(genericProduct);
     }
 
