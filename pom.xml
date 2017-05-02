@@ -27,17 +27,16 @@
 		<junit.version>4.12</junit.version>
 		<apache.commons.version>3.4</apache.commons.version>
         <mysql.connector.version>5.1.9</mysql.connector.version>
-        <slf4j.version>1.7.21</slf4j.version>
 		<jmockit.version>1.27</jmockit.version>
 		<maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
 		<hibernate-core.version>5.2.2.Final</hibernate-core.version>
 		<spring-data-jpa.version>1.10.3.RELEASE</spring-data-jpa.version>
 		<postgresql.version>9.2-1004-jdbc41</postgresql.version>
-		<log4j.version>1.2.17</log4j.version>
 		<mysql-connector-java.version>6.0.5</mysql-connector-java.version>
 		<spring-hateoas.version>0.21.0.RELEASE</spring-hateoas.version>
 		<aws-java-sdk.version>1.11.86</aws-java-sdk.version>
 		<commons-validator.version>1.4.1</commons-validator.version>
+		<h2.version>1.4.195</h2.version>
 	</properties>
 
 	<dependencies>
@@ -62,9 +61,21 @@
 
 		<!-- Spring JPA -->
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring-data-jpa.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- MySQL Connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<!-- H2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
 		</dependency>
 
 		<!-- Apache Commons -->
@@ -77,26 +88,6 @@
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 			<version>${commons-validator.version}</version>
-		</dependency>
-
-		<!-- Hibernate Core -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate-core.version}</version>
-		</dependency>
-
-		<!-- H2 -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-
-		<!-- MySQL -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql-connector-java.version}</version>
 		</dependency>
 
 		<!-- SpringBoot Test -->
