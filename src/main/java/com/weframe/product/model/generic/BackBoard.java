@@ -1,5 +1,6 @@
 package com.weframe.product.model.generic;
 
+import com.weframe.product.model.GenericProduct;
 import com.weframe.product.model.Picture;
 
 import javax.persistence.*;
@@ -7,21 +8,7 @@ import javax.persistence.*;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "BACK_BOARDS")
-public class BackBoard {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
-    private Long id;
-
-    @Column(name = "UNIQUE_NAME", nullable = false, unique = true)
-    private String uniqueName;
-
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @Column(name = "DESCRIPTION", nullable = false)
-    private String description;
+public class BackBoard extends GenericProduct {
 
     @OneToOne(
             fetch = FetchType.EAGER,
@@ -36,20 +23,30 @@ public class BackBoard {
     public BackBoard() {
     }
 
-    public String getUniqueName() {
-        return uniqueName;
+    public BackBoard(final String name,
+                     final String uniqueName,
+                     final String description,
+                     final Picture picture,
+                     final float m2Price) {
+        super(
+                name,
+                uniqueName,
+                description
+        );
+        this.picture = picture;
+        this.m2Price = m2Price;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
+    public Picture getPicture() {
+        return picture;
     }
 
     public void setPicture(final Picture picture) {
         this.picture = picture;
+    }
+
+    public float getM2Price() {
+        return m2Price;
     }
 
     public void setM2Price(final float m2Price) {
