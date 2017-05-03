@@ -94,7 +94,7 @@ public class BackBoardController {
         }
     }
 
-    @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{backBoardUniqueName}", method = RequestMethod.GET)
     private ResponseEntity getBackBoard(@PathVariable String backBoardUniqueName) {
         try {
             return responseGenerator.generateResponse(
@@ -147,7 +147,7 @@ public class BackBoardController {
         }
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     private ResponseEntity update(@RequestBody BackBoard backBoard) {
         try {
             if(backBoard.getId() == null
