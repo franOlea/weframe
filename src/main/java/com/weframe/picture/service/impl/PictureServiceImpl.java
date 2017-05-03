@@ -5,6 +5,7 @@ import com.weframe.picture.service.PictureFileRepository;
 import com.weframe.picture.service.PictureRepository;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
+import com.weframe.picture.service.exception.PictureFileIOException;
 import com.weframe.user.service.persistence.exception.EmptyResultException;
 
 import java.io.File;
@@ -28,8 +29,12 @@ public class PictureServiceImpl extends PictureService {
 
     @Override
     public void create(File pictureFile, String uniqueName) throws InvalidPicturePersistenceException {
-        String url = pictureFileRepository.putFile(pictureFile, uniqueName);
-        pictureRepository.persist(new Picture(uniqueName, url));
+        try {
+            pictureFileRepository.putFile(pictureFile, uniqueName);
+        } catch (PictureFileIOException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
+//        pictureRepository.persist(new Picture(uniqueName, url));
     }
 
     @Override
