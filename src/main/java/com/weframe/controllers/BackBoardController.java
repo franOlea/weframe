@@ -1,6 +1,9 @@
 package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
+import com.weframe.picture.model.Picture;
+import com.weframe.picture.service.PictureService;
+import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.service.impl.BackBoardService;
@@ -19,12 +22,15 @@ public class BackBoardController {
 
     private static final Logger logger = Logger.getLogger(BackBoardController.class);
     
-    private final BackBoardService service;
+    private final BackBoardService backBoardService;
+    private final PictureService pictureService;
     private final ResponseGenerator<BackBoard> responseGenerator;
 
-    public BackBoardController(final BackBoardService service,
+    public BackBoardController(final BackBoardService backBoardService,
+                               final PictureService pictureService,
                                final ResponseGenerator<BackBoard> responseGenerator) {
-        this.service = service;
+        this.backBoardService = backBoardService;
+        this.pictureService = pictureService;
         this.responseGenerator = responseGenerator;
     }
 
@@ -45,7 +51,7 @@ public class BackBoardController {
             }
 
             return responseGenerator.generateResponse(
-                    service.getAll(page, size)
+                    backBoardService.getAll(page, size)
             );
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
@@ -72,7 +78,7 @@ public class BackBoardController {
     private ResponseEntity getBackBoard(@PathVariable Long backBoardId) {
         try {
             return responseGenerator.generateResponse(
-                    service.getById(backBoardId)
+                    backBoardService.getById(backBoardId)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -98,7 +104,7 @@ public class BackBoardController {
     private ResponseEntity getBackBoard(@PathVariable String backBoardUniqueName) {
         try {
             return responseGenerator.generateResponse(
-                    service.getByUniqueName(backBoardUniqueName)
+                    backBoardService.getByUniqueName(backBoardUniqueName)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -128,9 +134,15 @@ public class BackBoardController {
                         "A backboard to be created should not have an id."
                 );
             }
-            service.persist(backBoard);
+            Picture picture = pictureService.getByUniqueName(
+                    backBoard.getPicture().getImageKey()
+            );
+            backBoard.setPicture(picture);
+            backBoardService.persist(backBoard);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the backboard [%s]",
@@ -156,7 +168,7 @@ public class BackBoardController {
                         "A backboard to be updated should have an id or the unique name set."
                 );
             }
-            service.persist(backBoard);
+            backBoardService.persist(backBoard);
             return responseGenerator.generateOkResponse();
         } catch(InvalidGenericProductPersistenceException e) {
             logger.error(
@@ -178,7 +190,7 @@ public class BackBoardController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
     private ResponseEntity delete(@PathVariable Long backBoardId) {
         try {
-            service.delete(backBoardId);
+            backBoardService.delete(backBoardId);
             logger.info("Deleted backboard [" + backBoardId + "].");
             return responseGenerator.generateOkResponse();
         } catch (Exception e) {
