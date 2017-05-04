@@ -12,6 +12,7 @@ import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureFileRepository;
 import com.weframe.picture.service.PictureRepository;
 import com.weframe.picture.service.PictureService;
+import com.weframe.picture.service.impl.PictureFileInMemoryRepository;
 import com.weframe.picture.service.impl.PictureFileS3Repository;
 import com.weframe.picture.service.impl.PictureServiceImpl;
 import com.weframe.product.model.generic.BackBoard;
@@ -27,8 +28,10 @@ import com.weframe.user.service.persistence.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
 
 @SuppressWarnings("unused")
 @Configuration
@@ -71,7 +74,14 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public PictureFileRepository getPictureFileRepository() {
+    @Profile("local")
+    public PictureFileRepository getPictureFileInMemoryRepository() {
+        return new PictureFileInMemoryRepository(new HashMap<>());
+    }
+
+    @Bean
+    @Profile("openshift")
+    public PictureFileRepository getPictureFileS3Repository() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         AWSCredentials credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
         AWSCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(credentials);
