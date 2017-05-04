@@ -21,7 +21,7 @@ public abstract class PictureService {
 
     public abstract Picture getByUniqueName(final String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException;
 
-    public abstract void create(final File pictureFile, String uniqueName) throws InvalidPicturePersistenceException;
+    public abstract Picture create(final File pictureFile, String uniqueName) throws InvalidPicturePersistenceException;
 
     public abstract void delete(final Long id) throws InvalidPicturePersistenceException;
 

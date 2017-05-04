@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PictureJpaRepository extends PictureRepository, JpaRepository<Picture, Long> {
 
     @Override
-    default void persist(final Picture picture) throws InvalidPicturePersistenceException {
+    default Picture persist(final Picture picture) throws InvalidPicturePersistenceException {
         try {
-            save(picture);
+            return save(picture);
         } catch(DataAccessException e) {
             throw new InvalidPicturePersistenceException(e);
         }

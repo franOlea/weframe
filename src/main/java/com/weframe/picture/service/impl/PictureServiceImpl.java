@@ -46,10 +46,10 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
-    public void create(File pictureFile, String uniqueName) throws InvalidPicturePersistenceException {
+    public Picture create(File pictureFile, String uniqueName) throws InvalidPicturePersistenceException {
         try {
             fileRepository.putFile(pictureFile, uniqueName);
-            repository.persist(new Picture(uniqueName));
+            return repository.persist(new Picture(uniqueName));
         } catch (PictureFileIOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
