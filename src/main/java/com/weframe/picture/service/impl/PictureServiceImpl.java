@@ -12,34 +12,52 @@ import java.io.File;
 
 public class PictureServiceImpl extends PictureService {
 
-    public PictureServiceImpl(final PictureRepository pictureRepository,
-                              final PictureFileRepository pictureFileRepository) {
-        super(pictureRepository, pictureFileRepository);
+    public PictureServiceImpl(final PictureRepository repository,
+                              final PictureFileRepository fileRepository) {
+        super(repository, fileRepository);
     }
 
     @Override
     public Picture getById(Long id) throws EmptyResultException, InvalidPicturePersistenceException {
-        return pictureRepository.get(id);
+        try {
+            return setPictureUrl(repository.get(id));
+        } catch (PictureFileIOException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
     }
 
     @Override
     public Picture getByUniqueName(String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException {
-        return pictureRepository.get(uniqueName);
+        try {
+            return setPictureUrl(repository.get(uniqueName));
+        } catch (PictureFileIOException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
+    }
+
+    private Picture setPictureUrl(final Picture picture) throws PictureFileIOException {
+        picture.setImageUrl(
+                fileRepository.getFileUrl(
+                        picture.getImageKey()
+                )
+        );
+
+        return picture;
     }
 
     @Override
     public void create(File pictureFile, String uniqueName) throws InvalidPicturePersistenceException {
         try {
-            pictureFileRepository.putFile(pictureFile, uniqueName);
+            fileRepository.putFile(pictureFile, uniqueName);
+            repository.persist(new Picture(uniqueName));
         } catch (PictureFileIOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
-//        pictureRepository.persist(new Picture(uniqueName, url));
     }
 
     @Override
     public void delete(Long id) throws InvalidPicturePersistenceException {
-        pictureRepository.remove(id);
+        repository.remove(id);
     }
 
 }

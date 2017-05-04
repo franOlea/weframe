@@ -8,13 +8,13 @@ import java.io.File;
 
 public abstract class PictureService {
 
-    protected final PictureRepository pictureRepository;
-    protected final PictureFileRepository pictureFileRepository;
+    protected final PictureRepository repository;
+    protected final PictureFileRepository fileRepository;
 
-    public PictureService(final PictureRepository pictureRepository,
-                          final PictureFileRepository pictureFileRepository) {
-        this.pictureRepository = pictureRepository;
-        this.pictureFileRepository = pictureFileRepository;
+    public PictureService(final PictureRepository repository,
+                          final PictureFileRepository fileRepository) {
+        this.repository = repository;
+        this.fileRepository = fileRepository;
     }
 
     public abstract Picture getById(final Long id) throws EmptyResultException, InvalidPicturePersistenceException;
