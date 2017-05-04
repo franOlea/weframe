@@ -1,8 +1,7 @@
 package com.weframe.product.model.generic;
 
+import com.weframe.picture.model.Picture;
 import com.weframe.product.model.GenericProduct;
-import com.weframe.product.model.Picture;
-
 import javax.persistence.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})

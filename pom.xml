@@ -34,23 +34,24 @@
 		<postgresql.version>9.2-1004-jdbc41</postgresql.version>
 		<mysql-connector-java.version>6.0.5</mysql-connector-java.version>
 		<spring-hateoas.version>0.21.0.RELEASE</spring-hateoas.version>
-		<aws-java-sdk.version>1.11.86</aws-java-sdk.version>
+		<aws-java-sdk-s3.version>1.11.125</aws-java-sdk-s3.version>
 		<commons-validator.version>1.4.1</commons-validator.version>
 		<h2.version>1.4.195</h2.version>
+		<spring-security-core.version>3.1.0.RELEASE</spring-security-core.version>
 	</properties>
 
 	<dependencies>
-		<!--<dependency>-->
-			<!--<groupId>com.amazonaws</groupId>-->
-			<!--<artifactId>aws-java-sdk</artifactId>-->
-			<!--<version>${aws-java-sdk.version}</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk-s3.version}</version>
+		</dependency>
 
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>${spring-security-core.version}</version>
 		</dependency>
 
 		<!-- String Data Rest -->
@@ -89,6 +90,12 @@
 			<artifactId>commons-validator</artifactId>
 			<version>${commons-validator.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+
 
 		<!-- SpringBoot Test -->
 		<dependency>
