@@ -51,5 +51,4 @@ public class BackBoard extends GenericProduct {
     public void setM2Price(final float m2Price) {
         this.m2Price = m2Price;
     }
-
 }

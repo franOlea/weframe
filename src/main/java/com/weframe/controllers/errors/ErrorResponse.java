@@ -1,6 +1,9 @@
 package com.weframe.controllers.errors;
 
 import org.apache.commons.lang3.Validate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
 
@@ -21,4 +24,5 @@ public class ErrorResponse {
     public Collection<Error> getErrors() {
         return errors;
     }
+
 }

@@ -1,8 +1,8 @@
 package com.weframe.picture.service;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
-import com.weframe.user.service.persistence.exception.EmptyResultException;
 
 import java.io.File;
 

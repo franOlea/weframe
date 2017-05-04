@@ -1,5 +1,6 @@
 package com.weframe.product.service.impl;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.GenericProductService;
@@ -14,31 +15,71 @@ public class BackBoardService extends GenericProductService<BackBoard> {
     }
 
     @Override
-    public BackBoard getById(final Long id) throws InvalidGenericProductPersistenceException {
-        return repository.get(id);
+    public BackBoard getById(final Long id)
+            throws InvalidGenericProductPersistenceException, EmptyResultException {
+        BackBoard backBoard = repository.get(id);
+        if(backBoard == null) {
+            throw new EmptyResultException();
+        }
+
+        return backBoard;
     }
 
     @Override
-    public BackBoard getByUniqueName(final String uniqueName) throws InvalidGenericProductPersistenceException {
-        return repository.get(uniqueName);
+    public BackBoard getByUniqueName(final String uniqueName)
+            throws InvalidGenericProductPersistenceException, EmptyResultException {
+        BackBoard backBoard = repository.get(uniqueName);
+        if(backBoard == null) {
+            throw new EmptyResultException();
+        }
+
+        return backBoard;
     }
 
     @Override
     public Collection<BackBoard> getAll(final int page,
-                                             final int size) throws InvalidGenericProductPersistenceException {
-        return repository.getAll(size, page);
+                                             final int size) throws InvalidGenericProductPersistenceException, EmptyResultException {
+        Collection<BackBoard> backBoards = repository.getAll(size, page);
+
+        if(backBoards == null || backBoards.isEmpty()) {
+            throw new EmptyResultException();
+        }
+
+        return backBoards;
     }
 
     @Override
     public Collection<BackBoard> getAllWithNameLike(final String name,
                                                          final int page,
-                                                         final int size) throws InvalidGenericProductPersistenceException {
-        return repository.getAllWtihNameLike(name, size, page);
+                                                         final int size) throws InvalidGenericProductPersistenceException, EmptyResultException {
+        Collection<BackBoard> backBoards = repository.getAllWtihNameLike(name, size, page);
+
+        if(backBoards == null || backBoards.isEmpty()) {
+            throw new EmptyResultException();
+        }
+
+        return backBoards;
     }
 
     @Override
-    public void persist(final BackBoard genericProduct) throws InvalidGenericProductPersistenceException {
-        repository.persist(genericProduct);
+    public void persist(final BackBoard backBoard) throws InvalidGenericProductPersistenceException {
+        BackBoard persisted = null;
+        if(backBoard.getId() == null) {
+            persisted = repository.get(backBoard.getId());
+        } else if(backBoard.getUniqueName() == null) {
+            persisted = repository.get(backBoard.getUniqueName());
+        }
+
+        if(persisted == null) {
+            repository.persist(backBoard);
+        } else {
+            persisted.setM2Price(backBoard.getM2Price());
+            persisted.setName(backBoard.getName());
+            persisted.setDescription(backBoard.getDescription());
+            persisted.setPicture(backBoard.getPicture());
+            persisted.setUniqueName(backBoard.getUniqueName());
+            repository.persist(persisted);
+        }
     }
 
     @Override

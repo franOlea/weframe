@@ -1,5 +1,6 @@
 package com.weframe.picture.service.impl;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureRepository;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
@@ -27,18 +28,28 @@ public interface PictureJpaRepository extends PictureRepository, JpaRepository<P
     }
 
     @Override
-    default Picture get(final Long id) throws InvalidPicturePersistenceException {
+    default Picture get(final Long id) throws InvalidPicturePersistenceException, EmptyResultException {
         try {
-            return findOne(id);
+            Picture picture = findOne(id);
+            if(picture == null) {
+                throw new EmptyResultException();
+            } else {
+                return picture;
+            }
         } catch(DataAccessException e) {
             throw new InvalidPicturePersistenceException(e);
         }
     }
 
     @Override
-    default Picture get(final String uniqueName) throws InvalidPicturePersistenceException {
+    default Picture get(final String uniqueName) throws InvalidPicturePersistenceException, EmptyResultException {
         try {
-            return findByImageKey(uniqueName);
+            Picture picture = findByImageKey(uniqueName);
+            if(picture == null) {
+                throw new EmptyResultException();
+            } else {
+                return picture;
+            }
         } catch(DataAccessException e) {
             throw new InvalidPicturePersistenceException(e);
         }
