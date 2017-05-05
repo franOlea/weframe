@@ -41,12 +41,14 @@ public class ControllerConfiguration {
     private int userPasswordCryptographerHashIterations;
     @Value("${temp.directory}")
     private String pictureTempFileDirectory;
-    @Value("${picture.file.s3.bucket.name}")
+    @Value("${picture.file.aws.bucket.name}")
     private String s3BucketName;
     @Value("${picture.file.aws.access.key}")
     private String awsAccessKey;
     @Value("${picture.file.aws.secret.key}")
     private String awsSecretKey;
+    @Value("${temp.directory}")
+    private String tempDirectory;
 
     @Bean
     public UserPasswordCryptographer getUserPasswordCryptographer() throws GeneralSecurityException {
@@ -74,7 +76,7 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    @Profile("local")
+    @Profile("embedded")
     public PictureFileRepository getPictureFileInMemoryRepository() {
         return new PictureFileInMemoryRepository(new HashMap<>());
     }
@@ -97,6 +99,11 @@ public class ControllerConfiguration {
                 amazonS3Client,
                 s3BucketName
         );
+    }
+
+    @Bean(name = "tempDirectory")
+    public String getTempDirectory() {
+        return tempDirectory;
     }
 
     @Bean
