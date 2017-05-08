@@ -37,8 +37,13 @@ public class BackBoardController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     private ResponseEntity getBackBoards(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
-            @RequestParam(value="size", defaultValue = "10", required = false) final int size) {
+            @RequestParam(value="size", defaultValue = "10", required = false) final int size,
+            @RequestParam(value="unique-name", required = false) final String uniqueName) {
         try {
+            if(uniqueName != null) {
+                return getBackBoardByUniqueName(uniqueName);
+            }
+
             if(page < 0 || size < 0) {
                 Error error = new Error(
                         "invalid-request",
@@ -106,8 +111,7 @@ public class BackBoardController {
         }
     }
 
-//    @RequestMapping(value = "/{backBoardUniqueName}", method = RequestMethod.GET)
-    private ResponseEntity getBackBoard(@PathVariable String backBoardUniqueName) {
+    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName) {
         try {
             return responseGenerator.generateResponse(
                     backBoardService.getByUniqueName(backBoardUniqueName)
@@ -135,7 +139,6 @@ public class BackBoardController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     private ResponseEntity create(@RequestBody BackBoard backBoard) {
         try {
-            logger.info("Creating backboard for unique name [" + backBoard.getUniqueName() + "].");
             if(backBoard.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
                         "A backboard to be created should not have an id."

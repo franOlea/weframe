@@ -21,7 +21,7 @@ public class PictureFileInMemoryRepository implements PictureFileRepository {
 
     @Override
     public String getFileUrl(String uniqueKey) throws PictureFileIOException {
-        return picturesMap.get(uniqueKey).getAbsolutePath();
+        return picturesMap.get(uniqueKey).toURI().getPath().substring(1);
     }
 
     @Override
