@@ -64,9 +64,9 @@ public class BackBoardService extends GenericProductService<BackBoard> {
     @Override
     public void persist(final BackBoard backBoard) throws InvalidGenericProductPersistenceException {
         BackBoard persisted = null;
-        if(backBoard.getId() == null) {
+        if(backBoard.getId() != null) {
             persisted = repository.get(backBoard.getId());
-        } else if(backBoard.getUniqueName() == null) {
+        } else if(backBoard.getUniqueName() != null) {
             persisted = repository.get(backBoard.getUniqueName());
         }
 
