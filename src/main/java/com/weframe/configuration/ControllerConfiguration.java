@@ -16,8 +16,10 @@ import com.weframe.picture.service.impl.PictureFileInMemoryRepository;
 import com.weframe.picture.service.impl.PictureFileS3Repository;
 import com.weframe.picture.service.impl.PictureServiceImpl;
 import com.weframe.product.model.generic.BackBoard;
+import com.weframe.product.model.generic.Frame;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.impl.BackBoardService;
+import com.weframe.product.service.impl.FrameService;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
 import com.weframe.user.service.persistence.RoleRepository;
@@ -116,12 +118,23 @@ public class ControllerConfiguration {
     }
 
     @Bean
+    public FrameService getFrameService(
+            final GenericProductRepository<Frame> frameGenericProductRepository) {
+        return new FrameService(frameGenericProductRepository);
+    }
+
+    @Bean
     public ResponseGenerator<BackBoard> getBackBoardResponseGenerator() {
         return new ResponseGenerator<>();
     }
 
     @Bean
     public ResponseGenerator<Picture> getPictureResponseGenerator() {
+        return new ResponseGenerator<>();
+    }
+
+    @Bean
+    public ResponseGenerator<Frame> getFrameResponseGenerator() {
         return new ResponseGenerator<>();
     }
 
