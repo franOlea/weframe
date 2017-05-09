@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/backboards")
+@RequestMapping("/frames")
 @CrossOrigin
 public class FrameController {
 
@@ -179,7 +179,7 @@ public class FrameController {
         }
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{frameId}", method = RequestMethod.DELETE)
     private ResponseEntity delete(@PathVariable Long frameId) {
         try {
             frameService.delete(frameId);

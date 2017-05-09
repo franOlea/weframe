@@ -197,7 +197,7 @@ public class BackBoardController {
         }
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{backBoardId}", method = RequestMethod.DELETE)
     private ResponseEntity delete(@PathVariable Long backBoardId) {
         try {
             backBoardService.delete(backBoardId);
