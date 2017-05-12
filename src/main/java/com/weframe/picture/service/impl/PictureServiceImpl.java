@@ -1,12 +1,12 @@
 package com.weframe.picture.service.impl;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureFileRepository;
 import com.weframe.picture.service.PictureRepository;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.picture.service.exception.PictureFileIOException;
-import com.weframe.user.service.persistence.exception.EmptyResultException;
 
 import java.io.File;
 

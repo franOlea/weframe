@@ -1,5 +1,6 @@
 package com.weframe.product.service;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.product.model.GenericProduct;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 
@@ -14,19 +15,19 @@ public abstract class GenericProductService<T extends GenericProduct> {
     }
 
     public abstract T getById(final Long id)
-            throws InvalidGenericProductPersistenceException;
+            throws InvalidGenericProductPersistenceException, EmptyResultException;
 
     public abstract T getByUniqueName(final String uniqueName)
-            throws InvalidGenericProductPersistenceException;
+            throws InvalidGenericProductPersistenceException, EmptyResultException;
 
     public abstract Collection<T> getAll(final int page,
                                          final int size)
-            throws InvalidGenericProductPersistenceException;
+            throws InvalidGenericProductPersistenceException, EmptyResultException;
 
     public abstract Collection<T> getAllWithNameLike(final String name,
                                          final int page,
                                          final int size)
-            throws InvalidGenericProductPersistenceException;
+            throws InvalidGenericProductPersistenceException, EmptyResultException;
 
     public abstract void persist(T t)
             throws InvalidGenericProductPersistenceException;

@@ -1,4 +1,4 @@
-package com.weframe.user.service.persistence.exception;
+package com.weframe.controllers;
 
 public class EmptyResultException extends Exception {
     public EmptyResultException() {
