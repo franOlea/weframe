@@ -1,12 +1,9 @@
 package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
-import com.weframe.picture.model.Picture;
-import com.weframe.picture.service.PictureService;
-import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
-import com.weframe.product.model.generic.BackBoard;
+import com.weframe.product.model.generic.Frame;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
-import com.weframe.product.service.impl.BackBoardService;
+import com.weframe.product.service.impl.FrameService;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,32 +13,29 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/backboards")
+@RequestMapping("/frames")
 @CrossOrigin
-public class BackBoardController {
+public class FrameController {
 
-    private static final Logger logger = Logger.getLogger(BackBoardController.class);
-    
-    private final BackBoardService backBoardService;
-    private final PictureService pictureService;
-    private final ResponseGenerator<BackBoard> responseGenerator;
+    private static final Logger logger = Logger.getLogger(FrameController.class);
 
-    public BackBoardController(final BackBoardService backBoardService,
-                               final PictureService pictureService,
-                               final ResponseGenerator<BackBoard> responseGenerator) {
-        this.backBoardService = backBoardService;
-        this.pictureService = pictureService;
+    private final FrameService frameService;
+    private final ResponseGenerator<Frame> responseGenerator;
+
+    public FrameController(final FrameService frameService,
+                           final ResponseGenerator<Frame> responseGenerator) {
+        this.frameService = frameService;
         this.responseGenerator = responseGenerator;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    private ResponseEntity getBackBoards(
+    private ResponseEntity getFrame(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName) {
         try {
             if(uniqueName != null) {
-                return getBackBoardByUniqueName(uniqueName);
+                return getFrameByUniqueName(uniqueName);
             }
 
             if(page < 0 || size < 0) {
@@ -56,7 +50,7 @@ public class BackBoardController {
             }
 
             return responseGenerator.generateResponse(
-                    backBoardService.getAll(page, size)
+                    frameService.getAll(page, size)
             );
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
@@ -79,17 +73,11 @@ public class BackBoardController {
         }
     }
 
-    @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
-    private ResponseEntity getBackBoard(@PathVariable Long backBoardId) {
+    @RequestMapping(value = "/{frameId}", method = RequestMethod.GET)
+    private ResponseEntity getFrame(@PathVariable Long frameId) {
         try {
-            BackBoard backBoard = backBoardService.getById(backBoardId);
-            backBoard.setPicture(
-                    pictureService.setPictureUrl(
-                            backBoard.getPicture()
-                    )
-            );
             return responseGenerator.generateResponse(
-                    backBoardService.getById(backBoardId)
+                    frameService.getById(frameId)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -97,8 +85,8 @@ public class BackBoardController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "backboard by id [%d].",
-                            backBoardId
+                                    "frame by id [%d].",
+                            frameId
                     ),
                     e);
             Error error = new Error(
@@ -111,10 +99,10 @@ public class BackBoardController {
         }
     }
 
-    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName) {
+    private ResponseEntity getFrameByUniqueName(String frameUniqueName) {
         try {
             return responseGenerator.generateResponse(
-                    backBoardService.getByUniqueName(backBoardUniqueName)
+                    frameService.getByUniqueName(frameUniqueName)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -122,8 +110,8 @@ public class BackBoardController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "backboard by uniqueName [%s].",
-                            backBoardUniqueName
+                                    "frame by uniqueName [%s].",
+                            frameUniqueName
                     ),
                     e);
             Error error = new Error(
@@ -137,26 +125,20 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody BackBoard backBoard) {
+    private ResponseEntity create(@RequestBody Frame frame) {
         try {
-            if(backBoard.getId() != null) {
+            if(frame.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A backboard to be created should not have an id."
+                        "A frame to be created should not have an id."
                 );
             }
-            Picture picture = pictureService.getByUniqueName(
-                    backBoard.getPicture().getImageKey()
-            );
-            backBoard.setPicture(picture);
-            backBoardService.persist(backBoard);
+            frameService.persist(frame);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
+        } catch(InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the backboard [%s]",
-                            backBoard.getUniqueName()),
+                            "There has been an error creating the frame [%s]",
+                            frame.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -170,21 +152,21 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    private ResponseEntity update(@RequestBody BackBoard backBoard) {
+    private ResponseEntity update(@RequestBody Frame frame) {
         try {
-            if(backBoard.getId() == null
-                    && backBoard.getUniqueName() == null) {
+            if(frame.getId() == null
+                    && frame.getUniqueName() == null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A backboard to be updated should have an id or the unique name set."
+                        "A frame to be updated should have an id or the unique name set."
                 );
             }
-            backBoardService.persist(backBoard);
+            frameService.persist(frame);
             return responseGenerator.generateOkResponse();
         } catch(InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the backboard [%s]",
-                            backBoard.getUniqueName()),
+                            "There has been an error creating the frame [%s]",
+                            frame.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -197,18 +179,18 @@ public class BackBoardController {
         }
     }
 
-    @RequestMapping(value = "/{backBoardId}", method = RequestMethod.DELETE)
-    private ResponseEntity delete(@PathVariable Long backBoardId) {
+    @RequestMapping(value = "/{frameId}", method = RequestMethod.DELETE)
+    private ResponseEntity delete(@PathVariable Long frameId) {
         try {
-            backBoardService.delete(backBoardId);
-            logger.info("Deleted backboard [" + backBoardId + "].");
+            frameService.delete(frameId);
+            logger.info("Deleted frame [" + frameId + "].");
             return responseGenerator.generateOkResponse();
         } catch (Exception e) {
             logger.error(
                     String.format(
-                            "There was an unexpected error trying to delete a backboard" +
+                            "There was an unexpected error trying to delete a frame" +
                                     " by id [%d].",
-                            backBoardId),
+                            frameId),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -219,5 +201,5 @@ public class BackBoardController {
             );
         }
     }
-    
+
 }

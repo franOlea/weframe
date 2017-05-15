@@ -19,30 +19,27 @@ public class PictureServiceImpl extends PictureService {
 
     @Override
     public Picture getById(Long id) throws EmptyResultException, InvalidPicturePersistenceException {
-        try {
-            return setPictureUrl(repository.get(id));
-        } catch (PictureFileIOException e) {
-            throw new InvalidPicturePersistenceException(e);
-        }
+        return setPictureUrl(repository.get(id));
     }
 
     @Override
     public Picture getByUniqueName(String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException {
+        return setPictureUrl(repository.get(uniqueName));
+    }
+
+    @Override
+    public Picture setPictureUrl(final Picture picture) throws InvalidPicturePersistenceException {
         try {
-            return setPictureUrl(repository.get(uniqueName));
+            picture.setImageUrl(
+                    fileRepository.getFileUrl(
+                            picture.getImageKey()
+                    )
+            );
+
+            return picture;
         } catch (PictureFileIOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
-    }
-
-    private Picture setPictureUrl(final Picture picture) throws PictureFileIOException {
-        picture.setImageUrl(
-                fileRepository.getFileUrl(
-                        picture.getImageKey()
-                )
-        );
-
-        return picture;
     }
 
     @Override

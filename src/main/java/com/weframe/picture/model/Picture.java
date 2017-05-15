@@ -1,5 +1,7 @@
 package com.weframe.picture.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -16,6 +18,7 @@ public class Picture {
     private String imageKey;
 
     @Transient
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String imageUrl;
 
     public Picture() {
