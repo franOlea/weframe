@@ -1,5 +1,6 @@
 package com.weframe.user.service.persistence.impl;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;

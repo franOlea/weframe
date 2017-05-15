@@ -1,27 +1,14 @@
 package com.weframe.product.model.generic;
 
-import com.weframe.product.model.Picture;
+import com.weframe.picture.model.Picture;
+import com.weframe.product.model.GenericProduct;
 
 import javax.persistence.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Entity
 @Table(name = "MAT_TYPES")
-public class MatType {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
-    private Long id;
-
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @Column(name = "UNIQUE_NAME", nullable = false, unique = true)
-    private String uniqueName;
-
-    @Column(name = "DESCRIPTION", nullable = false)
-    private String description;
+public class MatType extends GenericProduct {
 
     @OneToOne(
             fetch = FetchType.EAGER,
@@ -34,6 +21,36 @@ public class MatType {
     private float m2Price;
 
     public MatType() {
+    }
+
+    public MatType(final String name,
+                   final String uniqueName,
+                   final String description,
+                   final Picture picture,
+                   final float m2Price) {
+        super(
+                name,
+                uniqueName,
+                description
+        );
+        this.picture = picture;
+        this.m2Price = m2Price;
+    }
+
+    public Picture getPicture() {
+        return picture;
+    }
+
+    public void setPicture(final Picture picture) {
+        this.picture = picture;
+    }
+
+    public float getM2Price() {
+        return m2Price;
+    }
+
+    public void setM2Price(final float m2Price) {
+        this.m2Price = m2Price;
     }
 
 }
