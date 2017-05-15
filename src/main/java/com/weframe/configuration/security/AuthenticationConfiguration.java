@@ -13,7 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 @ConditionalOnProperty(
-        value = "security.enabled=true",
+        value = "security.enabled",
+        havingValue = "true",
         matchIfMissing = true
 )
 @SuppressWarnings("unused")
