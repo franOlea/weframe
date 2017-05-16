@@ -159,6 +159,7 @@ public class ControllerConfiguration {
         return new MatTypeService(matTypeGenericProductRepository);
     }
 
+    @Bean
     public FrameGlassService getFrameGlassService(
             final GenericProductRepository<FrameGlass> frameGlassGenericProductRepository) {
         return new FrameGlassService(frameGlassGenericProductRepository);
