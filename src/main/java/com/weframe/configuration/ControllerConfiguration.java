@@ -17,9 +17,13 @@ import com.weframe.picture.service.impl.PictureFileS3Repository;
 import com.weframe.picture.service.impl.PictureServiceImpl;
 import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.model.generic.Frame;
+import com.weframe.product.model.generic.FrameGlass;
+import com.weframe.product.model.generic.MatType;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.impl.BackBoardService;
+import com.weframe.product.service.impl.FrameGlassService;
 import com.weframe.product.service.impl.FrameService;
+import com.weframe.product.service.impl.MatTypeService;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
 import com.weframe.user.service.persistence.RoleRepository;
@@ -142,5 +146,27 @@ public class ControllerConfiguration {
     public BackBoardService getBackBoardService(
             final GenericProductRepository<BackBoard> backBoardGenericProductRepository) {
         return new BackBoardService(backBoardGenericProductRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<FrameGlass> getFrameGlassResponseGenerator() {
+        return new ResponseGenerator<>();
+    }
+
+    @Bean
+    public MatTypeService getMatTypeService(
+            final GenericProductRepository<MatType> matTypeGenericProductRepository) {
+        return new MatTypeService(matTypeGenericProductRepository);
+    }
+
+    @Bean
+    public FrameGlassService getFrameGlassService(
+            final GenericProductRepository<FrameGlass> frameGlassGenericProductRepository) {
+        return new FrameGlassService(frameGlassGenericProductRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<MatType> getMatTypeResponseGenerator() {
+        return new ResponseGenerator<>();
     }
 }
