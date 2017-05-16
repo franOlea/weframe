@@ -5,6 +5,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Region;
 import com.weframe.controllers.ResponseGenerator;
@@ -97,7 +98,7 @@ public class ControllerConfiguration {
         AmazonS3Client amazonS3Client = (AmazonS3Client) AmazonS3Client.builder()
                 .withClientConfiguration(clientConfiguration)
                 .withCredentials(credentialsProvider)
-                .withRegion(Region.SA_SaoPaulo.name())
+                .withRegion(Regions.SA_EAST_1)
                 .build();
 
         return new PictureFileS3Repository(
