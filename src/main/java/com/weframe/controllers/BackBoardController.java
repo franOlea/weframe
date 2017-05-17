@@ -80,14 +80,15 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
-    private ResponseEntity getBackBoard(@PathVariable Long backBoardId) {
+    private ResponseEntity getBackBoard(@PathVariable Long backBoardId,
+                                        @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getById(backBoardId);
-            backBoard.setPicture(
-                    pictureService.setPictureUrl(
-                            backBoard.getPicture()
-                    )
-            );
+            if(originalSize) {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
+            } else {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+            }
             return responseGenerator.generateResponse(
                     backBoardService.getById(backBoardId)
             );

@@ -13,10 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pictures")
@@ -81,8 +79,15 @@ public class PictureController {
     }
 
     @RequestMapping(value = "/{pictureId}", method = RequestMethod.GET)
-    public ResponseEntity getPicture(@PathVariable("pictureId") final Long pictureId) {
+    public ResponseEntity getPicture(@PathVariable("pictureId") final Long pictureId,
+                                     @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
+            Picture picture = service.getById(pictureId);
+            if(originalSize) {
+                picture.setImageUrl(service.getPictureUrl(picture.getImageKey()));
+            } else {
+                picture.setImageUrl(service.getPictureThumbnailUrl(picture.getImageKey()));
+            }
             return responseGenerator.generateResponse(service.getById(pictureId));
         } catch (InvalidPicturePersistenceException e) {
             logger.error("There was an unexpected error while trying to delete the picture file.", e);
