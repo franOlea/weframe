@@ -39,10 +39,11 @@ public class BackBoardController {
     private ResponseEntity getBackBoards(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
-            @RequestParam(value="unique-name", required = false) final String uniqueName) {
+            @RequestParam(value="unique-name", required = false) final String uniqueName,
+            @RequestParam(value="original", required = false, defaultValue = "false") final boolean isOriginalSize) {
         try {
             if(uniqueName != null) {
-                return getBackBoardByUniqueName(uniqueName);
+                return getBackBoardByUniqueName(uniqueName, isOriginalSize);
             }
 
             if(page < 0 || size < 0) {
@@ -93,8 +94,9 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
-    private ResponseEntity getBackBoard(@PathVariable Long backBoardId,
-                                        @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
+    private ResponseEntity getBackBoard(
+            @PathVariable Long backBoardId,
+            @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getById(backBoardId);
             if(originalSize) {
@@ -125,11 +127,15 @@ public class BackBoardController {
         }
     }
 
-    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName) {
+    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName, boolean isOriginalSize) {
         try {
-            return responseGenerator.generateResponse(
-                    backBoardService.getByUniqueName(backBoardUniqueName)
-            );
+            BackBoard backBoard = backBoardService.getByUniqueName(backBoardUniqueName);
+            if(isOriginalSize) {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
+            } else {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+            }
+            return responseGenerator.generateResponse(backBoard);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         } catch (Exception e) {
