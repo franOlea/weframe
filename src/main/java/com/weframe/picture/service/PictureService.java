@@ -10,17 +10,23 @@ import java.io.IOException;
 
 public abstract class PictureService {
 
-    protected final String thumbnailSufix;
+    protected final String thumbnailSuffix;
+    private final int thumbnailWidth;
+    private final int thumbnailHeight;
 
     protected final PictureRepository repository;
     protected final PictureFileRepository fileRepository;
 
     public PictureService(final PictureRepository repository,
                           final PictureFileRepository fileRepository,
-                          final String thumbnailSufix) {
+                          final String thumbnailSuffix,
+                          final int thumbnailWidth,
+                          final int thumbnailHeight) {
         this.repository = repository;
         this.fileRepository = fileRepository;
-        this.thumbnailSufix = thumbnailSufix;
+        this.thumbnailSuffix = thumbnailSuffix;
+        this.thumbnailWidth = thumbnailWidth;
+        this.thumbnailHeight = thumbnailHeight;
     }
 
     public abstract Picture getById(final Long id) throws EmptyResultException, InvalidPicturePersistenceException;
@@ -35,9 +41,9 @@ public abstract class PictureService {
 
     public abstract void delete(final Long id) throws InvalidPicturePersistenceException;
 
-    protected BufferedImage createThumbnail(BufferedImage original, int width, int height) throws IOException {
+    protected BufferedImage createThumbnail(final BufferedImage original) throws IOException {
         return Thumbnails.of(original)
-                .size(width, height)
+                .size(thumbnailWidth, thumbnailHeight)
                 .asBufferedImage();
     }
 

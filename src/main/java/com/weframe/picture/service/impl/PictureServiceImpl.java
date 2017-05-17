@@ -9,13 +9,16 @@ import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.picture.service.exception.PictureFileIOException;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class PictureServiceImpl extends PictureService {
 
     public PictureServiceImpl(final PictureRepository repository,
                               final PictureFileRepository fileRepository,
-                              final String thumbnailSufix) {
-        super(repository, fileRepository, thumbnailSufix);
+                              final String thumbnailSuffix,
+                              final int thumbnailWidth,
+                              final int thumbnailHeight) {
+        super(repository, fileRepository, thumbnailSuffix, thumbnailWidth, thumbnailHeight);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class PictureServiceImpl extends PictureService {
         try {
             picture.setImageUrl(
                     fileRepository.getPictureUrl(
-                            picture.getImageKey() + thumbnailSufix
+                            picture.getImageKey() + thumbnailSuffix
                     )
             );
 
@@ -62,9 +65,9 @@ public class PictureServiceImpl extends PictureService {
     public Picture create(BufferedImage bufferedImage, String uniqueName) throws InvalidPicturePersistenceException {
         try {
             fileRepository.putPicture(bufferedImage, uniqueName);
-            fileRepository.putPicture(bufferedImage, uniqueName + thumbnailSufix);
+            fileRepository.putPicture(createThumbnail(bufferedImage), uniqueName + thumbnailSuffix);
             return repository.persist(new Picture(uniqueName));
-        } catch (PictureFileIOException e) {
+        } catch (PictureFileIOException | IOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
     }
