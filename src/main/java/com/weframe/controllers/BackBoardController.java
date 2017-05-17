@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -55,9 +56,21 @@ public class BackBoardController {
                 );
             }
 
-            return responseGenerator.generateResponse(
-                    backBoardService.getAll(page, size)
-            );
+            Collection<BackBoard> backBoards = backBoardService.getAll(page, size);
+            backBoards.forEach(backBoard -> {
+                try {
+                    backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+                } catch (InvalidPicturePersistenceException e) {
+                    logger.error(
+                            String.format(
+                                    "There has been an error while trying to generate the backboard's picture url " +
+                                            "for picture [%s]",
+                                    backBoard.getPicture().getImageKey()),
+                            e);
+                    backBoard.getPicture().setImageUrl("no-url");
+                }
+            });
+            return responseGenerator.generateResponse(backBoards);
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
