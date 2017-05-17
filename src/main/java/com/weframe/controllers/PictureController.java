@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -38,12 +40,12 @@ public class PictureController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity create(@RequestParam(value = "file")final MultipartFile multipartFile,
                                  @RequestParam(value = "uniqueName") final String uniqueName) {
-        File file = new File(tempDirectory + File.pathSeparatorChar + UUID.randomUUID());
         try {
-            multipartFile.transferTo(file);
-            service.create(file, uniqueName);
+            BufferedImage image = ImageIO.read(multipartFile.getInputStream());
+            //Todo if image format is not jpeg return error.
+            service.create(image, uniqueName);
         } catch (IOException | InvalidPicturePersistenceException e) {
-            logger.error("There was an unexpected error while trying to transfer the multipart file to the temp file.", e);
+            logger.error("There was an unexpected error while trying to transfer the multipart file to buffered image.", e);
 
             Error error = new Error(
                     "internal-server-error",
