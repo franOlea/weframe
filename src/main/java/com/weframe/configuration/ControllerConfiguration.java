@@ -56,6 +56,14 @@ public class ControllerConfiguration {
     private String awsSecretKey;
     @Value("${temp.directory}")
     private String tempDirectory;
+    @Value("${picture.file.image.format.name}")
+    private String imageFormatName;
+    @Value("${picture.file.thumbnail.suffix}")
+    private String thumbnailSuffix;
+    @Value("${picture.file.thumbnail.width}")
+    private int thumbnailWidth;
+    @Value("${picture.file.thumbnail.height}")
+    private int thumbnailHeight;
 
     @Bean
     public UserPasswordCryptographer getUserPasswordCryptographer() throws GeneralSecurityException {
@@ -104,7 +112,8 @@ public class ControllerConfiguration {
         return new PictureFileS3Repository(
                 pictureTempFileDirectory,
                 amazonS3Client,
-                s3BucketName
+                s3BucketName,
+                imageFormatName
         );
     }
 
@@ -118,7 +127,10 @@ public class ControllerConfiguration {
                                             final PictureFileRepository pictureFileRepository) {
         return new PictureServiceImpl(
                 pictureRepository,
-                pictureFileRepository
+                pictureFileRepository,
+                thumbnailSuffix,
+                thumbnailWidth,
+                thumbnailHeight
         );
     }
 

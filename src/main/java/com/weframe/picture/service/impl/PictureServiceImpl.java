@@ -8,46 +8,54 @@ import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.picture.service.exception.PictureFileIOException;
 
-import java.io.File;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class PictureServiceImpl extends PictureService {
 
     public PictureServiceImpl(final PictureRepository repository,
-                              final PictureFileRepository fileRepository) {
-        super(repository, fileRepository);
+                              final PictureFileRepository fileRepository,
+                              final String thumbnailSuffix,
+                              final int thumbnailWidth,
+                              final int thumbnailHeight) {
+        super(repository, fileRepository, thumbnailSuffix, thumbnailWidth, thumbnailHeight);
     }
 
     @Override
     public Picture getById(Long id) throws EmptyResultException, InvalidPicturePersistenceException {
-        return setPictureUrl(repository.get(id));
+        return repository.get(id);
     }
 
     @Override
     public Picture getByUniqueName(String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException {
-        return setPictureUrl(repository.get(uniqueName));
+        return repository.get(uniqueName);
     }
 
     @Override
-    public Picture setPictureUrl(final Picture picture) throws InvalidPicturePersistenceException {
+    public String getPictureUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
         try {
-            picture.setImageUrl(
-                    fileRepository.getFileUrl(
-                            picture.getImageKey()
-                    )
-            );
-
-            return picture;
+            return fileRepository.getPictureUrl(pictureUniqueKey);
         } catch (PictureFileIOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
     }
 
     @Override
-    public Picture create(File pictureFile, String uniqueName) throws InvalidPicturePersistenceException {
+    public String getPictureThumbnailUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
         try {
-            fileRepository.putFile(pictureFile, uniqueName);
-            return repository.persist(new Picture(uniqueName));
+            return fileRepository.getPictureUrl(pictureUniqueKey + thumbnailSuffix);
         } catch (PictureFileIOException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
+    }
+
+    @Override
+    public Picture create(BufferedImage bufferedImage, String uniqueName) throws InvalidPicturePersistenceException {
+        try {
+            fileRepository.putPicture(bufferedImage, uniqueName);
+            fileRepository.putPicture(createThumbnail(bufferedImage), uniqueName + thumbnailSuffix);
+            return repository.persist(new Picture(uniqueName));
+        } catch (PictureFileIOException | IOException e) {
             throw new InvalidPicturePersistenceException(e);
         }
     }
