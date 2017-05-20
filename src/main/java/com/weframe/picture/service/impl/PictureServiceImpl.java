@@ -62,7 +62,14 @@ public class PictureServiceImpl extends PictureService {
 
     @Override
     public void delete(Long id) throws InvalidPicturePersistenceException {
-        repository.remove(id);
+        try {
+            Picture picture = repository.get(id);
+            fileRepository.deletePicture(picture.getImageKey());
+            fileRepository.deletePicture(picture.getImageKey() + thumbnailSuffix);
+            repository.remove(id);
+        } catch (PictureFileIOException | EmptyResultException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
     }
 
 }
