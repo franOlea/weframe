@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collections;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
 @RequestMapping("/pictures")
 @CrossOrigin
@@ -23,14 +24,11 @@ public class PictureController {
 
     private static final Logger logger = Logger.getLogger(PictureController.class);
 
-    private final String tempDirectory;
     private final PictureService service;
     private final ResponseGenerator<Picture> responseGenerator;
 
-    public PictureController(@Qualifier("tempDirectory") final String tempDirectory,
-                             final PictureService service,
+    public PictureController(final PictureService service,
                              final ResponseGenerator<Picture> responseGenerator) {
-        this.tempDirectory = tempDirectory;
         this.service = service;
         this.responseGenerator = responseGenerator;
     }
@@ -40,7 +38,6 @@ public class PictureController {
                                  @RequestParam(value = "uniqueName") final String uniqueName) {
         try {
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-            //Todo if image format is not jpeg return error.
             service.create(image, uniqueName);
         } catch (IOException | InvalidPicturePersistenceException e) {
             logger.error("There was an unexpected error while trying to transfer the multipart file to buffered image.", e);
@@ -88,7 +85,34 @@ public class PictureController {
             } else {
                 picture.setImageUrl(service.getPictureThumbnailUrl(picture.getImageKey()));
             }
-            return responseGenerator.generateResponse(service.getById(pictureId));
+            return responseGenerator.generateResponse(picture);
+        } catch (InvalidPicturePersistenceException e) {
+            logger.error("There was an unexpected error while trying to delete the picture file.", e);
+
+            Error error = new Error(
+                    "internal-server-error",
+                    "There was an internal server error, please try again later."
+            );
+            return responseGenerator.generateErrorResponse(
+                    Collections.singleton(error),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        } catch (EmptyResultException e) {
+            return responseGenerator.generateEmptyResponse();
+        }
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity getPicture(@RequestParam(name = "uniqueName") final String uniqueName,
+                                     @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
+        try {
+            Picture picture = service.getByUniqueName(uniqueName);
+            if(originalSize) {
+                picture.setImageUrl(service.getPictureUrl(picture.getImageKey()));
+            } else {
+                picture.setImageUrl(service.getPictureThumbnailUrl(picture.getImageKey()));
+            }
+            return responseGenerator.generateResponse(picture);
         } catch (InvalidPicturePersistenceException e) {
             logger.error("There was an unexpected error while trying to delete the picture file.", e);
 
