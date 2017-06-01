@@ -1,11 +1,8 @@
 package com.weframe.picture.service;
 
 import com.weframe.picture.service.exception.PictureFileIOException;
-import net.coobird.thumbnailator.Thumbnails;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public interface PictureFileRepository {
 

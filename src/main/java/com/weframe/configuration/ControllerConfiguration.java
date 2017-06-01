@@ -7,7 +7,6 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.Region;
 import com.weframe.controllers.ResponseGenerator;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureFileRepository;

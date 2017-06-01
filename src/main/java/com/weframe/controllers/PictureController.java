@@ -5,7 +5,6 @@ import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
