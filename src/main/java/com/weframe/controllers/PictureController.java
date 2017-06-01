@@ -35,10 +35,11 @@ public class PictureController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity create(@RequestParam(value = "file")final MultipartFile multipartFile,
-                                 @RequestParam(value = "uniqueName") final String uniqueName) {
+                                 @RequestParam(value = "uniqueName") final String uniqueName,
+                                 @RequestParam(value = "formatName") final String imageFormatName) {
         try {
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-            service.create(image, uniqueName);
+            service.create(image, uniqueName, imageFormatName);
         } catch (IOException | InvalidPicturePersistenceException e) {
             logger.error("There was an unexpected error while trying to transfer the multipart file to buffered image.", e);
 

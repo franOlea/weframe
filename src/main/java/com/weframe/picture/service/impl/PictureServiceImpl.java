@@ -22,12 +22,12 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
-    public Picture getById(Long id) throws EmptyResultException, InvalidPicturePersistenceException {
+    public Picture getById(final Long id) throws EmptyResultException, InvalidPicturePersistenceException {
         return repository.get(id);
     }
 
     @Override
-    public Picture getByUniqueName(String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException {
+    public Picture getByUniqueName(final String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException {
         return repository.get(uniqueName);
     }
 
@@ -50,10 +50,12 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
-    public Picture create(BufferedImage bufferedImage, String uniqueName) throws InvalidPicturePersistenceException {
+    public Picture create(final BufferedImage bufferedImage,
+                          final String uniqueName,
+                          final String imageFormatName) throws InvalidPicturePersistenceException {
         try {
-            fileRepository.putPicture(bufferedImage, uniqueName);
-            fileRepository.putPicture(createThumbnail(bufferedImage), uniqueName + thumbnailSuffix);
+            fileRepository.putPicture(bufferedImage, uniqueName, imageFormatName);
+            fileRepository.putPicture(createThumbnail(bufferedImage), uniqueName + thumbnailSuffix, imageFormatName);
             return repository.persist(new Picture(uniqueName));
         } catch (PictureFileIOException | IOException e) {
             throw new InvalidPicturePersistenceException(e);
@@ -61,7 +63,7 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
-    public void delete(Long id) throws InvalidPicturePersistenceException {
+    public void delete(final Long id) throws InvalidPicturePersistenceException {
         try {
             Picture picture = repository.get(id);
             fileRepository.deletePicture(picture.getImageKey());

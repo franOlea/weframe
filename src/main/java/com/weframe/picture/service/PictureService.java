@@ -37,7 +37,9 @@ public abstract class PictureService {
 
     public abstract String getPictureThumbnailUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException;
 
-    public abstract Picture create(final BufferedImage bufferedImage, String uniqueName) throws InvalidPicturePersistenceException;
+    public abstract Picture create(final BufferedImage bufferedImage,
+                                   final String uniqueName,
+                                   final String imageFormatName) throws InvalidPicturePersistenceException;
 
     public abstract void delete(final Long id) throws InvalidPicturePersistenceException;
 

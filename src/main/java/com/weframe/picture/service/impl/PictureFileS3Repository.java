@@ -4,10 +4,8 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.weframe.picture.service.PictureFileRepository;
 import com.weframe.picture.service.exception.PictureFileIOException;
-import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -23,16 +21,13 @@ public class PictureFileS3Repository implements PictureFileRepository {
     private final String tempDirectory;
     private final AmazonS3Client amazonS3Client;
     private final String bucketName;
-    private final String imageFormatName;
 
     public PictureFileS3Repository(final String tempDirectory,
                                    final AmazonS3Client amazonS3Client,
-                                   final String bucketName,
-                                   final String imageFormatName) {
+                                   final String bucketName) {
         this.tempDirectory = tempDirectory;
         this.amazonS3Client = amazonS3Client;
         this.bucketName = bucketName;
-        this.imageFormatName = imageFormatName;
     }
 
     @Override
@@ -65,8 +60,9 @@ public class PictureFileS3Repository implements PictureFileRepository {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void putPicture(BufferedImage bufferedImage, String uniqueKey) throws PictureFileIOException {
+    public void putPicture(BufferedImage bufferedImage, String uniqueKey, String imageFormatName) throws PictureFileIOException {
         File imageFile = new File(tempDirectory + File.pathSeparatorChar + UUID.randomUUID());
         try {
             ImageIO.write(bufferedImage, imageFormatName, imageFile);

@@ -112,8 +112,7 @@ public class ControllerConfiguration {
         return new PictureFileS3Repository(
                 pictureTempFileDirectory,
                 amazonS3Client,
-                s3BucketName,
-                imageFormatName
+                s3BucketName
         );
     }
 
