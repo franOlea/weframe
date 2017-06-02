@@ -1,6 +1,8 @@
 package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
+import com.weframe.picture.service.PictureService;
+import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.model.generic.Frame;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.service.impl.FrameService;
@@ -20,11 +22,14 @@ public class FrameController {
     private static final Logger logger = Logger.getLogger(FrameController.class);
 
     private final FrameService frameService;
+    private final PictureService pictureService;
     private final ResponseGenerator<Frame> responseGenerator;
 
     public FrameController(final FrameService frameService,
+                           final PictureService pictureService,
                            final ResponseGenerator<Frame> responseGenerator) {
         this.frameService = frameService;
+        this.pictureService = pictureService;
         this.responseGenerator = responseGenerator;
     }
 
@@ -132,9 +137,12 @@ public class FrameController {
                         "A frame to be created should not have an id."
                 );
             }
+            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the frame [%s]",
