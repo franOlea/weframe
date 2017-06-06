@@ -1,6 +1,8 @@
 package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
+import com.weframe.picture.service.PictureService;
+import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.model.generic.MatType;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.service.impl.MatTypeService;
@@ -20,11 +22,14 @@ public class MatTypeController {
     private static final Logger logger = Logger.getLogger(MatTypeController.class);
 
     private final MatTypeService matTypeService;
+    private final PictureService pictureService;
     private final ResponseGenerator<MatType> responseGenerator;
 
     public MatTypeController(final MatTypeService matTypeService,
-                                final ResponseGenerator<MatType> responseGenerator) {
+                             final PictureService pictureService,
+                             final ResponseGenerator<MatType> responseGenerator) {
         this.matTypeService = matTypeService;
+        this.pictureService = pictureService;
         this.responseGenerator = responseGenerator;
     }
 
@@ -133,9 +138,12 @@ public class MatTypeController {
                         "A mattype to be created should not have an id."
                 );
             }
+            matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the mattype [%s]",
@@ -161,9 +169,12 @@ public class MatTypeController {
                         "A mattype to be updated should have an id or the unique name set."
                 );
             }
+            matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the mattype [%s]",

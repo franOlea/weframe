@@ -168,9 +168,12 @@ public class FrameController {
                         "A frame to be updated should have an id or the unique name set."
                 );
             }
+            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the frame [%s]",

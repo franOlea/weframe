@@ -198,9 +198,15 @@ public class BackBoardController {
                         "A backboard to be updated should have an id or the unique name set."
                 );
             }
+            Picture picture = pictureService.getByUniqueName(
+                    backBoard.getPicture().getImageKey()
+            );
+            backBoard.setPicture(picture);
             backBoardService.persist(backBoard);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the backboard [%s]",
