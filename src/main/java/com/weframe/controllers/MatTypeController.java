@@ -3,9 +3,9 @@ package com.weframe.controllers;
 import com.weframe.controllers.errors.Error;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
-import com.weframe.product.model.generic.Frame;
+import com.weframe.product.model.generic.MatType;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
-import com.weframe.product.service.impl.FrameService;
+import com.weframe.product.service.impl.MatTypeService;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,32 +15,32 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/frames")
+@RequestMapping("/mattypes")
 @CrossOrigin
-public class FrameController {
+public class MatTypeController {
 
-    private static final Logger logger = Logger.getLogger(FrameController.class);
+    private static final Logger logger = Logger.getLogger(MatTypeController.class);
 
-    private final FrameService frameService;
+    private final MatTypeService matTypeService;
     private final PictureService pictureService;
-    private final ResponseGenerator<Frame> responseGenerator;
+    private final ResponseGenerator<MatType> responseGenerator;
 
-    public FrameController(final FrameService frameService,
-                           final PictureService pictureService,
-                           final ResponseGenerator<Frame> responseGenerator) {
-        this.frameService = frameService;
+    public MatTypeController(final MatTypeService matTypeService,
+                             final PictureService pictureService,
+                             final ResponseGenerator<MatType> responseGenerator) {
+        this.matTypeService = matTypeService;
         this.pictureService = pictureService;
         this.responseGenerator = responseGenerator;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    private ResponseEntity getFrame(
+    private ResponseEntity getMatTypees(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName) {
         try {
             if(uniqueName != null) {
-                return getFrameByUniqueName(uniqueName);
+                return getMatTypeByUniqueName(uniqueName);
             }
 
             if(page < 0 || size < 0) {
@@ -55,7 +55,7 @@ public class FrameController {
             }
 
             return responseGenerator.generateResponse(
-                    frameService.getAll(page, size)
+                    matTypeService.getAll(page, size)
             );
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
@@ -78,11 +78,12 @@ public class FrameController {
         }
     }
 
-    @RequestMapping(value = "/{frameId}", method = RequestMethod.GET)
-    private ResponseEntity getFrame(@PathVariable Long frameId) {
+    @RequestMapping(value = "/{matTypeId}", method = RequestMethod.GET)
+    private ResponseEntity getMatType(@PathVariable Long matTypeId) {
         try {
+            MatType matType = matTypeService.getById(matTypeId);
             return responseGenerator.generateResponse(
-                    frameService.getById(frameId)
+                    matTypeService.getById(matTypeId)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -90,8 +91,8 @@ public class FrameController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "frame by id [%d].",
-                            frameId
+                                    "mattype by id [%d].",
+                            matTypeId
                     ),
                     e);
             Error error = new Error(
@@ -104,10 +105,10 @@ public class FrameController {
         }
     }
 
-    private ResponseEntity getFrameByUniqueName(String frameUniqueName) {
+    private ResponseEntity getMatTypeByUniqueName(String matTypeUniqueName) {
         try {
             return responseGenerator.generateResponse(
-                    frameService.getByUniqueName(frameUniqueName)
+                    matTypeService.getByUniqueName(matTypeUniqueName)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -115,8 +116,8 @@ public class FrameController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "frame by uniqueName [%s].",
-                            frameUniqueName
+                                    "mattype by uniqueName [%s].",
+                            matTypeUniqueName
                     ),
                     e);
             Error error = new Error(
@@ -130,23 +131,23 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody Frame frame) {
+    private ResponseEntity create(@RequestBody MatType matType) {
         try {
-            if(frame.getId() != null) {
+            if(matType.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A frame to be created should not have an id."
+                        "A mattype to be created should not have an id."
                 );
             }
-            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
-            frameService.persist(frame);
+            matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
+            matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
         } catch(InvalidGenericProductPersistenceException |
                 InvalidPicturePersistenceException |
                 EmptyResultException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
+                            "There has been an error creating the mattype [%s]",
+                            matType.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -160,24 +161,24 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    private ResponseEntity update(@RequestBody Frame frame) {
+    private ResponseEntity update(@RequestBody MatType matType) {
         try {
-            if(frame.getId() == null
-                    && frame.getUniqueName() == null) {
+            if(matType.getId() == null
+                    && matType.getUniqueName() == null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A frame to be updated should have an id or the unique name set."
+                        "A mattype to be updated should have an id or the unique name set."
                 );
             }
-            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
-            frameService.persist(frame);
+            matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
+            matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
         } catch(InvalidGenericProductPersistenceException |
                 InvalidPicturePersistenceException |
                 EmptyResultException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
+                            "There has been an error creating the mattype [%s]",
+                            matType.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -190,18 +191,18 @@ public class FrameController {
         }
     }
 
-    @RequestMapping(value = "/{frameId}", method = RequestMethod.DELETE)
-    private ResponseEntity delete(@PathVariable Long frameId) {
+    @RequestMapping(value = "/{matTypeId}", method = RequestMethod.DELETE)
+    private ResponseEntity delete(@PathVariable Long matTypeId) {
         try {
-            frameService.delete(frameId);
-            logger.info("Deleted frame [" + frameId + "].");
+            matTypeService.delete(matTypeId);
+            logger.info("Deleted mattype [" + matTypeId + "].");
             return responseGenerator.generateOkResponse();
         } catch (Exception e) {
             logger.error(
                     String.format(
-                            "There was an unexpected error trying to delete a frame" +
+                            "There was an unexpected error trying to delete a mattype" +
                                     " by id [%d].",
-                            frameId),
+                            matTypeId),
                     e);
             Error error = new Error(
                     "internal-server-error",

@@ -5,8 +5,8 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.Region;
 import com.weframe.controllers.ResponseGenerator;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureFileRepository;
@@ -17,9 +17,13 @@ import com.weframe.picture.service.impl.PictureFileS3Repository;
 import com.weframe.picture.service.impl.PictureServiceImpl;
 import com.weframe.product.model.generic.BackBoard;
 import com.weframe.product.model.generic.Frame;
+import com.weframe.product.model.generic.FrameGlass;
+import com.weframe.product.model.generic.MatType;
 import com.weframe.product.service.GenericProductRepository;
 import com.weframe.product.service.impl.BackBoardService;
+import com.weframe.product.service.impl.FrameGlassService;
 import com.weframe.product.service.impl.FrameService;
+import com.weframe.product.service.impl.MatTypeService;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
 import com.weframe.user.service.persistence.RoleRepository;
@@ -51,6 +55,14 @@ public class ControllerConfiguration {
     private String awsSecretKey;
     @Value("${temp.directory}")
     private String tempDirectory;
+    @Value("${picture.file.image.format.name}")
+    private String imageFormatName;
+    @Value("${picture.file.thumbnail.suffix}")
+    private String thumbnailSuffix;
+    @Value("${picture.file.thumbnail.width}")
+    private int thumbnailWidth;
+    @Value("${picture.file.thumbnail.height}")
+    private int thumbnailHeight;
 
     @Bean
     public UserPasswordCryptographer getUserPasswordCryptographer() throws GeneralSecurityException {
@@ -93,7 +105,7 @@ public class ControllerConfiguration {
         AmazonS3Client amazonS3Client = (AmazonS3Client) AmazonS3Client.builder()
                 .withClientConfiguration(clientConfiguration)
                 .withCredentials(credentialsProvider)
-                .withRegion(Region.SA_SaoPaulo.name())
+                .withRegion(Regions.SA_EAST_1)
                 .build();
 
         return new PictureFileS3Repository(
@@ -113,7 +125,10 @@ public class ControllerConfiguration {
                                             final PictureFileRepository pictureFileRepository) {
         return new PictureServiceImpl(
                 pictureRepository,
-                pictureFileRepository
+                pictureFileRepository,
+                thumbnailSuffix,
+                thumbnailWidth,
+                thumbnailHeight
         );
     }
 
@@ -142,5 +157,27 @@ public class ControllerConfiguration {
     public BackBoardService getBackBoardService(
             final GenericProductRepository<BackBoard> backBoardGenericProductRepository) {
         return new BackBoardService(backBoardGenericProductRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<FrameGlass> getFrameGlassResponseGenerator() {
+        return new ResponseGenerator<>();
+    }
+
+    @Bean
+    public MatTypeService getMatTypeService(
+            final GenericProductRepository<MatType> matTypeGenericProductRepository) {
+        return new MatTypeService(matTypeGenericProductRepository);
+    }
+
+    @Bean
+    public FrameGlassService getFrameGlassService(
+            final GenericProductRepository<FrameGlass> frameGlassGenericProductRepository) {
+        return new FrameGlassService(frameGlassGenericProductRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<MatType> getMatTypeResponseGenerator() {
+        return new ResponseGenerator<>();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -38,10 +39,11 @@ public class BackBoardController {
     private ResponseEntity getBackBoards(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
-            @RequestParam(value="unique-name", required = false) final String uniqueName) {
+            @RequestParam(value="unique-name", required = false) final String uniqueName,
+            @RequestParam(value="original", required = false, defaultValue = "false") final boolean isOriginalSize) {
         try {
             if(uniqueName != null) {
-                return getBackBoardByUniqueName(uniqueName);
+                return getBackBoardByUniqueName(uniqueName, isOriginalSize);
             }
 
             if(page < 0 || size < 0) {
@@ -55,9 +57,21 @@ public class BackBoardController {
                 );
             }
 
-            return responseGenerator.generateResponse(
-                    backBoardService.getAll(page, size)
-            );
+            Collection<BackBoard> backBoards = backBoardService.getAll(page, size);
+            backBoards.forEach(backBoard -> {
+                try {
+                    backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+                } catch (InvalidPicturePersistenceException e) {
+                    logger.error(
+                            String.format(
+                                    "There has been an error while trying to generate the backboard's picture url " +
+                                            "for picture [%s]",
+                                    backBoard.getPicture().getImageKey()),
+                            e);
+                    backBoard.getPicture().setImageUrl("no-url");
+                }
+            });
+            return responseGenerator.generateResponse(backBoards);
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
@@ -80,14 +94,16 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
-    private ResponseEntity getBackBoard(@PathVariable Long backBoardId) {
+    private ResponseEntity getBackBoard(
+            @PathVariable Long backBoardId,
+            @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getById(backBoardId);
-            backBoard.setPicture(
-                    pictureService.setPictureUrl(
-                            backBoard.getPicture()
-                    )
-            );
+            if(originalSize) {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
+            } else {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+            }
             return responseGenerator.generateResponse(
                     backBoardService.getById(backBoardId)
             );
@@ -111,11 +127,15 @@ public class BackBoardController {
         }
     }
 
-    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName) {
+    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName, boolean isOriginalSize) {
         try {
-            return responseGenerator.generateResponse(
-                    backBoardService.getByUniqueName(backBoardUniqueName)
-            );
+            BackBoard backBoard = backBoardService.getByUniqueName(backBoardUniqueName);
+            if(isOriginalSize) {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
+            } else {
+                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+            }
+            return responseGenerator.generateResponse(backBoard);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         } catch (Exception e) {
@@ -178,9 +198,15 @@ public class BackBoardController {
                         "A backboard to be updated should have an id or the unique name set."
                 );
             }
+            Picture picture = pictureService.getByUniqueName(
+                    backBoard.getPicture().getImageKey()
+            );
+            backBoard.setPicture(picture);
             backBoardService.persist(backBoard);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException e) {
+        } catch(InvalidGenericProductPersistenceException |
+                InvalidPicturePersistenceException |
+                EmptyResultException e) {
             logger.error(
                     String.format(
                             "There has been an error creating the backboard [%s]",

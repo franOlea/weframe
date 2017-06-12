@@ -1,11 +1,9 @@
 package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
-import com.weframe.picture.service.PictureService;
-import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
-import com.weframe.product.model.generic.Frame;
+import com.weframe.product.model.generic.FrameGlass;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
-import com.weframe.product.service.impl.FrameService;
+import com.weframe.product.service.impl.FrameGlassService;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,32 +13,29 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/frames")
+@RequestMapping("/frameglasses")
 @CrossOrigin
-public class FrameController {
+public class FrameGlassController {
 
-    private static final Logger logger = Logger.getLogger(FrameController.class);
+    private static final Logger logger = Logger.getLogger(FrameGlassController.class);
 
-    private final FrameService frameService;
-    private final PictureService pictureService;
-    private final ResponseGenerator<Frame> responseGenerator;
+    private final FrameGlassService frameGlassService;
+    private final ResponseGenerator<FrameGlass> responseGenerator;
 
-    public FrameController(final FrameService frameService,
-                           final PictureService pictureService,
-                           final ResponseGenerator<Frame> responseGenerator) {
-        this.frameService = frameService;
-        this.pictureService = pictureService;
+    public FrameGlassController(final FrameGlassService frameGlassService,
+                               final ResponseGenerator<FrameGlass> responseGenerator) {
+        this.frameGlassService = frameGlassService;
         this.responseGenerator = responseGenerator;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    private ResponseEntity getFrame(
+    private ResponseEntity getFrameGlasses(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName) {
         try {
             if(uniqueName != null) {
-                return getFrameByUniqueName(uniqueName);
+                return getFrameGlassByUniqueName(uniqueName);
             }
 
             if(page < 0 || size < 0) {
@@ -55,7 +50,7 @@ public class FrameController {
             }
 
             return responseGenerator.generateResponse(
-                    frameService.getAll(page, size)
+                    frameGlassService.getAll(page, size)
             );
         } catch (InvalidGenericProductPersistenceException e) {
             logger.error(
@@ -78,11 +73,12 @@ public class FrameController {
         }
     }
 
-    @RequestMapping(value = "/{frameId}", method = RequestMethod.GET)
-    private ResponseEntity getFrame(@PathVariable Long frameId) {
+    @RequestMapping(value = "/{frameGlassId}", method = RequestMethod.GET)
+    private ResponseEntity getFrameGlass(@PathVariable Long frameGlassId) {
         try {
+            FrameGlass frameGlass = frameGlassService.getById(frameGlassId);
             return responseGenerator.generateResponse(
-                    frameService.getById(frameId)
+                    frameGlassService.getById(frameGlassId)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -90,8 +86,8 @@ public class FrameController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "frame by id [%d].",
-                            frameId
+                                    "frameglass by id [%d].",
+                            frameGlassId
                     ),
                     e);
             Error error = new Error(
@@ -104,10 +100,10 @@ public class FrameController {
         }
     }
 
-    private ResponseEntity getFrameByUniqueName(String frameUniqueName) {
+    private ResponseEntity getFrameGlassByUniqueName(String frameGlassUniqueName) {
         try {
             return responseGenerator.generateResponse(
-                    frameService.getByUniqueName(frameUniqueName)
+                    frameGlassService.getByUniqueName(frameGlassUniqueName)
             );
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -115,8 +111,8 @@ public class FrameController {
             logger.error(
                     String.format(
                             "There was an unexpected error trying to fetch a " +
-                                    "frame by uniqueName [%s].",
-                            frameUniqueName
+                                    "frameglass by uniqueName [%s].",
+                            frameGlassUniqueName
                     ),
                     e);
             Error error = new Error(
@@ -130,23 +126,20 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody Frame frame) {
+    private ResponseEntity create(@RequestBody FrameGlass frameGlass) {
         try {
-            if(frame.getId() != null) {
+            if(frameGlass.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A frame to be created should not have an id."
+                        "A frameglass to be created should not have an id."
                 );
             }
-            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
-            frameService.persist(frame);
+            frameGlassService.persist(frameGlass);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
+        } catch(InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
+                            "There has been an error creating the frameglass [%s]",
+                            frameGlass.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -160,24 +153,21 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    private ResponseEntity update(@RequestBody Frame frame) {
+    private ResponseEntity update(@RequestBody FrameGlass frameGlass) {
         try {
-            if(frame.getId() == null
-                    && frame.getUniqueName() == null) {
+            if(frameGlass.getId() == null
+                    && frameGlass.getUniqueName() == null) {
                 throw new InvalidGenericProductPersistenceException(
-                        "A frame to be updated should have an id or the unique name set."
+                        "A frameglass to be updated should have an id or the unique name set."
                 );
             }
-            frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
-            frameService.persist(frame);
+            frameGlassService.persist(frameGlass);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
+        } catch(InvalidGenericProductPersistenceException e) {
             logger.error(
                     String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
+                            "There has been an error creating the frameglass [%s]",
+                            frameGlass.getUniqueName()),
                     e);
             Error error = new Error(
                     "internal-server-error",
@@ -190,18 +180,18 @@ public class FrameController {
         }
     }
 
-    @RequestMapping(value = "/{frameId}", method = RequestMethod.DELETE)
-    private ResponseEntity delete(@PathVariable Long frameId) {
+    @RequestMapping(value = "/{frameGlassId}", method = RequestMethod.DELETE)
+    private ResponseEntity delete(@PathVariable Long frameGlassId) {
         try {
-            frameService.delete(frameId);
-            logger.info("Deleted frame [" + frameId + "].");
+            frameGlassService.delete(frameGlassId);
+            logger.info("Deleted frameglass [" + frameGlassId + "].");
             return responseGenerator.generateOkResponse();
         } catch (Exception e) {
             logger.error(
                     String.format(
-                            "There was an unexpected error trying to delete a frame" +
+                            "There was an unexpected error trying to delete a frameglass" +
                                     " by id [%d].",
-                            frameId),
+                            frameGlassId),
                     e);
             Error error = new Error(
                     "internal-server-error",
