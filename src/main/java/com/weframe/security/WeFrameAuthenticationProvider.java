@@ -13,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeFrameAuthenticationProvider implements AuthenticationProvider{
+public class WeFrameAuthenticationProvider implements AuthenticationProvider {
 
     private final static Logger logger = Logger.getLogger(WeFrameAuthenticationProvider.class);
 
