@@ -124,6 +124,8 @@ public class AuthenticationController {
             return responseGenerator.generateOkResponse();
         } catch (InvalidUserPersistenceException e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (EmptyResultException e) {
+            return generateAuthenticationError();
         }
     }
 

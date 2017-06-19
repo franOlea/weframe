@@ -115,9 +115,9 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public void changePassword(final String email, final String password) throws InvalidUserPersistenceException {
+    public void changePassword(final String email, final String password) throws InvalidUserPersistenceException, EmptyResultException {
         try {
-            User user = userRepository.get(email);
+            User user = getByEmail(email);
             user.setPassword(passwordCryptographer.generateStoringPasswordHash(password));
             userRepository.persist(user);
         } catch (GeneralSecurityException e) {
