@@ -44,6 +44,8 @@ public abstract class UserService {
 
     public abstract void update(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException;
 
+    public abstract void changePassword(final String email, final String password) throws InvalidUserPersistenceException;
+
     public abstract void delete(final Long id) throws InvalidUserPersistenceException;
 
 }

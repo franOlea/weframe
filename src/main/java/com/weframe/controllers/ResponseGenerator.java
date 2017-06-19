@@ -53,4 +53,8 @@ public class ResponseGenerator<T> {
         );
     }
 
+    ResponseEntity generateResponse(final HttpStatus httpStatus) {
+        return new ResponseEntity(httpStatus);
+    }
+
 }

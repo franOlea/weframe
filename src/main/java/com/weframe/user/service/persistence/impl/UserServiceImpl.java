@@ -114,6 +114,17 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
+    public void changePassword(final String email, final String password) throws InvalidUserPersistenceException {
+        try {
+            User user = userRepository.get(email);
+            user.setPassword(passwordCryptographer.generateStoringPasswordHash(password));
+            userRepository.persist(user);
+        } catch (GeneralSecurityException e) {
+            throw new InvalidUserPersistenceException(e);
+        }
+    }
+
+    @Override
     public void delete(Long id) throws InvalidUserPersistenceException {
         userRepository.remove(id);
     }
