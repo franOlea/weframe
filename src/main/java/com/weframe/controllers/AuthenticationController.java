@@ -11,6 +11,7 @@ import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
 import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
 import com.weframe.user.service.persistence.exception.InvalidFieldException;
 import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,16 +35,12 @@ public class AuthenticationController {
     private final UserService userService;
     private final UserPasswordCryptographer passwordCryptographer;
 
-    private final StateRepository stateRepository;
-
     public AuthenticationController(final ResponseGenerator<User> responseGenerator,
                                     final UserService userService,
-                                    final UserPasswordCryptographer passwordCryptographer,
-                                    final StateRepository stateRepository) {
+                                    final UserPasswordCryptographer passwordCryptographer) {
         this.responseGenerator = responseGenerator;
         this.userService = userService;
         this.passwordCryptographer = passwordCryptographer;
-        this.stateRepository = stateRepository;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -68,9 +65,11 @@ public class AuthenticationController {
         return responseGenerator.generateResponse(HttpStatus.I_AM_A_TEAPOT);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     private ResponseEntity register(@RequestBody User user) {
         try {
+            user.setFirstName(StringUtils.EMPTY);
+            user.setLastName(StringUtils.EMPTY);
             userService.create(user);
             logger.info("Created user [" + user.getEmail() + "].");
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);

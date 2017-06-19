@@ -17,19 +17,19 @@ public class UserValidator {
             );
         }
 
-        if(StringUtils.isBlank(user.getFirstName())) {
+        if(user.getFirstName() == null) {
             throw new InvalidFieldException(
                     "firstName",
                     user.getFirstName(),
-                    "The provided first name cannot be blank."
+                    "The provided first name cannot be null."
             );
         }
 
-        if(StringUtils.isBlank(user.getLastName())) {
+        if(user.getLastName() == null) {
             throw new InvalidFieldException(
                     "lastName",
                     user.getLastName(),
-                    "The provided last name cannot be blank."
+                    "The provided last name cannot be null."
             );
         }
 
