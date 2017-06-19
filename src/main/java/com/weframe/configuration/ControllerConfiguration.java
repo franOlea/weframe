@@ -24,6 +24,7 @@ import com.weframe.product.service.impl.BackBoardService;
 import com.weframe.product.service.impl.FrameGlassService;
 import com.weframe.product.service.impl.FrameService;
 import com.weframe.product.service.impl.MatTypeService;
+import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
 import com.weframe.user.service.persistence.RoleRepository;
@@ -136,6 +137,11 @@ public class ControllerConfiguration {
     public FrameService getFrameService(
             final GenericProductRepository<Frame> frameGenericProductRepository) {
         return new FrameService(frameGenericProductRepository);
+    }
+
+    @Bean
+    public ResponseGenerator<User> getUserResponseGenerator() {
+        return new ResponseGenerator<>();
     }
 
     @Bean

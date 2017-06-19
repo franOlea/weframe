@@ -1,6 +1,7 @@
 package com.weframe.user.service.persistence;
 
 import com.weframe.controllers.EmptyResultException;
+import com.weframe.user.model.State;
 import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
@@ -45,6 +46,10 @@ public abstract class UserService {
     public abstract void update(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException;
 
     public abstract void changePassword(final String email, final String password) throws InvalidUserPersistenceException;
+
+    public abstract void changeAccountState(final String email, final State state) throws EmptyResultException, InvalidUserPersistenceException;
+
+    public abstract void verifyAccount(final String email) throws EmptyResultException, InvalidUserPersistenceException;
 
     public abstract void delete(final Long id) throws InvalidUserPersistenceException;
 

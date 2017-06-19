@@ -1,6 +1,7 @@
 package com.weframe.user.service.persistence.impl;
 
 import com.weframe.controllers.EmptyResultException;
+import com.weframe.user.model.State;
 import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.UserValidator;
@@ -129,4 +130,15 @@ public class UserServiceImpl extends UserService {
         userRepository.remove(id);
     }
 
+    @Override
+    public void changeAccountState(final String email, final State state) throws EmptyResultException, InvalidUserPersistenceException {
+        User user = getByEmail(email);
+        user.setState(state);
+        userRepository.persist(user);
+    }
+
+    @Override
+    public void verifyAccount(String email) throws EmptyResultException, InvalidUserPersistenceException {
+        changeAccountState(email, stateRepository.getByName(StateRepository.ACTIVE_STATE));
+    }
 }

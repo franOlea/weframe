@@ -2,6 +2,7 @@ package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
 import com.weframe.controllers.errors.ErrorResponse;
+import com.weframe.security.UserCredentials;
 import com.weframe.user.model.User;
 import com.weframe.user.service.UserPasswordCryptographer;
 import com.weframe.user.service.persistence.StateRepository;
@@ -11,7 +12,6 @@ import com.weframe.user.service.persistence.exception.ForbiddenOperationExceptio
 import com.weframe.user.service.persistence.exception.InvalidFieldException;
 import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
 import org.apache.log4j.Logger;
-import org.springframework.data.authentication.UserCredentials;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -106,11 +106,10 @@ public class AuthenticationController {
 
     }
 
-    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    @RequestMapping(value = "/verify", method = RequestMethod.PUT)
     private ResponseEntity verify(@RequestBody final UserCredentials userCredentials) {
         try {
-            User user = userService.getByEmail(userCredentials.getUsername());
-            user.setState(stateRepository.getByName(StateRepository.ACTIVE_STATE));
+            userService.verifyAccount(userCredentials.getUsername());
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException e) {
             return generateAuthenticationError();
@@ -119,7 +118,7 @@ public class AuthenticationController {
         }
     }
 
-    @RequestMapping(value = "/change-password", method = RequestMethod.POST)
+    @RequestMapping(value = "/change-password", method = RequestMethod.PUT)
     private ResponseEntity changePassword(@RequestBody final UserCredentials userCredentials) {
         try {
             userService.changePassword(userCredentials.getUsername(), userCredentials.getPassword());
