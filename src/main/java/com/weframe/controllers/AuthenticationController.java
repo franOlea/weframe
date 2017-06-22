@@ -34,16 +34,24 @@ public class AuthenticationController {
     private final UserService userService;
     private final UserPasswordCryptographer passwordCryptographer;
 
-    private final StateRepository stateRepository;
-
     public AuthenticationController(final ResponseGenerator<User> responseGenerator,
                                     final UserService userService,
-                                    final UserPasswordCryptographer passwordCryptographer,
-                                    final StateRepository stateRepository) {
+                                    final UserPasswordCryptographer passwordCryptographer) {
         this.responseGenerator = responseGenerator;
         this.userService = userService;
         this.passwordCryptographer = passwordCryptographer;
-        this.stateRepository = stateRepository;
+    }
+
+    @RequestMapping(value = "/get-user/{email}")
+    private ResponseEntity getUser(@PathVariable final String email) {
+        try {
+            User user = userService.getByEmail(email);
+            return responseGenerator.generateResponse(user);
+        } catch (EmptyResultException e) {
+            return generateAuthenticationError();
+        } catch (InvalidUserPersistenceException e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

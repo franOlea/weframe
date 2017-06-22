@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -88,7 +89,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    private ResponseEntity getUserById(@PathVariable Long userId) {
+    private ResponseEntity getUserById(@PathVariable Long userId, Principal principal) {
         try {
             User user = userService.getById(userId);
             logger.info("Retrieved user [" + user + "] by id [" + userId + "]");

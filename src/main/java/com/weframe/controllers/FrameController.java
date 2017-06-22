@@ -1,16 +1,22 @@
 package com.weframe.controllers;
 
+import com.auth0.authentication.result.UserProfile;
+import com.auth0.spring.security.api.Auth0JWTToken;
 import com.weframe.controllers.errors.Error;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.model.generic.Frame;
 import com.weframe.product.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.service.impl.FrameService;
+import com.weframe.security.Auth0Client;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -25,6 +31,9 @@ public class FrameController {
     private final PictureService pictureService;
     private final ResponseGenerator<Frame> responseGenerator;
 
+    @Autowired
+    Auth0Client client;
+
     public FrameController(final FrameService frameService,
                            final PictureService pictureService,
                            final ResponseGenerator<Frame> responseGenerator) {
@@ -37,7 +46,13 @@ public class FrameController {
     private ResponseEntity getFrame(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
-            @RequestParam(value="unique-name", required = false) final String uniqueName) {
+            @RequestParam(value="unique-name", required = false) final String uniqueName,
+            Principal principal,
+            Authentication authentication,
+            Auth0JWTToken token) {
+        if(token != null) {
+            UserProfile userProfile = client.getUsername(token);
+        }
         try {
             if(uniqueName != null) {
                 return getFrameByUniqueName(uniqueName);
