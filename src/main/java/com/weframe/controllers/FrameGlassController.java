@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/frameglasses")
+@RequestMapping("/generic-product/frameglasses")
 @CrossOrigin
 public class FrameGlassController {
 

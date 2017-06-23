@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/frames")
+@RequestMapping("/generic-product/frames")
 @CrossOrigin
 public class FrameController {
 

@@ -17,7 +17,7 @@ import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/backboards")
+@RequestMapping("/generic-product/backboards")
 @CrossOrigin
 public class BackBoardController {
 

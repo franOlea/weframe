@@ -23,6 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @SuppressWarnings("unused")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String USER_ROLE = "USER";
+
     private final TokenAuthenticationService tokenAuthenticationService;
     private final AuthenticationProvider authProvider;
 
@@ -38,9 +41,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/register").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/frames").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()     //Allow login
+                .antMatchers(HttpMethod.POST, "/register").permitAll()  //Allow registration
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()     //Allow CORS to everyone
+                .antMatchers(HttpMethod.GET, "/generic-product/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.PUT, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.DELETE, "/generic-product/**").hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 // We filter the api/login requests
