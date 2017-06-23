@@ -48,6 +48,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/generic-product/**").hasRole(ADMIN_ROLE)
                 .antMatchers(HttpMethod.PUT, "/generic-product/**").hasRole(ADMIN_ROLE)
                 .antMatchers(HttpMethod.DELETE, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/users").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/users/me").authenticated()
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.PUT, "/users").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/users").hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 // We filter the api/login requests
