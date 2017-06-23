@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
-
+    private static final String ORIGIN = "Origin";
     private final TokenAuthenticationService tokenAuthenticationService;
 
     public JWTLoginFilter(final String url,
@@ -30,6 +30,20 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(final HttpServletRequest req,
                                                 final HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
+        if (req.getHeader(ORIGIN) != null) {
+            String origin = req.getHeader(ORIGIN);
+            res.addHeader("Access-Control-Allow-Origin", origin);
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            res.addHeader("Access-Control-Allow-Credentials", "true");
+            res.addHeader("Access-Control-Allow-Headers",
+            req.getHeader("Access-Control-Request-Headers"));
+            res.addHeader("Access-Control-Expose-Headers", "Authorization");
+        }
+        if (req.getMethod().equals("OPTIONS")) {
+            res.getWriter().print("OK");
+            res.getWriter().flush();
+            return null;
+        }
         AccountCredentials credentials = new ObjectMapper()
                 .readValue(req.getInputStream(), AccountCredentials.class);
         return getAuthenticationManager().authenticate(
