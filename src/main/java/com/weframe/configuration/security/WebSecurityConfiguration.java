@@ -50,9 +50,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/generic-product/**").hasRole(ADMIN_ROLE)
                 .antMatchers(HttpMethod.GET, "/users").hasRole(ADMIN_ROLE)
                 .antMatchers(HttpMethod.GET, "/users/me").authenticated()
+                .antMatchers("/user-pictures/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.PUT, "/users").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/users").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/frames").permitAll()
+                .antMatchers(HttpMethod.POST, "/frames").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.DELETE, "/frames").hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 // We filter the api/login requests
@@ -62,14 +66,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 authenticationManager(),
                                 tokenAuthenticationService
                         ),
-                        UsernamePasswordAuthenticationFilter.class)
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 // And filter other requests to check the presence
                 // of JWT in header
                 .addFilterBefore(
                         new JWTAuthenticationFilter(
                                 tokenAuthenticationService
                         ),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class
+                );
     }
 
     @Override

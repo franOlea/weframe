@@ -1,5 +1,7 @@
-package com.weframe.controllers;
+package com.weframe.picture.controller;
 
+import com.weframe.controllers.EmptyResultException;
+import com.weframe.controllers.ResponseGenerator;
 import com.weframe.controllers.errors.Error;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureService;

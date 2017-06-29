@@ -9,12 +9,12 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.weframe.controllers.ResponseGenerator;
 import com.weframe.picture.model.Picture;
-import com.weframe.picture.service.PictureFileRepository;
-import com.weframe.picture.service.PictureRepository;
-import com.weframe.picture.service.PictureService;
+import com.weframe.picture.model.UserPicture;
+import com.weframe.picture.service.*;
 import com.weframe.picture.service.impl.PictureFileInMemoryRepository;
 import com.weframe.picture.service.impl.PictureFileS3Repository;
 import com.weframe.picture.service.impl.PictureServiceImpl;
+import com.weframe.picture.service.impl.UserPictureServiceImpl;
 import com.weframe.product.generic.model.BackBoard;
 import com.weframe.product.generic.model.Frame;
 import com.weframe.product.generic.model.FrameGlass;
@@ -154,6 +154,11 @@ public class ControllerConfiguration {
     }
 
     @Bean
+    public ResponseGenerator<UserPicture> getUserPictureResponseGenerator() {
+        return new ResponseGenerator<>();
+    }
+
+    @Bean
     public BackBoardService getBackBoardService(
             final GenericProductRepository<BackBoard> backBoardGenericProductRepository) {
         return new BackBoardService(backBoardGenericProductRepository);
@@ -179,5 +184,12 @@ public class ControllerConfiguration {
     @Bean
     public ResponseGenerator<MatType> getMatTypeResponseGenerator() {
         return new ResponseGenerator<>();
+    }
+
+    @Bean
+    public UserPictureService getUserPictureService(final UserService userService,
+                                                    final PictureService pictureService,
+                                                    final UserPictureRepository userPictureRepository) {
+        return new UserPictureServiceImpl(pictureService, userService, userPictureRepository);
     }
 }
