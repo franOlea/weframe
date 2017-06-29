@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public class ResponseGenerator<T> {
 
-    ResponseEntity<ErrorResponse> generateErrorResponse(
+    public ResponseEntity<ErrorResponse> generateErrorResponse(
             final Collection<Error> errors,
             final HttpStatus httpStatus) {
         return new ResponseEntity<>(
@@ -20,7 +20,7 @@ public class ResponseGenerator<T> {
         );
     }
 
-    ResponseEntity generateEmptyResponse() {
+    public ResponseEntity generateEmptyResponse() {
         return new ResponseEntity<>(
                 null,
                 new HttpHeaders(),
@@ -28,7 +28,7 @@ public class ResponseGenerator<T> {
         );
     }
 
-    ResponseEntity generateOkResponse() {
+    public ResponseEntity generateOkResponse() {
         return new ResponseEntity<>(
                 null,
                 new HttpHeaders(),
@@ -36,7 +36,7 @@ public class ResponseGenerator<T> {
         );
     }
 
-    ResponseEntity<T> generateResponse(final T t) {
+    public ResponseEntity<T> generateResponse(final T t) {
         return new ResponseEntity<>(
                 t,
                 new HttpHeaders(),
@@ -44,7 +44,7 @@ public class ResponseGenerator<T> {
         );
     }
 
-    ResponseEntity<Collection<T>> generateResponse(
+    public ResponseEntity<Collection<T>> generateResponse(
             final Collection<T> ts) {
         return new ResponseEntity<>(
                 ts,

@@ -53,6 +53,22 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
+    public User getByLogin(String email, String password) throws EmptyResultException, InvalidUserPersistenceException {
+        final User user = getByEmail(email);
+        if(user == null) {
+            throw new EmptyResultException();
+        } else try {
+            if(passwordCryptographer.isValidPassword(password, user.getPassword())){
+                return user;
+            } else {
+                return null;
+            }
+        } catch (GeneralSecurityException e) {
+            throw new InvalidUserPersistenceException(e);
+        }
+    }
+
+    @Override
     public Collection<User> getAll(final int size, final int page)
             throws EmptyResultException, InvalidUserPersistenceException {
         final Collection<User> users = userRepository.getAll(size, page);

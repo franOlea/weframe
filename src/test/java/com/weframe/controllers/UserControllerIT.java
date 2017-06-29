@@ -1,5 +1,6 @@
 package com.weframe.controllers;
 
+import com.weframe.user.controller.UserController;
 import com.weframe.user.fixture.UserFixture;
 import com.weframe.user.model.User;
 import com.weframe.user.service.persistence.UserService;
