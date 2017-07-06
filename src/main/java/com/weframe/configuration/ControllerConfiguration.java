@@ -97,7 +97,7 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    @Profile("openshift")
+    @Profile({"openshift", "aws"})
     public PictureFileRepository getPictureFileS3Repository() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         AWSCredentials credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);

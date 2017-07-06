@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 @SuppressWarnings("unused")
 @Configuration
-@Profile("openshift")
+@Profile({"openshift", "aws"})
 public class OpenShiftDataBaseConfiguration {
 
     @Value("${database.url}")
