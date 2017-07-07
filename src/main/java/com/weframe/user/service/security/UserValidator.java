@@ -1,4 +1,4 @@
-package com.weframe.user.service;
+package com.weframe.user.service.security;
 
 import com.weframe.user.model.User;
 import com.weframe.user.service.persistence.exception.InvalidFieldException;

@@ -111,28 +111,6 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/me", method = RequestMethod.GET)
-    private ResponseEntity getMe(final Authentication authentication) {
-        try {
-            User user = userService.getByEmail(authentication.getName());
-            logger.info("Retrieved user [" + user + "] by token id [" + authentication.getName() + "]");
-            return generateResponse(user);
-        } catch (EmptyResultException e) {
-            return generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a user by token id [%s].",
-                            authentication.getName()
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
     @RequestMapping(value = "", method = RequestMethod.PATCH)
     private ResponseEntity update(@RequestBody User user) {
         try {

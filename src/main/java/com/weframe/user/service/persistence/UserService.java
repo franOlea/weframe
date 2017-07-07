@@ -3,8 +3,8 @@ package com.weframe.user.service.persistence;
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.user.model.State;
 import com.weframe.user.model.User;
-import com.weframe.user.service.UserPasswordCryptographer;
-import com.weframe.user.service.UserValidator;
+import com.weframe.user.service.security.UserPasswordCryptographer;
+import com.weframe.user.service.security.UserValidator;
 import com.weframe.user.service.persistence.exception.*;
 import org.apache.commons.lang3.Validate;
 

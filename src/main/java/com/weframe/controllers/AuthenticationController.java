@@ -4,8 +4,7 @@ import com.weframe.controllers.errors.Error;
 import com.weframe.controllers.errors.ErrorResponse;
 import com.weframe.security.UserCredentials;
 import com.weframe.user.model.User;
-import com.weframe.user.service.UserPasswordCryptographer;
-import com.weframe.user.service.persistence.StateRepository;
+import com.weframe.user.service.security.UserPasswordCryptographer;
 import com.weframe.user.service.persistence.UserService;
 import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
 import com.weframe.user.service.persistence.exception.ForbiddenOperationException;
@@ -16,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.GeneralSecurityException;
@@ -41,6 +41,28 @@ public class AuthenticationController {
         this.responseGenerator = responseGenerator;
         this.userService = userService;
         this.passwordCryptographer = passwordCryptographer;
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.GET)
+    private ResponseEntity getMe(final Authentication authentication) {
+        try {
+            User user = userService.getByEmail(authentication.getName());
+            logger.info("Retrieved user [" + user + "] by token id [" + authentication.getName() + "]");
+            return responseGenerator.generateResponse(user);
+        } catch (EmptyResultException e) {
+            return responseGenerator.generateEmptyResponse();
+        } catch (Exception e) {
+            logger.error(
+                    String.format(
+                            "There was an unexpected error trying to fetch a user by token id [%s].",
+                            authentication.getName()
+                    ),
+                    e);
+            Error error = new Error(
+                    "internal-server-error",
+                    "There has been an internal server error. Please try again later.");
+            return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
