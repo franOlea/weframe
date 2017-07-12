@@ -39,8 +39,10 @@ public class UserPictureServiceImpl extends UserPictureService {
     }
 
     @Override
-    public void delete(final Long id) throws InvalidUserPicturePersistenceException {
-        userPictureRepository.remove(id);
+    public void delete(final String userEmail, final String uniqueKey) throws InvalidUserPicturePersistenceException, EmptyResultException {
+        userPictureRepository.remove(
+                userPictureRepository.getUserPicture(userEmail, uniqueKey).getId()
+        );
     }
 
     @Override

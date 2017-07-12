@@ -9,6 +9,7 @@ import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.UserPictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.picture.service.exception.InvalidUserPicturePersistenceException;
+import com.weframe.user.service.security.UserIdentityResolver;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,16 @@ public class UserPictureController {
     private final UserPictureService userPictureService;
     private final PictureService pictureService;
     private final ResponseGenerator<Picture> responseGenerator;
+    private final UserIdentityResolver userIdentityResolver;
 
     public UserPictureController(final UserPictureService userPictureService,
                                  final PictureService pictureService,
-                                 final ResponseGenerator<Picture> responseGenerator) {
+                                 final ResponseGenerator<Picture> responseGenerator,
+                                 final UserIdentityResolver userIdentityResolver) {
         this.userPictureService = userPictureService;
         this.pictureService = pictureService;
         this.responseGenerator = responseGenerator;
+        this.userIdentityResolver = userIdentityResolver;
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -49,9 +53,10 @@ public class UserPictureController {
                                  @RequestParam(value = "formatName") final String imageFormatName,
                                  final Authentication authentication) {
         try {
+            String identityEmail = userIdentityResolver.resolve(authentication);
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-            Picture picture = pictureService.create(image, uniqueName, imageFormatName);
-            userPictureService.create(authentication.getName(), uniqueName);
+            pictureService.create(image, uniqueName, imageFormatName);
+            userPictureService.create(identityEmail, uniqueName);
         } catch (IOException
                 | InvalidPicturePersistenceException
                 | InvalidUserPicturePersistenceException e) {
@@ -69,11 +74,13 @@ public class UserPictureController {
         return responseGenerator.generateOkResponse();
     }
 
-    @RequestMapping(value = "/{pictureId}", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@PathVariable("pictureId") Long id) {
+    @RequestMapping(value = "/{uniqueName}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable("uniqueName") final String uniqueName,
+                                 final Authentication authentication) {
         try {
-            userPictureService.delete(id);
-        } catch (InvalidUserPicturePersistenceException e) {
+            String identityEmail = userIdentityResolver.resolve(authentication);
+            userPictureService.delete(identityEmail, uniqueName);
+        } catch (InvalidUserPicturePersistenceException | EmptyResultException e) {
             logger.error("There was an unexpected error while trying to delete the picture file.", e);
 
             Error error = new Error(

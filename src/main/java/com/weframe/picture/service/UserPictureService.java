@@ -24,7 +24,7 @@ public abstract class UserPictureService {
 
     public abstract UserPicture create(final String email, final String imageKey) throws InvalidUserPicturePersistenceException;
 
-    public abstract void delete(final Long id) throws InvalidUserPicturePersistenceException;
+    public abstract void delete(final String userEmail, final String uniqueKey) throws InvalidUserPicturePersistenceException, EmptyResultException;
 
     public abstract Set<UserPicture> getAllUserPicturesByUserEmail(final String userEmail) throws InvalidUserPicturePersistenceException, EmptyResultException;
 
