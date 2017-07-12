@@ -48,15 +48,6 @@ public class WeFrameAuthenticationProvider implements AuthenticationProvider {
             );
             return null;
         }
-//        if (name.equals("john.doe@email.com") && password.equals("password")) {
-//            List<GrantedAuthority> grantedAuths = new ArrayList<>();
-//            grantedAuths.add(new SimpleGrantedAuthority("ADMIN"));
-//            Authentication auth = new UsernamePasswordAuthenticationToken(name, password, grantedAuths);
-//            return auth;
-//        } else {
-//            return null;
-//        }
-
     }
 
     @Override

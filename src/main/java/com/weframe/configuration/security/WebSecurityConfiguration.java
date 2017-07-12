@@ -17,8 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @ConditionalOnProperty(
         value = "security.enabled",
-        havingValue = "true",
-        matchIfMissing = true
+        havingValue = "true"
 )
 @SuppressWarnings("unused")
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {

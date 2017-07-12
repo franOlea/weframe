@@ -12,10 +12,10 @@ import com.weframe.user.service.persistence.exception.InvalidFieldException;
 import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.GeneralSecurityException;
@@ -26,43 +26,22 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/authentication")
 @CrossOrigin
-public class AuthenticationController {
+@Profile("auth0")
+public class Auth0AuthenticationController {
 
-    private static final Logger logger = Logger.getLogger(AuthenticationController.class);
+    private static final Logger logger = Logger.getLogger(Auth0AuthenticationController.class);
 
     private final ResponseGenerator<User> responseGenerator;
 
     private final UserService userService;
     private final UserPasswordCryptographer passwordCryptographer;
 
-    public AuthenticationController(final ResponseGenerator<User> responseGenerator,
-                                    final UserService userService,
-                                    final UserPasswordCryptographer passwordCryptographer) {
+    public Auth0AuthenticationController(final ResponseGenerator<User> responseGenerator,
+                                         final UserService userService,
+                                         final UserPasswordCryptographer passwordCryptographer) {
         this.responseGenerator = responseGenerator;
         this.userService = userService;
         this.passwordCryptographer = passwordCryptographer;
-    }
-
-    @RequestMapping(value = "/me", method = RequestMethod.GET)
-    private ResponseEntity getMe(final Authentication authentication) {
-        try {
-            User user = userService.getByEmail(authentication.getName());
-            logger.info("Retrieved user [" + user + "] by token id [" + authentication.getName() + "]");
-            return responseGenerator.generateResponse(user);
-        } catch (EmptyResultException e) {
-            return responseGenerator.generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a user by token id [%s].",
-                            authentication.getName()
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
-        }
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -124,7 +103,6 @@ public class AuthenticationController {
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
         }
-
     }
 
     @RequestMapping(value = "/verify", method = RequestMethod.PUT)

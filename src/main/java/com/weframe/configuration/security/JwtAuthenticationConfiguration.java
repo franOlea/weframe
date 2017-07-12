@@ -3,10 +3,13 @@ package com.weframe.configuration.security;
 import com.weframe.security.TokenAuthenticationService;
 import com.weframe.security.WeFrameAuthenticationProvider;
 import com.weframe.user.service.persistence.UserService;
+import com.weframe.user.service.security.JwtUserIdentityResolver;
+import com.weframe.user.service.security.UserIdentityResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -14,11 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 @ConditionalOnProperty(
         value = "security.enabled",
-        havingValue = "true",
-        matchIfMissing = true
+        havingValue = "true"
 )
+@Profile("jwt")
 @SuppressWarnings("unused")
-public class AuthenticationConfiguration {
+public class JwtAuthenticationConfiguration {
 
     @Value("${security.jwt.expiration.time}")
     private long expirationTime;
@@ -43,6 +46,11 @@ public class AuthenticationConfiguration {
     public AuthenticationProvider getAuthenticationProvider(
             final UserService userService) {
         return new WeFrameAuthenticationProvider(userService);
+    }
+
+    @Bean
+    public UserIdentityResolver getJwtUserIdentityResolver() {
+        return new JwtUserIdentityResolver();
     }
 
 }
