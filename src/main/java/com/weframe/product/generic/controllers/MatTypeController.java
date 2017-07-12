@@ -36,7 +36,7 @@ public class MatTypeController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    private ResponseEntity getMatTypees(
+    private ResponseEntity getMatTypes(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName) {
