@@ -12,13 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class AbstractPersonalizedProductController<T extends PictureFrameComponent> {
+public abstract class AbstractPersonalizedProductController<T extends PictureFrameComponent> {
 	private static final Logger logger = Logger.getLogger(AbstractPersonalizedProductController.class);
 
 	private final ResponseGenerator<T> responseGenerator;
@@ -34,12 +35,13 @@ public class AbstractPersonalizedProductController<T extends PictureFrameCompone
 		this.userIdentityResolver = userIdentityResolver;
 	}
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	private ResponseEntity getAllForUser(final Authentication authentication) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	private ResponseEntity getById(@PathVariable final Long id,
+								   final Authentication authentication) {
 		String userIdentity = userIdentityResolver.resolve(authentication);
 		try {
 			return responseGenerator.generateResponse(
-					service.getAllByUserIdentity(userIdentity)
+					service.getById(id, userIdentity)
 			);
 		} catch (EmptyResultException e) {
 			return responseGenerator.generateEmptyResponse();
@@ -56,16 +58,35 @@ public class AbstractPersonalizedProductController<T extends PictureFrameCompone
 		}
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	private ResponseEntity getById(@PathVariable final Long id,
-								   final Authentication authentication) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	private ResponseEntity deleteById(@PathVariable final Long id,
+									  final Authentication authentication) {
 		String userIdentity = userIdentityResolver.resolve(authentication);
 		try {
-			return responseGenerator.generateResponse(
-					service.getById(id, userIdentity)
-			);
+			service.delete(id, userIdentity);
+			return responseGenerator.generateOkResponse();
 		} catch (EmptyResultException e) {
 			return responseGenerator.generateEmptyResponse();
+		} catch (InvalidPersonalizedProductPersistenceException e) {
+			return responseGenerator.generateErrorResponse(
+					Collections.singleton(
+							new Error(
+									"Internal Server Error",
+									"There was an internal server error, please try again later."
+							)
+					),
+					HttpStatus.INTERNAL_SERVER_ERROR
+			);
+		}
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	private ResponseEntity persist(@RequestBody final T t,
+									  final Authentication authentication) {
+		String userIdentity = userIdentityResolver.resolve(authentication);
+		try {
+			service.persist(t, userIdentity);
+			return responseGenerator.generateOkResponse();
 		} catch (InvalidPersonalizedProductPersistenceException e) {
 			return responseGenerator.generateErrorResponse(
 					Collections.singleton(
