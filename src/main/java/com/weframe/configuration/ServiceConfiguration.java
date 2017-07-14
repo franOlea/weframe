@@ -97,8 +97,9 @@ public class ServiceConfiguration {
     }
 
     @Bean
-	public PictureFrameService getPictureFrameService(final PictureFrameRepository repository) {
-		return new PictureFrameServiceImpl(repository);
+	public PictureFrameService getPictureFrameService(final PictureFrameRepository repository,
+													  final UserService userService) {
+		return new PictureFrameServiceImpl(repository, userService);
 	}
 
 }
