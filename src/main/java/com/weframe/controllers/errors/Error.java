@@ -19,6 +19,20 @@ public class Error {
         this.detail = detail;
     }
 
+    public static Error createInternalServerError() {
+        return new Error(
+                "internal-server-error",
+                "There has been an internal server error. Please try again later."
+        );
+    }
+
+    public static Error createPageRequestError() {
+        return new Error(
+                "invalid-request",
+                "The page and size parameters must be above zero."
+        );
+    }
+
     public String getTitle() {
         return title;
     }

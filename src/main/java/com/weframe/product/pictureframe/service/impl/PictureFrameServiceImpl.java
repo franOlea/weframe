@@ -5,13 +5,17 @@ import com.weframe.product.pictureframe.model.PictureFrame;
 import com.weframe.product.pictureframe.service.PictureFrameRepository;
 import com.weframe.product.pictureframe.service.PictureFrameService;
 import com.weframe.product.pictureframe.service.exception.InvalidPictureFramePersistenceException;
+import com.weframe.user.model.User;
+import com.weframe.user.service.persistence.UserService;
+import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
 
 import java.util.List;
 
 public class PictureFrameServiceImpl extends PictureFrameService {
 
-	public PictureFrameServiceImpl(final PictureFrameRepository repository) {
-		super(repository);
+	public PictureFrameServiceImpl(final PictureFrameRepository repository,
+								   final UserService userService) {
+		super(repository, userService);
 	}
 
 	@Override
@@ -30,9 +34,16 @@ public class PictureFrameServiceImpl extends PictureFrameService {
 	}
 
 	@Override
-	public PictureFrame persist(final PictureFrame pictureFrame)
+	public PictureFrame persist(final String userIdentity,
+								final PictureFrame pictureFrame)
 			throws InvalidPictureFramePersistenceException {
-		return repository.persist(pictureFrame);
+		try {
+			User owner = userService.getByEmail(userIdentity);
+			pictureFrame.setUser(owner);
+			return repository.persist(pictureFrame);
+		} catch (EmptyResultException | InvalidUserPersistenceException e) {
+			throw new InvalidPictureFramePersistenceException(e);
+		}
 	}
 
 	@Override

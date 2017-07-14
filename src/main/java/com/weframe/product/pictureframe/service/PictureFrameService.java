@@ -3,9 +3,9 @@ package com.weframe.product.pictureframe.service;
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.product.pictureframe.model.PictureFrame;
 import com.weframe.product.pictureframe.service.exception.InvalidPictureFramePersistenceException;
+import com.weframe.user.service.persistence.UserService;
 import org.apache.log4j.Logger;
 
-import java.util.Collection;
 import java.util.List;
 
 public abstract class PictureFrameService {
@@ -13,9 +13,12 @@ public abstract class PictureFrameService {
 	protected static final Logger logger = Logger.getLogger(PictureFrameService.class);
 
 	protected final PictureFrameRepository repository;
+	protected final UserService userService;
 
-	public PictureFrameService(final PictureFrameRepository repository) {
+	public PictureFrameService(final PictureFrameRepository repository,
+							   final UserService userService) {
 		this.repository = repository;
+		this.userService = userService;
 	}
 
 	public abstract PictureFrame getById(final Long id,
@@ -27,7 +30,8 @@ public abstract class PictureFrameService {
 											  final int size)
 			throws InvalidPictureFramePersistenceException, EmptyResultException;
 
-	public abstract PictureFrame persist(final PictureFrame pictureFrame)
+	public abstract PictureFrame persist(final String userIdentity,
+										 final PictureFrame pictureFrame)
 			throws InvalidPictureFramePersistenceException;
 
 	public abstract void delete(final Long id)

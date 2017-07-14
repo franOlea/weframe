@@ -7,8 +7,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class ResponseGenerator<T> {
+
+	public ResponseEntity<ErrorResponse> generateInternalServerErrorResponse() {
+		return new ResponseEntity<>(
+				new ErrorResponse(Error.createInternalServerError()),
+				new HttpHeaders(),
+				HttpStatus.INTERNAL_SERVER_ERROR
+		);
+	}
+
+	public ResponseEntity<ErrorResponse> generatePageRequestErrorResponse() {
+		return new ResponseEntity<>(
+				new ErrorResponse(
+						Error.createPageRequestError()
+				),
+				new HttpHeaders(),
+				HttpStatus.UNPROCESSABLE_ENTITY
+		);
+	}
 
     public ResponseEntity<ErrorResponse> generateErrorResponse(
             final Collection<Error> errors,
@@ -20,9 +39,33 @@ public class ResponseGenerator<T> {
         );
     }
 
+    public ResponseEntity<ErrorResponse> generateErrorResponse(
+            final Error error,
+            final HttpStatus httpStatus) {
+        return new ResponseEntity<>(
+                new ErrorResponse(Collections.singleton(error)),
+                new HttpHeaders(),
+                httpStatus
+        );
+    }
+
+    public ResponseEntity<ErrorResponse> generateErrorResponse(
+            final String errorTitle,
+            final String errorDescription,
+            final HttpStatus httpStatus) {
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        Collections.singleton(
+                                new Error(errorTitle, errorDescription)
+                        )
+                ),
+                new HttpHeaders(),
+                httpStatus
+        );
+    }
+
     public ResponseEntity generateEmptyResponse() {
         return new ResponseEntity<>(
-                null,
                 new HttpHeaders(),
                 HttpStatus.NO_CONTENT
         );
@@ -30,7 +73,6 @@ public class ResponseGenerator<T> {
 
     public ResponseEntity generateOkResponse() {
         return new ResponseEntity<>(
-                null,
                 new HttpHeaders(),
                 HttpStatus.OK
         );
