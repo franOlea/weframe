@@ -13,6 +13,9 @@ import com.weframe.product.generic.service.impl.BackBoardService;
 import com.weframe.product.generic.service.impl.FrameGlassService;
 import com.weframe.product.generic.service.impl.FrameService;
 import com.weframe.product.generic.service.impl.MatTypeService;
+import com.weframe.product.pictureframe.service.PictureFrameRepository;
+import com.weframe.product.pictureframe.service.PictureFrameService;
+import com.weframe.product.pictureframe.service.impl.PictureFrameServiceImpl;
 import com.weframe.user.service.persistence.RoleRepository;
 import com.weframe.user.service.persistence.StateRepository;
 import com.weframe.user.service.persistence.UserRepository;
@@ -92,4 +95,10 @@ public class ServiceConfiguration {
                                                     final UserPictureRepository userPictureRepository) {
         return new UserPictureServiceImpl(pictureService, userService, userPictureRepository);
     }
+
+    @Bean
+	public PictureFrameService getPictureFrameService(final PictureFrameRepository repository) {
+		return new PictureFrameServiceImpl(repository);
+	}
+
 }

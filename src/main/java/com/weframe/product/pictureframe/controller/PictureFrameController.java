@@ -3,9 +3,9 @@ package com.weframe.product.pictureframe.controller;
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.controllers.ResponseGenerator;
 import com.weframe.controllers.errors.Error;
-import com.weframe.product.generic.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.pictureframe.model.PictureFrame;
 import com.weframe.product.pictureframe.service.PictureFrameService;
+import com.weframe.product.pictureframe.service.exception.InvalidPictureFramePersistenceException;
 import com.weframe.user.service.security.UserIdentityResolver;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -61,7 +61,7 @@ public class PictureFrameController {
 					size
 			);
 			return responseGenerator.generateResponse(pictureFrames);
-		} catch (InvalidGenericProductPersistenceException | EmptyResultException e) {
+		} catch (InvalidPictureFramePersistenceException | EmptyResultException e) {
 			Error error = new Error(
 					"internal-server-error",
 					"There has been an internal server error. Please try again later.");
@@ -83,7 +83,7 @@ public class PictureFrameController {
 					userIdentity
 			);
 			return responseGenerator.generateResponse(pictureFrame);
-		} catch (InvalidGenericProductPersistenceException | EmptyResultException e) {
+		} catch (InvalidPictureFramePersistenceException | EmptyResultException e) {
 			Error error = new Error(
 					"internal-server-error",
 					"There has been an internal server error. Please try again later.");
@@ -112,7 +112,7 @@ public class PictureFrameController {
 			}
 			pictureFrameService.persist(pictureFrame);
 			return responseGenerator.generateOkResponse();
-		} catch (InvalidGenericProductPersistenceException e) {
+		} catch (InvalidPictureFramePersistenceException e) {
 			Error error = new Error(
 					"internal-server-error",
 					"There has been an internal server error. Please try again later.");
@@ -141,7 +141,7 @@ public class PictureFrameController {
 			}
 			pictureFrameService.persist(pictureFrame);
 			return responseGenerator.generateOkResponse();
-		} catch (InvalidGenericProductPersistenceException e) {
+		} catch (InvalidPictureFramePersistenceException e) {
 			Error error = new Error(
 					"internal-server-error",
 					"There has been an internal server error. Please try again later.");
