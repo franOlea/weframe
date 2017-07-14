@@ -1,7 +1,7 @@
 package com.weframe.product.personalized.model;
 
 import com.weframe.picture.model.UserPicture;
-import com.weframe.product.pictureframe.PictureFrame;
+import com.weframe.product.pictureframe.model.PictureFrame;
 
 import javax.persistence.*;
 

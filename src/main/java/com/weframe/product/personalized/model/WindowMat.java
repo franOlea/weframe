@@ -1,6 +1,6 @@
 package com.weframe.product.personalized.model;
 
-import com.weframe.product.pictureframe.PictureFrame;
+import com.weframe.product.pictureframe.model.PictureFrame;
 import com.weframe.product.generic.model.MatType;
 
 import javax.persistence.*;
