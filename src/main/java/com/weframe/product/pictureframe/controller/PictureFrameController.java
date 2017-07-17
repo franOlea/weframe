@@ -35,81 +35,110 @@ public class PictureFrameController {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	private ResponseEntity getPictureFrames(
-			@RequestParam(value="page", defaultValue="0", required = false) final int page,
-			@RequestParam(value="size", defaultValue = "10", required = false) final int size,
-			final Authentication authentication) {
+	private ResponseEntity getPictureFrames(@RequestParam(value="page", defaultValue="0", required=false)
+                                            final int page,
+                                            @RequestParam(value="size", defaultValue = "10", required=false)
+                                            final int size,
+                                            final Authentication authentication) {
+	    String userIdentity = userIdentityResolver.resolve(authentication);
+		logger.debug(String.format("Page %d\tsize %d from %s requested.", page, size, userIdentity));
 		try {
 			if(page < 0 || size < 0) {
 				return responseGenerator.generatePageRequestErrorResponse();
 			}
-
-			Collection<PictureFrame> pictureFrames = pictureFrameService.getAll(
-					userIdentityResolver.resolve(authentication),
-					page,
-					size
-			);
+			Collection<PictureFrame> pictureFrames = pictureFrameService.getAll(userIdentity, page, size);
+            logger.trace(String.format(
+                    "Responding page %d\tsize %d from %s requested. ---> %d",
+                    page,
+                    size,
+                    userIdentity,
+                    pictureFrames.size()
+            ));
 			return responseGenerator.generateResponse(pictureFrames);
 		} catch (InvalidPictureFramePersistenceException | EmptyResultException e) {
-			return responseGenerator.generateInternalServerErrorResponse();
+            return handleUnexpectedError(e);
 		}
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	private ResponseEntity getPictureFrame(@PathVariable("id") final Long id,
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	private ResponseEntity getPictureFrame(@PathVariable("id")
+                                           final Long id,
 										   final Authentication authentication) {
+        String userIdentity = userIdentityResolver.resolve(authentication);
+        logger.debug(String.format("Picture frame %d from %s requested.", id, userIdentity));
 		try {
-			PictureFrame pictureFrame = pictureFrameService.getById(
-					id,
-					userIdentityResolver.resolve(authentication)
-			);
+			PictureFrame pictureFrame = pictureFrameService.getById(id, userIdentity);
+            logger.trace(String.format(
+                    "Responding picture frame %d from %s. ---> %s", id, userIdentity, pictureFrame.toString()
+            ));
 			return responseGenerator.generateResponse(pictureFrame);
 		} catch (InvalidPictureFramePersistenceException | EmptyResultException e) {
-			return responseGenerator.generateInternalServerErrorResponse();
+            return handleUnexpectedError(e);
 		}
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	private ResponseEntity savePictureFrame(@RequestBody final PictureFrame pictureFrame,
+	private ResponseEntity savePictureFrame(@RequestBody
+                                            PictureFrame pictureFrame,
 											final Authentication authentication) {
+        if(pictureFrame.getId() != null) {
+            return responseGenerator.generateErrorResponse(
+                    "invalid-request",
+                    "The entity should not have an id.",
+                    HttpStatus.UNPROCESSABLE_ENTITY
+            );
+        }
+
+        String userIdentity = userIdentityResolver.resolve(authentication);
+        logger.debug(String.format("Picture frame from %s post requested.", userIdentity));
 		try {
-			if(pictureFrame.getId() != null) {
-				return responseGenerator.generateErrorResponse(
-						"invalid-request",
-						"The entity should not have an id.",
-						HttpStatus.UNPROCESSABLE_ENTITY
-				);
-			}
-			pictureFrameService.persist(
+			pictureFrame = pictureFrameService.persist(
 					userIdentityResolver.resolve(authentication),
 					pictureFrame
 			);
+            logger.trace(String.format(
+                    "Picture frame %d from %s post request accepted. ---> %s",
+                    pictureFrame.getId(),
+                    userIdentity,
+                    pictureFrame
+            ));
 			return responseGenerator.generateOkResponse();
 		} catch (InvalidPictureFramePersistenceException e) {
-			return responseGenerator.generateInternalServerErrorResponse();
+            return handleUnexpectedError(e);
 		}
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT)
-	private ResponseEntity updatePictureFrame(@RequestBody final PictureFrame pictureFrame,
+	private ResponseEntity updatePictureFrame(@RequestBody
+                                              final PictureFrame pictureFrame,
 											  final Authentication authentication) {
-		String userIdentity = userIdentityResolver.resolve(authentication);
+        if(pictureFrame.getId() == null) {
+            return responseGenerator.generateErrorResponse(
+                    "invalid-request",
+                    "The entity should have an id.",
+                    HttpStatus.UNPROCESSABLE_ENTITY
+            );
+        }
 
+		String userIdentity = userIdentityResolver.resolve(authentication);
+        logger.debug(String.format("User %s updated picture frame with id %d", userIdentity, pictureFrame.getId()));
 		try {
-			if(pictureFrame.getId() == null) {
-				return responseGenerator.generateErrorResponse(
-						"invalid-request",
-						"The entity should have an id.",
-						HttpStatus.UNPROCESSABLE_ENTITY
-				);
-			}
 			pictureFrameService.persist(
-					userIdentityResolver.resolve(authentication),
+                    userIdentity,
 					pictureFrame
 			);
+            logger.debug(String.format(
+                    "User %s updated picture frame with id %d accepted. ---> %s",
+                    userIdentity,
+                    pictureFrame.getId()));
 			return responseGenerator.generateOkResponse();
 		} catch (InvalidPictureFramePersistenceException e) {
-			return responseGenerator.generateInternalServerErrorResponse();
+            return handleUnexpectedError(e);
 		}
 	}
+
+    private ResponseEntity handleUnexpectedError(final Exception e) {
+        logger.error("There was an unexpected error while trying to get picture frames page.", e);
+        return responseGenerator.generateInternalServerErrorResponse();
+    }
 }
