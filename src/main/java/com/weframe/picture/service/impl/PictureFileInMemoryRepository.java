@@ -2,16 +2,19 @@ package com.weframe.picture.service.impl;
 
 import com.weframe.picture.service.PictureFileRepository;
 import com.weframe.picture.service.exception.PictureFileIOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class PictureFileInMemoryRepository implements PictureFileRepository {
+
+    @Value("server.port")
+    private String serverPort;
+    @Value("server.address")
+    private String serverAddress;
 
     private final Map<String, Pair<BufferedImage, String>> picturesMap;
 
@@ -26,14 +29,14 @@ public class PictureFileInMemoryRepository implements PictureFileRepository {
 
     @Override
     public String getPictureUrl(final String uniqueKey) throws PictureFileIOException {
-        Pair<BufferedImage, String> image = picturesMap.get(uniqueKey);
-        File imageFile = new File("target/" + UUID.randomUUID().toString());
-        try {
-            ImageIO.write(image.getFirst(), image.getSecond(), imageFile);
-        } catch (IOException e) {
-            throw new PictureFileIOException(e);
+        if(picturesMap.containsKey(uniqueKey)) {
+            return "http://" + serverAddress + ":" + serverPort
+                    + "/local-pictures/" + uniqueKey;
+        } else {
+            throw new PictureFileIOException(
+                    new Exception()
+            );
         }
-        return imageFile.toURI().getPath().substring(1);
     }
 
     @Override
@@ -46,5 +49,9 @@ public class PictureFileInMemoryRepository implements PictureFileRepository {
     @Override
     public void deletePicture(final String uniqueKey) throws PictureFileIOException {
         picturesMap.remove(uniqueKey);
+    }
+
+    public Map<String, Pair<BufferedImage, String>> getPicturesMap() {
+        return picturesMap;
     }
 }

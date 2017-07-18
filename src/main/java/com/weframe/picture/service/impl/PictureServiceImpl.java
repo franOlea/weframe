@@ -32,7 +32,11 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
-    public String getPictureUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
+    public String getPictureUrl(final String pictureUniqueKey, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        return thumbnail ? doGetPictureThumbnailUrl(pictureUniqueKey) : doGetPictureUrl(pictureUniqueKey);
+    }
+
+    private String doGetPictureUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
         try {
             return fileRepository.getPictureUrl(pictureUniqueKey);
         } catch (PictureFileIOException e) {
@@ -40,8 +44,7 @@ public class PictureServiceImpl extends PictureService {
         }
     }
 
-    @Override
-    public String getPictureThumbnailUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
+    private String doGetPictureThumbnailUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException {
         try {
             return fileRepository.getPictureUrl(pictureUniqueKey + thumbnailSuffix);
         } catch (PictureFileIOException e) {

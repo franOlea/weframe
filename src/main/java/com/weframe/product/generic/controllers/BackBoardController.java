@@ -62,7 +62,7 @@ public class BackBoardController {
             Collection<BackBoard> backBoards = backBoardService.getAll(page, size);
             backBoards.forEach(backBoard -> {
                 try {
-                    backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
+                    assignPictureUrl(backBoard, true);
                 } catch (InvalidPicturePersistenceException e) {
                     logger.error(
                             String.format(
@@ -101,11 +101,7 @@ public class BackBoardController {
             @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getById(backBoardId);
-            if(originalSize) {
-                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
-            } else {
-                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
-            }
+            assignPictureUrl(backBoard, !originalSize);
             return responseGenerator.generateResponse(
                     backBoardService.getById(backBoardId)
             );
@@ -132,11 +128,7 @@ public class BackBoardController {
     private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName, boolean isOriginalSize) {
         try {
             BackBoard backBoard = backBoardService.getByUniqueName(backBoardUniqueName);
-            if(isOriginalSize) {
-                backBoard.getPicture().setImageUrl(pictureService.getPictureUrl(backBoard.getPicture().getImageKey()));
-            } else {
-                backBoard.getPicture().setImageUrl(pictureService.getPictureThumbnailUrl(backBoard.getPicture().getImageKey()));
-            }
+            assignPictureUrl(backBoard, !isOriginalSize);
             return responseGenerator.generateResponse(backBoard);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -246,6 +238,12 @@ public class BackBoardController {
                     HttpStatus.SERVICE_UNAVAILABLE
             );
         }
+    }
+
+    private void assignPictureUrl(final BackBoard backBoard, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        backBoard.getPicture().setImageUrl(
+                pictureService.getPictureUrl(backBoard.getPicture().getImageKey(), thumbnail)
+        );
     }
     
 }

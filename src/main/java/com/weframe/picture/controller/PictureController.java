@@ -2,12 +2,10 @@ package com.weframe.picture.controller;
 
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.controllers.ResponseGenerator;
-import com.weframe.controllers.errors.Error;
 import com.weframe.picture.model.Picture;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
@@ -41,40 +38,20 @@ public class PictureController {
         try {
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
             service.create(image, uniqueName, imageFormatName);
+            return responseGenerator.generateOkResponse();
         } catch (IOException | InvalidPicturePersistenceException e) {
-            logger.error("There was an unexpected error while trying to transfer the multipart file to buffered image.", e);
-
-            Error error = new Error(
-                    "internal-server-error",
-                    "There was an internal server error, please try again later."
-            );
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return handleUnexpectedError(e);
         }
-
-        return responseGenerator.generateOkResponse();
     }
 
     @RequestMapping(value = "/{pictureId}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable("pictureId") Long id) {
         try {
             service.delete(id);
+            return responseGenerator.generateOkResponse();
         } catch (InvalidPicturePersistenceException e) {
-            logger.error("There was an unexpected error while trying to delete the picture file.", e);
-
-            Error error = new Error(
-                    "internal-server-error",
-                    "There was an internal server error, please try again later."
-            );
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return handleUnexpectedError(e);
         }
-
-        return responseGenerator.generateOkResponse();
     }
 
     @RequestMapping(value = "/{pictureId}", method = RequestMethod.GET)
@@ -82,23 +59,10 @@ public class PictureController {
                                      @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             Picture picture = service.getById(pictureId);
-            if(originalSize) {
-                picture.setImageUrl(service.getPictureUrl(picture.getImageKey()));
-            } else {
-                picture.setImageUrl(service.getPictureThumbnailUrl(picture.getImageKey()));
-            }
+            picture.setImageUrl(service.getPictureUrl(picture.getImageKey(), !originalSize));
             return responseGenerator.generateResponse(picture);
         } catch (InvalidPicturePersistenceException e) {
-            logger.error("There was an unexpected error while trying to delete the picture file.", e);
-
-            Error error = new Error(
-                    "internal-server-error",
-                    "There was an internal server error, please try again later."
-            );
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return handleUnexpectedError(e);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         }
@@ -109,26 +73,18 @@ public class PictureController {
                                      @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             Picture picture = service.getByUniqueName(uniqueName);
-            if(originalSize) {
-                picture.setImageUrl(service.getPictureUrl(picture.getImageKey()));
-            } else {
-                picture.setImageUrl(service.getPictureThumbnailUrl(picture.getImageKey()));
-            }
+            picture.setImageUrl(service.getPictureUrl(picture.getImageKey(), !originalSize));
             return responseGenerator.generateResponse(picture);
         } catch (InvalidPicturePersistenceException e) {
-            logger.error("There was an unexpected error while trying to delete the picture file.", e);
-
-            Error error = new Error(
-                    "internal-server-error",
-                    "There was an internal server error, please try again later."
-            );
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            return handleUnexpectedError(e);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         }
+    }
+
+    private ResponseEntity handleUnexpectedError(final Exception e) {
+        logger.error("There was an unexpected error while doing an operation on pictures.", e);
+        return responseGenerator.generateInternalServerErrorResponse();
     }
 
 }

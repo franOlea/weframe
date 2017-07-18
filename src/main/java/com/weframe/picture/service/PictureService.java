@@ -33,9 +33,7 @@ public abstract class PictureService {
 
     public abstract Picture getByUniqueName(final String uniqueName) throws EmptyResultException, InvalidPicturePersistenceException;
 
-    public abstract String getPictureUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException;
-
-    public abstract String getPictureThumbnailUrl(final String pictureUniqueKey) throws InvalidPicturePersistenceException;
+    public abstract String getPictureUrl(final String pictureUniqueKey, final boolean thumbnail) throws InvalidPicturePersistenceException;
 
     public abstract Picture create(final BufferedImage bufferedImage,
                                    final String uniqueName,
