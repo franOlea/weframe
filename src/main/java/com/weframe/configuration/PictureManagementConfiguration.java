@@ -31,11 +31,15 @@ public class PictureManagementConfiguration {
     private String awsAccessKey;
     @Value("${picture.file.aws.secret.key}")
     private String awsSecretKey;
+    @Value("server.port")
+    private String serverPort;
+    @Value("server.address")
+    private String serverAddress;
 
     @Bean
     @Profile("embedded")
-    public PictureFileRepository getPictureFileInMemoryRepository() {
-        return new PictureFileInMemoryRepository(new HashMap<>());
+    public PictureFileInMemoryRepository getPictureFileInMemoryRepository() {
+        return new PictureFileInMemoryRepository(new HashMap<>(), serverAddress, serverPort);
     }
 
     @Bean
