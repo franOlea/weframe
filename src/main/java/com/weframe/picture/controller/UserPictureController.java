@@ -50,10 +50,14 @@ public class UserPictureController {
                                  @RequestParam(value = "formatName") final String imageFormatName,
                                  final Authentication authentication) {
         try {
-            String identityEmail = userIdentityResolver.resolve(authentication);
+            String userEmailIdentity = resolveUserIdentity(authentication);
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-            pictureService.create(image, uniqueName, imageFormatName);
-            userPictureService.create(identityEmail, uniqueName);
+            Picture created = pictureService.create(image, uniqueName, imageFormatName);
+            userPictureService.create(userEmailIdentity, uniqueName);
+            logger.debug(String.format(
+                    "User [%s] Image [%s] created with ID [%s].", 
+                    userEmailIdentity, created.getImageKey(), created.getId()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (IOException
                 | InvalidPicturePersistenceException
@@ -66,8 +70,11 @@ public class UserPictureController {
     public ResponseEntity delete(@PathVariable("uniqueName") final String uniqueName,
                                  final Authentication authentication) {
         try {
-            String identityEmail = userIdentityResolver.resolve(authentication);
-            userPictureService.delete(identityEmail, uniqueName);
+            String userEmailIdentity = resolveUserIdentity(authentication);
+            userPictureService.delete(userEmailIdentity, uniqueName);
+            logger.debug(String.format(
+                    "User [%s] Image [%s] deleted.", userEmailIdentity, uniqueName
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidUserPicturePersistenceException | EmptyResultException e) {
             return handleUnexpectedError(e);
@@ -79,10 +86,15 @@ public class UserPictureController {
                                      @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize,
                                      final Authentication authentication) {
         try {
-            Picture picture = userPictureService.getUserPicture(authentication.getName(), uniqueName).getPicture();
+            String userEmailIdentity = resolveUserIdentity(authentication);
+            Picture picture = userPictureService.getUserPicture(userEmailIdentity, uniqueName).getPicture();
             picture.setImageUrl(
                     pictureService.getPictureUrl(picture.getImageKey(), !originalSize)
             );
+            logger.debug(String.format(
+                    "User [%s] %s image with unique name [%s] requested.", 
+                    userEmailIdentity, originalSize ? "Original" : "Thumbnail", uniqueName
+            ));
             return responseGenerator.generateResponse(picture);
         } catch (InvalidUserPicturePersistenceException | InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
@@ -91,16 +103,27 @@ public class UserPictureController {
         }
     }
 
+    private String resolveUserIdentity(final Authentication authentication) {
+        return userIdentityResolver.resolve(authentication);
+    }
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity getAllPictures(
             @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize,
+            @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") final int size,
             final Authentication authentication) {
         try {
-            Set<Picture> pictures = userPictureService.getAllUserPicturesByUserEmail(authentication.getName())
+            String userEmailIdentity = resolveUserIdentity(authentication);
+            Set<Picture> pictures = userPictureService.getAllUserPicturesByUserEmail(userEmailIdentity)
                     .stream()
                     .map(UserPicture::getPicture)
                     .collect(Collectors.toSet());
             assignUrlsToPictures(originalSize, pictures);
+            logger.debug(String.format(
+                    "User [%s] %s page %s size %s images requested.",
+                    userEmailIdentity, page, size, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(pictures);
         } catch (InvalidUserPicturePersistenceException | InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
@@ -110,7 +133,7 @@ public class UserPictureController {
     }
 
     private ResponseEntity handleUnexpectedError(final Exception e) {
-        logger.error("There was an unexpected error while doing an operation on pictures.", e);
+        logger.error("There was an unexpected error while doing an operation on user pictures.", e);
         return responseGenerator.generateInternalServerErrorResponse();
     }
 

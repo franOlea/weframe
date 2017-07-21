@@ -37,7 +37,10 @@ public class PictureController {
                                  @RequestParam(value = "formatName") final String imageFormatName) {
         try {
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-            service.create(image, uniqueName, imageFormatName);
+            Picture created = service.create(image, uniqueName, imageFormatName);
+            logger.debug(String.format(
+                    "Image [%s] created with ID [%s].", created.getImageKey(), created.getId())
+            );
             return responseGenerator.generateOkResponse();
         } catch (IOException | InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
@@ -48,6 +51,7 @@ public class PictureController {
     public ResponseEntity delete(@PathVariable("pictureId") Long id) {
         try {
             service.delete(id);
+            logger.debug(String.format("Image [%s] deleted.", id));
             return responseGenerator.generateOkResponse();
         } catch (InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
@@ -58,6 +62,9 @@ public class PictureController {
     public ResponseEntity getPicture(@PathVariable("pictureId") final Long pictureId,
                                      @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
+            logger.debug(String.format(
+                    "%s image with ID [%s] requested.", originalSize ? "Original" : "Thumbnail", pictureId)
+            );
             Picture picture = service.getById(pictureId);
             picture.setImageUrl(service.getPictureUrl(picture.getImageKey(), !originalSize));
             return responseGenerator.generateResponse(picture);
@@ -72,6 +79,9 @@ public class PictureController {
     public ResponseEntity getPicture(@RequestParam(name = "uniqueName") final String uniqueName,
                                      @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
+            logger.debug(String.format(
+                    "%s image with unique name [%s] requested.", originalSize ? "Original" : "Thumbnail", uniqueName)
+            );
             Picture picture = service.getByUniqueName(uniqueName);
             picture.setImageUrl(service.getPictureUrl(picture.getImageKey(), !originalSize));
             return responseGenerator.generateResponse(picture);
