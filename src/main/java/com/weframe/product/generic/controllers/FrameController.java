@@ -2,18 +2,16 @@ package com.weframe.product.generic.controllers;
 
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.controllers.ResponseGenerator;
-import com.weframe.controllers.errors.Error;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.generic.model.Frame;
 import com.weframe.product.generic.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.generic.service.impl.FrameService;
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.Collection;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
@@ -39,95 +37,53 @@ public class FrameController {
     private ResponseEntity getFrame(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
-            @RequestParam(value="unique-name", required = false) final String uniqueName) {
+            @RequestParam(value="unique-name", required = false) final String uniqueName,
+            @RequestParam(value="original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             if(uniqueName != null) {
-                return getFrameByUniqueName(uniqueName);
+                return getFrameByUniqueName(uniqueName, originalSize);
             }
 
             if(page < 0 || size < 0) {
-                Error error = new Error(
-                        "invalid-request",
-                        "The page and size parameters must be above zero."
-                );
-                return responseGenerator.generateErrorResponse(
-                        Collections.singleton(error),
-                        HttpStatus.UNPROCESSABLE_ENTITY
-                );
+                return responseGenerator.generatePageRequestErrorResponse();
             }
 
-            return responseGenerator.generateResponse(
-                    frameService.getAll(page, size)
-            );
-        } catch (InvalidGenericProductPersistenceException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error requesting backboards by page [%d] " +
-                                    "with size [%d]",
-                            page,
-                            size),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
-        } catch (EmptyResultException e) {
+            Collection<Frame> frames = frameService.getAll(page, size);
+            assignPictureUrl(frames, !originalSize);
+            return responseGenerator.generateResponse(frames);
+        }  catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
     @RequestMapping(value = "/{frameId}", method = RequestMethod.GET)
-    private ResponseEntity getFrame(@PathVariable Long frameId) {
+    private ResponseEntity getFrame(@PathVariable final Long frameId,
+                                    @RequestParam(value="original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
-            return responseGenerator.generateResponse(
-                    frameService.getById(frameId)
-            );
+            Frame frame = frameService.getById(frameId);
+            assignPictureUrl(frame, originalSize);
+            return responseGenerator.generateResponse(frame);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a " +
-                                    "frame by id [%d].",
-                            frameId
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
-    private ResponseEntity getFrameByUniqueName(String frameUniqueName) {
+    private ResponseEntity getFrameByUniqueName(final String frameUniqueName, final boolean originalSize) {
         try {
-            return responseGenerator.generateResponse(
-                    frameService.getByUniqueName(frameUniqueName)
-            );
+            Frame frame = frameService.getByUniqueName(frameUniqueName);
+            assignPictureUrl(frame, originalSize);
+            return responseGenerator.generateResponse(frame);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a " +
-                                    "frame by uniqueName [%s].",
-                            frameUniqueName
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
@@ -142,22 +98,10 @@ public class FrameController {
             frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (EmptyResultException
+                | InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
@@ -173,22 +117,11 @@ public class FrameController {
             frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error creating the frame [%s]",
-                            frame.getUniqueName()),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (EmptyResultException e) {
+            return responseGenerator.generateEmptyResponse();
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
@@ -196,23 +129,28 @@ public class FrameController {
     private ResponseEntity delete(@PathVariable Long frameId) {
         try {
             frameService.delete(frameId);
-            logger.info("Deleted frame [" + frameId + "].");
+            logger.debug("Deleted frame [" + frameId + "].");
             return responseGenerator.generateOkResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to delete a frame" +
-                                    " by id [%d].",
-                            frameId),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException e) {
+            return handleUnexpectedError(e);
         }
+    }
+
+    private void assignPictureUrl(final Frame frame, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        frame.getPicture().setImageUrl(
+                pictureService.getPictureUrl(frame.getPicture().getImageKey(), thumbnail)
+        );
+    }
+
+    private void assignPictureUrl(final Collection<Frame> frame, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        for(Frame backBoard : frame) {
+            assignPictureUrl(backBoard, thumbnail);
+        }
+    }
+
+    private ResponseEntity handleUnexpectedError(final Exception e) {
+        logger.error("There was an unexpected error while doing an operation on frames.", e);
+        return responseGenerator.generateInternalServerErrorResponse();
     }
 
 }

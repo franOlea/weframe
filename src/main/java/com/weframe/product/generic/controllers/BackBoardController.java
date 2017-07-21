@@ -39,16 +39,20 @@ public class BackBoardController {
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName,
-            @RequestParam(value="original", required = false, defaultValue = "false") final boolean isOriginalSize) {
+            @RequestParam(value="original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             if(uniqueName != null) {
-                return getBackBoardByUniqueName(uniqueName, isOriginalSize);
+                return getBackBoardByUniqueName(uniqueName, originalSize);
             }
             if(page < 0 || size < 0) {
                 return responseGenerator.generatePageRequestErrorResponse();
             }
             Collection<BackBoard> backBoards = backBoardService.getAll(page, size);
-            assignPictureUrl(backBoards, !isOriginalSize);
+            assignPictureUrl(backBoards, !originalSize);
+            logger.debug(String.format(
+                    "Backboards page %s size %s with %s size requested.",
+                    page, size, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(backBoards);
         } catch (InvalidGenericProductPersistenceException
                 | InvalidPicturePersistenceException e) {
@@ -60,14 +64,16 @@ public class BackBoardController {
 
     @RequestMapping(value = "/{backBoardId}", method = RequestMethod.GET)
     private ResponseEntity getBackBoard(
-            @PathVariable Long backBoardId,
+            @PathVariable final Long backBoardId,
             @RequestParam(name = "original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getById(backBoardId);
             assignPictureUrl(backBoard, !originalSize);
-            return responseGenerator.generateResponse(
-                    backBoardService.getById(backBoardId)
-            );
+            logger.debug(String.format(
+                    "Backboards [%s] with %s size requested.",
+                    backBoardId, originalSize ? "original" : "thumbnail"
+            ));
+            return responseGenerator.generateResponse(backBoard);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         } catch (InvalidGenericProductPersistenceException
@@ -76,10 +82,14 @@ public class BackBoardController {
         }
     }
 
-    private ResponseEntity getBackBoardByUniqueName(String backBoardUniqueName, boolean isOriginalSize) {
+    private ResponseEntity getBackBoardByUniqueName(final String backBoardUniqueName, final boolean originalSize) {
         try {
             BackBoard backBoard = backBoardService.getByUniqueName(backBoardUniqueName);
-            assignPictureUrl(backBoard, !isOriginalSize);
+            assignPictureUrl(backBoard, !originalSize);
+            logger.debug(String.format(
+                    "Backboards [%s] with %s size requested.",
+                    backBoardUniqueName, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(backBoard);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -90,7 +100,7 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody BackBoard backBoard) {
+    private ResponseEntity create(@RequestBody final BackBoard backBoard) {
         try {
             if(backBoard.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
@@ -102,6 +112,10 @@ public class BackBoardController {
             );
             backBoard.setPicture(picture);
             backBoardService.persist(backBoard);
+            logger.debug(String.format(
+                    "Backboards [%s] created.",
+                    backBoard.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -112,7 +126,7 @@ public class BackBoardController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    private ResponseEntity update(@RequestBody BackBoard backBoard) {
+    private ResponseEntity update(@RequestBody final BackBoard backBoard) {
         try {
             if(backBoard.getId() == null
                     && backBoard.getUniqueName() == null) {
@@ -125,20 +139,26 @@ public class BackBoardController {
             );
             backBoard.setPicture(picture);
             backBoardService.persist(backBoard);
+            logger.debug(String.format(
+                    "Backboards [%s] updated.",
+                    backBoard.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
-        } catch (EmptyResultException e) {
-            return responseGenerator.generateEmptyResponse();
-        } catch (InvalidGenericProductPersistenceException
+        } catch (EmptyResultException
+                | InvalidGenericProductPersistenceException
                 | InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
         }
     }
 
     @RequestMapping(value = "/{backBoardId}", method = RequestMethod.DELETE)
-    private ResponseEntity delete(@PathVariable Long backBoardId) {
+    private ResponseEntity delete(@PathVariable final Long backBoardId) {
         try {
             backBoardService.delete(backBoardId);
-            logger.info("Deleted backboard [" + backBoardId + "].");
+            logger.debug(String.format(
+                    "Backboards [%s] deleted.",
+                    backBoardId
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);
@@ -158,7 +178,7 @@ public class BackBoardController {
     }
 
     private ResponseEntity handleUnexpectedError(final Exception e) {
-        logger.error("There was an unexpected error while doing an operation on user pictures.", e);
+        logger.error("There was an unexpected error while doing an operation on backboards.", e);
         return responseGenerator.generateInternalServerErrorResponse();
     }
     
