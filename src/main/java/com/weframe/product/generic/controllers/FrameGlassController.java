@@ -137,7 +137,7 @@ public class FrameGlassController {
     }
 
     private ResponseEntity handleUnexpectedError(final Exception e) {
-        logger.error("There was an unexpected error while doing an operation on frames.", e);
+        logger.error("There was an unexpected error while doing an operation on frameGlasses.", e);
         return responseGenerator.generateInternalServerErrorResponse();
     }
 

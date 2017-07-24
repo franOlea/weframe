@@ -173,7 +173,7 @@ public class MatTypeController {
     }
 
     private ResponseEntity handleUnexpectedError(final Exception e) {
-        logger.error("There was an unexpected error while doing an operation on frames.", e);
+        logger.error("There was an unexpected error while doing an operation on matTypes.", e);
         return responseGenerator.generateInternalServerErrorResponse();
     }
 
