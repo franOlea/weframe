@@ -70,7 +70,7 @@ public class BackBoardController {
             BackBoard backBoard = backBoardService.getById(backBoardId);
             assignPictureUrl(backBoard, !originalSize);
             logger.debug(String.format(
-                    "Backboards [%s] with %s size requested.",
+                    "Backboard [%s] with %s size requested.",
                     backBoardId, originalSize ? "original" : "thumbnail"
             ));
             return responseGenerator.generateResponse(backBoard);
@@ -87,7 +87,7 @@ public class BackBoardController {
             BackBoard backBoard = backBoardService.getByUniqueName(backBoardUniqueName);
             assignPictureUrl(backBoard, !originalSize);
             logger.debug(String.format(
-                    "Backboards [%s] with %s size requested.",
+                    "Backboard [%s] with %s size requested.",
                     backBoardUniqueName, originalSize ? "original" : "thumbnail"
             ));
             return responseGenerator.generateResponse(backBoard);
@@ -113,7 +113,7 @@ public class BackBoardController {
             backBoard.setPicture(picture);
             backBoardService.persist(backBoard);
             logger.debug(String.format(
-                    "Backboards [%s] created.",
+                    "Backboard [%s] created.",
                     backBoard.getUniqueName()
             ));
             return responseGenerator.generateOkResponse();

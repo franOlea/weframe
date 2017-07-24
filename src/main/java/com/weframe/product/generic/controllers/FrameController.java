@@ -43,13 +43,15 @@ public class FrameController {
             if(uniqueName != null) {
                 return getFrameByUniqueName(uniqueName, originalSize);
             }
-
             if(page < 0 || size < 0) {
                 return responseGenerator.generatePageRequestErrorResponse();
             }
-
             Collection<Frame> frames = frameService.getAll(page, size);
             assignPictureUrl(frames, !originalSize);
+            logger.debug(String.format(
+                    "Frames page %s size %s with %s size requested.",
+                    page, size, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(frames);
         }  catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -65,6 +67,10 @@ public class FrameController {
         try {
             Frame frame = frameService.getById(frameId);
             assignPictureUrl(frame, originalSize);
+            logger.debug(String.format(
+                    "Frame [%s] with %s size requested.",
+                    frameId, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(frame);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -78,6 +84,10 @@ public class FrameController {
         try {
             Frame frame = frameService.getByUniqueName(frameUniqueName);
             assignPictureUrl(frame, originalSize);
+            logger.debug(String.format(
+                    "Frame [%s] with %s size requested.",
+                    frameUniqueName, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(frame);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -88,7 +98,7 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody Frame frame) {
+    private ResponseEntity create(@RequestBody final Frame frame) {
         try {
             if(frame.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
@@ -97,6 +107,10 @@ public class FrameController {
             }
             frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
+            logger.debug(String.format(
+                    "Frame [%s] created.",
+                    frame.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException
                 | InvalidGenericProductPersistenceException
@@ -106,7 +120,7 @@ public class FrameController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    private ResponseEntity update(@RequestBody Frame frame) {
+    private ResponseEntity update(@RequestBody final Frame frame) {
         try {
             if(frame.getId() == null
                     && frame.getUniqueName() == null) {
@@ -116,6 +130,10 @@ public class FrameController {
             }
             frame.setPicture(pictureService.getByUniqueName(frame.getPicture().getImageKey()));
             frameService.persist(frame);
+            logger.debug(String.format(
+                    "Frame [%s] updated.",
+                    frame.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -126,10 +144,13 @@ public class FrameController {
     }
 
     @RequestMapping(value = "/{frameId}", method = RequestMethod.DELETE)
-    private ResponseEntity delete(@PathVariable Long frameId) {
+    private ResponseEntity delete(@PathVariable final Long frameId) {
         try {
             frameService.delete(frameId);
-            logger.debug("Deleted frame [" + frameId + "].");
+            logger.debug(String.format(
+                    "Frame [%s] deleted.",
+                    frameId
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);

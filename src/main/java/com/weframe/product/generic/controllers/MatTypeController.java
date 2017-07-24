@@ -34,7 +34,7 @@ public class MatTypeController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    private ResponseEntity getMatTypees(
+    private ResponseEntity getMatTypes(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
             @RequestParam(value="unique-name", required = false) final String uniqueName,
@@ -50,9 +50,11 @@ public class MatTypeController {
 
             Collection<MatType> matTypes = matTypeService.getAll(page, size);
             assignPictureUrl(matTypes, !originalSize);
-            return responseGenerator.generateResponse(
-                    matTypeService.getAll(page, size)
-            );
+            logger.debug(String.format(
+                    "MatTypes page %s size %s with %s size requested.",
+                    page, size, originalSize ? "original" : "thumbnail"
+            ));
+            return responseGenerator.generateResponse(matTypes);
         } catch (InvalidGenericProductPersistenceException
                 | InvalidPicturePersistenceException e) {
             return handleUnexpectedError(e);
@@ -68,6 +70,10 @@ public class MatTypeController {
         try {
             MatType matType = matTypeService.getById(matTypeId);
             assignPictureUrl(matType, originalSize);
+            logger.debug(String.format(
+                    "MatType [%s] with %s size requested.",
+                    matTypeId, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(matType);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -82,6 +88,10 @@ public class MatTypeController {
         try {
             MatType matType = matTypeService.getByUniqueName(matTypeUniqueName);
             assignPictureUrl(matType, originalSize);
+            logger.debug(String.format(
+                    "MatType [%s] with %s size requested.",
+                    matTypeUniqueName, originalSize ? "original" : "thumbnail"
+            ));
             return responseGenerator.generateResponse(matType);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
@@ -101,6 +111,10 @@ public class MatTypeController {
             }
             matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
+            logger.debug(String.format(
+                    "MatType [%s] created.",
+                    matType.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException
                 | InvalidGenericProductPersistenceException
@@ -120,6 +134,10 @@ public class MatTypeController {
             }
             matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
+            logger.debug(String.format(
+                    "MAtType [%s] updated.",
+                    matType.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (EmptyResultException
                 | InvalidGenericProductPersistenceException
@@ -132,7 +150,10 @@ public class MatTypeController {
     private ResponseEntity delete(@PathVariable Long matTypeId) {
         try {
             matTypeService.delete(matTypeId);
-            logger.info("Deleted mattype [" + matTypeId + "].");
+            logger.debug(String.format(
+                    "MAtType [%s] deleted.",
+                    matTypeId
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);

@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
 @RequestMapping("/generic-product/frameglasses")
@@ -38,7 +40,11 @@ public class FrameGlassController {
             if(page < 0 || size < 0) {
                 responseGenerator.generatePageRequestErrorResponse();
             }
-            return responseGenerator.generateResponse(frameGlassService.getAll(page, size));
+            Collection<FrameGlass> frameGlasses = frameGlassService.getAll(page, size);
+            logger.debug(String.format(
+                    "Frames page %s size %s requested.", page, size
+            ));
+            return responseGenerator.generateResponse(frameGlasses);
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);
         } catch (EmptyResultException e) {
@@ -47,9 +53,14 @@ public class FrameGlassController {
     }
 
     @RequestMapping(value = "/{frameGlassId}", method = RequestMethod.GET)
-    private ResponseEntity getFrameGlass(@PathVariable Long frameGlassId) {
+    private ResponseEntity getFrameGlass(@PathVariable final Long frameGlassId) {
         try {
-            return responseGenerator.generateResponse(frameGlassService.getById(frameGlassId));
+            FrameGlass frameGlass = frameGlassService.getById(frameGlassId);
+            logger.debug(String.format(
+                    "FrameGlass [%s] requested.",
+                    frameGlassId
+            ));
+            return responseGenerator.generateResponse(frameGlass);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         } catch (InvalidGenericProductPersistenceException e) {
@@ -57,9 +68,14 @@ public class FrameGlassController {
         }
     }
 
-    private ResponseEntity getFrameGlassByUniqueName(String frameGlassUniqueName) {
+    private ResponseEntity getFrameGlassByUniqueName(final String frameGlassUniqueName) {
         try {
-            return responseGenerator.generateResponse(frameGlassService.getByUniqueName(frameGlassUniqueName));
+            FrameGlass frameGlass = frameGlassService.getByUniqueName(frameGlassUniqueName);
+            logger.debug(String.format(
+                    "FrameGlass [%s] requested.",
+                    frameGlassUniqueName
+            ));
+            return responseGenerator.generateResponse(frameGlass);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         } catch (Exception e) {
@@ -76,6 +92,10 @@ public class FrameGlassController {
                 );
             }
             frameGlassService.persist(frameGlass);
+            logger.debug(String.format(
+                    "FrameGlass [%s] created.",
+                    frameGlass.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);
@@ -92,6 +112,10 @@ public class FrameGlassController {
                 );
             }
             frameGlassService.persist(frameGlass);
+            logger.debug(String.format(
+                    "FrameGlass [%s] updated.",
+                    frameGlass.getUniqueName()
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);
@@ -102,7 +126,10 @@ public class FrameGlassController {
     private ResponseEntity delete(@PathVariable Long frameGlassId) {
         try {
             frameGlassService.delete(frameGlassId);
-            logger.info("Deleted frameglass [" + frameGlassId + "].");
+            logger.debug(String.format(
+                    "FrameGlass [%s] deleted.",
+                    frameGlassId
+            ));
             return responseGenerator.generateOkResponse();
         } catch (InvalidGenericProductPersistenceException e) {
             return handleUnexpectedError(e);
