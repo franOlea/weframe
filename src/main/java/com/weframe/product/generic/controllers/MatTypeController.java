@@ -2,18 +2,16 @@ package com.weframe.product.generic.controllers;
 
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.controllers.ResponseGenerator;
-import com.weframe.controllers.errors.Error;
 import com.weframe.picture.service.PictureService;
 import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.generic.model.MatType;
 import com.weframe.product.generic.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.generic.service.impl.MatTypeService;
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.Collection;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
@@ -39,101 +37,62 @@ public class MatTypeController {
     private ResponseEntity getMatTypees(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,
             @RequestParam(value="size", defaultValue = "10", required = false) final int size,
-            @RequestParam(value="unique-name", required = false) final String uniqueName) {
+            @RequestParam(value="unique-name", required = false) final String uniqueName,
+            @RequestParam(value="original", required = false, defaultValue = "false") final boolean originalSize) {
         try {
             if(uniqueName != null) {
-                return getMatTypeByUniqueName(uniqueName);
+                return getMatTypeByUniqueName(uniqueName, originalSize);
             }
 
             if(page < 0 || size < 0) {
-                Error error = new Error(
-                        "invalid-request",
-                        "The page and size parameters must be above zero."
-                );
-                return responseGenerator.generateErrorResponse(
-                        Collections.singleton(error),
-                        HttpStatus.UNPROCESSABLE_ENTITY
-                );
+                return responseGenerator.generatePageRequestErrorResponse();
             }
 
+            Collection<MatType> matTypes = matTypeService.getAll(page, size);
+            assignPictureUrl(matTypes, !originalSize);
             return responseGenerator.generateResponse(
                     matTypeService.getAll(page, size)
             );
-        } catch (InvalidGenericProductPersistenceException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error requesting backboards by page [%d] " +
-                                    "with size [%d]",
-                            page,
-                            size),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
         }
     }
 
     @RequestMapping(value = "/{matTypeId}", method = RequestMethod.GET)
-    private ResponseEntity getMatType(@PathVariable Long matTypeId) {
+    private ResponseEntity getMatType(@PathVariable final Long matTypeId,
+                                      @RequestParam(value="original", required = false, defaultValue = "false")
+                                      final boolean originalSize) {
         try {
             MatType matType = matTypeService.getById(matTypeId);
-            return responseGenerator.generateResponse(
-                    matTypeService.getById(matTypeId)
-            );
+            assignPictureUrl(matType, originalSize);
+            return responseGenerator.generateResponse(matType);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a " +
-                                    "mattype by id [%d].",
-                            matTypeId
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException  e) {
+            return handleUnexpectedError(e);
         }
     }
 
-    private ResponseEntity getMatTypeByUniqueName(String matTypeUniqueName) {
+    private ResponseEntity getMatTypeByUniqueName(final String matTypeUniqueName,
+                                                  final boolean originalSize) {
         try {
-            return responseGenerator.generateResponse(
-                    matTypeService.getByUniqueName(matTypeUniqueName)
-            );
+            MatType matType = matTypeService.getByUniqueName(matTypeUniqueName);
+            assignPictureUrl(matType, originalSize);
+            return responseGenerator.generateResponse(matType);
         } catch (EmptyResultException e) {
             return responseGenerator.generateEmptyResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to fetch a " +
-                                    "mattype by uniqueName [%s].",
-                            matTypeUniqueName
-                    ),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    private ResponseEntity create(@RequestBody MatType matType) {
+    private ResponseEntity create(@RequestBody final MatType matType) {
         try {
             if(matType.getId() != null) {
                 throw new InvalidGenericProductPersistenceException(
@@ -143,22 +102,10 @@ public class MatTypeController {
             matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error creating the mattype [%s]",
-                            matType.getUniqueName()),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (EmptyResultException
+                | InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
@@ -174,22 +121,10 @@ public class MatTypeController {
             matType.setPicture(pictureService.getByUniqueName(matType.getPicture().getImageKey()));
             matTypeService.persist(matType);
             return responseGenerator.generateOkResponse();
-        } catch(InvalidGenericProductPersistenceException |
-                InvalidPicturePersistenceException |
-                EmptyResultException e) {
-            logger.error(
-                    String.format(
-                            "There has been an error creating the mattype [%s]",
-                            matType.getUniqueName()),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. " +
-                            "Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (EmptyResultException
+                | InvalidGenericProductPersistenceException
+                | InvalidPicturePersistenceException e) {
+            return handleUnexpectedError(e);
         }
     }
 
@@ -199,21 +134,26 @@ public class MatTypeController {
             matTypeService.delete(matTypeId);
             logger.info("Deleted mattype [" + matTypeId + "].");
             return responseGenerator.generateOkResponse();
-        } catch (Exception e) {
-            logger.error(
-                    String.format(
-                            "There was an unexpected error trying to delete a mattype" +
-                                    " by id [%d].",
-                            matTypeId),
-                    e);
-            Error error = new Error(
-                    "internal-server-error",
-                    "There has been an internal server error. Please try again later.");
-            return responseGenerator.generateErrorResponse(
-                    Collections.singleton(error),
-                    HttpStatus.SERVICE_UNAVAILABLE
-            );
+        } catch (InvalidGenericProductPersistenceException e) {
+            return handleUnexpectedError(e);
         }
+    }
+
+    private void assignPictureUrl(final MatType matType, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        matType.getPicture().setImageUrl(
+                pictureService.getPictureUrl(matType.getPicture().getImageKey(), thumbnail)
+        );
+    }
+
+    private void assignPictureUrl(final Collection<MatType> matTypes, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        for(MatType matType : matTypes) {
+            assignPictureUrl(matType, thumbnail);
+        }
+    }
+
+    private ResponseEntity handleUnexpectedError(final Exception e) {
+        logger.error("There was an unexpected error while doing an operation on frames.", e);
+        return responseGenerator.generateInternalServerErrorResponse();
     }
 
 }

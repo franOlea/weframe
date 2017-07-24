@@ -2,18 +2,12 @@ package com.weframe.product.generic.controllers;
 
 import com.weframe.controllers.EmptyResultException;
 import com.weframe.controllers.ResponseGenerator;
-import com.weframe.controllers.errors.Error;
-import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.product.generic.model.FrameGlass;
 import com.weframe.product.generic.service.exception.InvalidGenericProductPersistenceException;
 import com.weframe.product.generic.service.impl.FrameGlassService;
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
-import java.util.Collections;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController

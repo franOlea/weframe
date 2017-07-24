@@ -142,9 +142,9 @@ public class FrameController {
         );
     }
 
-    private void assignPictureUrl(final Collection<Frame> frame, final boolean thumbnail) throws InvalidPicturePersistenceException {
-        for(Frame backBoard : frame) {
-            assignPictureUrl(backBoard, thumbnail);
+    private void assignPictureUrl(final Collection<Frame> frames, final boolean thumbnail) throws InvalidPicturePersistenceException {
+        for(Frame frame : frames) {
+            assignPictureUrl(frame, thumbnail);
         }
     }
 
