@@ -31,9 +31,9 @@ public class PictureManagementConfiguration {
     private String awsAccessKey;
     @Value("${picture.file.aws.secret.key}")
     private String awsSecretKey;
-    @Value("server.port")
+    @Value("${server.port}")
     private String serverPort;
-    @Value("server.address")
+    @Value("${server.address}")
     private String serverAddress;
 
     @Bean

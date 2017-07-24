@@ -15,7 +15,7 @@ import java.util.Collection;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @RestController
-@RequestMapping("/generic-product/mattypes")
+@RequestMapping("/generic-product/mat-types")
 @CrossOrigin
 public class MatTypeController {
 
