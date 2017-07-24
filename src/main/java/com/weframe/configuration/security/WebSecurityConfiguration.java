@@ -38,43 +38,43 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests().anyRequest().permitAll();
-//                .antMatchers("/").permitAll()
-//                .antMatchers(HttpMethod.POST, "/authentication/login").permitAll()     //Allow login
-//                .antMatchers(HttpMethod.POST, "/authentication/register").permitAll()  //Allow registration
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()     //Allow CORS to everyone
-//                .antMatchers(HttpMethod.GET, "/generic-product/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/generic-product/**").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.PUT, "/generic-product/**").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.DELETE, "/generic-product/**").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.GET, "/users").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.GET, "/users/me").authenticated()
-//                .antMatchers("/user-pictures/**").authenticated()
-//                .antMatchers(HttpMethod.POST, "/users").permitAll()
-//                .antMatchers(HttpMethod.PUT, "/users").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/users").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.GET, "/frames").permitAll()
-//                .antMatchers(HttpMethod.POST, "/frames").hasRole(ADMIN_ROLE)
-//                .antMatchers(HttpMethod.DELETE, "/frames").hasRole(ADMIN_ROLE)
-//                .anyRequest().authenticated()
-//                .and()
-//                // We filter the api/login requests
-//                .addFilterBefore(
-//                        new JWTLoginFilter(
-//                                "/login",
-//                                authenticationManager(),
-//                                tokenAuthenticationService
-//                        ),
-//                        UsernamePasswordAuthenticationFilter.class
-//                )
-//                // And filter other requests to check the presence
-//                // of JWT in header
-//                .addFilterBefore(
-//                        new JWTAuthenticationFilter(
-//                                tokenAuthenticationService
-//                        ),
-//                        UsernamePasswordAuthenticationFilter.class
-//                );
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.POST, "/authentication/login").permitAll()     //Allow login
+                .antMatchers(HttpMethod.POST, "/authentication/register").permitAll()  //Allow registration
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()     //Allow CORS to everyone
+                .antMatchers(HttpMethod.GET, "/generic-product/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.PUT, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.DELETE, "/generic-product/**").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/users").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/users/me").authenticated()
+                .antMatchers("/user-pictures/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.PUT, "/users").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/users").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.GET, "/frames").permitAll()
+                .antMatchers(HttpMethod.POST, "/frames").hasRole(ADMIN_ROLE)
+                .antMatchers(HttpMethod.DELETE, "/frames").hasRole(ADMIN_ROLE)
+                .anyRequest().authenticated()
+                .and()
+                // We filter the api/login requests
+                .addFilterBefore(
+                        new JWTLoginFilter(
+                                "/login",
+                                authenticationManager(),
+                                tokenAuthenticationService
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                // And filter other requests to check the presence
+                // of JWT in header
+                .addFilterBefore(
+                        new JWTAuthenticationFilter(
+                                tokenAuthenticationService
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                );
     }
 
     @Override

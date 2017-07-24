@@ -6,7 +6,6 @@ import com.weframe.user.service.persistence.UserService;
 import com.weframe.user.service.security.JwtUserIdentityResolver;
 import com.weframe.user.service.security.UserIdentityResolver;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,10 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @Configuration
 @EnableWebSecurity
-@ConditionalOnProperty(
-        value = "security.enabled",
-        havingValue = "true"
-)
 @Profile("jwt")
 @SuppressWarnings("unused")
 public class JwtAuthenticationConfiguration {

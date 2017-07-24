@@ -1,7 +1,5 @@
 package com.weframe.configuration;
 
-import com.weframe.user.service.security.JwtUserIdentityResolver;
-import com.weframe.user.service.security.UserIdentityResolver;
 import com.weframe.user.service.security.UserPasswordCryptographer;
 import com.weframe.user.service.security.UserValidator;
 import org.springframework.beans.factory.annotation.Value;
