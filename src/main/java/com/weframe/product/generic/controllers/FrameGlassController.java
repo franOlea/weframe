@@ -42,7 +42,7 @@ public class FrameGlassController {
             }
             Collection<FrameGlass> frameGlasses = frameGlassService.getAll(page, size);
             logger.debug(String.format(
-                    "Frames page %s size %s requested.", page, size
+                    "FramesGlass page %s size %s requested.", page, size
             ));
             return responseGenerator.generateResponse(frameGlasses);
         } catch (InvalidGenericProductPersistenceException e) {
