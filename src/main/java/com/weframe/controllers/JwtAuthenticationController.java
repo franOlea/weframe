@@ -2,7 +2,6 @@ package com.weframe.controllers;
 
 import com.weframe.controllers.errors.Error;
 import com.weframe.controllers.errors.ErrorResponse;
-import com.weframe.security.UserCredentials;
 import com.weframe.user.model.User;
 import com.weframe.user.service.persistence.UserService;
 import com.weframe.user.service.persistence.exception.EmailAlreadyUsedException;
@@ -10,7 +9,6 @@ import com.weframe.user.service.persistence.exception.ForbiddenOperationExceptio
 import com.weframe.user.service.persistence.exception.InvalidFieldException;
 import com.weframe.user.service.persistence.exception.InvalidUserPersistenceException;
 import com.weframe.user.service.security.UserIdentityResolver;
-import com.weframe.user.service.security.UserPasswordCryptographer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,21 +28,18 @@ import java.util.Collections;
 @Profile("jwt")
 public class JwtAuthenticationController {
 
-    private static final Logger logger = Logger.getLogger(Auth0AuthenticationController.class);
+    private static final Logger logger = Logger.getLogger(JwtAuthenticationController.class);
 
     private final ResponseGenerator<User> responseGenerator;
 
     private final UserService userService;
-    private final UserPasswordCryptographer passwordCryptographer;
     private final UserIdentityResolver identityResolver;
 
     public JwtAuthenticationController(final ResponseGenerator<User> responseGenerator,
                                        final UserService userService,
-                                       final UserPasswordCryptographer passwordCryptographer,
                                        final UserIdentityResolver identityResolver) {
         this.responseGenerator = responseGenerator;
         this.userService = userService;
-        this.passwordCryptographer = passwordCryptographer;
         this.identityResolver = identityResolver;
     }
 
@@ -69,24 +63,6 @@ public class JwtAuthenticationController {
                     "internal-server-error",
                     "There has been an internal server error. Please try again later.");
             return generateErrorResponse(Collections.singleton(error), HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    private ResponseEntity login(@RequestBody final UserCredentials userCredentials) {
-        try {
-            User user = userService.getByEmail(userCredentials.getUsername());
-            if(passwordCryptographer.isValidPassword(
-                    userCredentials.getPassword(),
-                    user.getPassword())) {
-                return responseGenerator.generateResponse(user);
-            } else {
-                return generateAuthenticationError();
-            }
-        } catch (EmptyResultException e) {
-            return generateAuthenticationError();
-        } catch (InvalidUserPersistenceException | GeneralSecurityException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

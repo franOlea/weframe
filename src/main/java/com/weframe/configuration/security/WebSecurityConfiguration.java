@@ -61,7 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // We filter the api/login requests
                 .addFilterBefore(
                         new JWTLoginFilter(
-                                "/login",
+                                "/authentication/login",
                                 authenticationManager(),
                                 tokenAuthenticationService
                         ),

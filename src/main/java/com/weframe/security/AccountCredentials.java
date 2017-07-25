@@ -2,14 +2,14 @@ package com.weframe.security;
 
 public class AccountCredentials {
 
-    private String email;
+    private String username;
     private String password;
 
     public AccountCredentials() {
     }
 
-    public AccountCredentials(String email, String password) {
-        this.email = email;
+    public AccountCredentials(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -17,7 +17,7 @@ public class AccountCredentials {
         return password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 }
