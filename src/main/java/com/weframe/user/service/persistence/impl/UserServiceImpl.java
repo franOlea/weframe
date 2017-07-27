@@ -55,13 +55,11 @@ public class UserServiceImpl extends UserService {
     @Override
     public User getByLogin(String email, String password) throws EmptyResultException, InvalidUserPersistenceException {
         final User user = getByEmail(email);
-        if(user == null) {
-            throw new EmptyResultException();
-        } else try {
+        try {
             if(passwordCryptographer.isValidPassword(password, user.getPassword())){
                 return user;
             } else {
-                return null;
+                throw new EmptyResultException();
             }
         } catch (GeneralSecurityException e) {
             throw new InvalidUserPersistenceException(e);
@@ -77,6 +75,11 @@ public class UserServiceImpl extends UserService {
         } else {
             return users;
         }
+    }
+
+    @Override
+    public Long getUsersCount() throws InvalidUserPersistenceException {
+        return userRepository.getCount();
     }
 
     @Override

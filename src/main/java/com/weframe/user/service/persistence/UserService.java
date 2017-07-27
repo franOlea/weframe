@@ -43,6 +43,8 @@ public abstract class UserService {
 
     public abstract Collection<User> getAll(final int size, final int page) throws EmptyResultException, InvalidUserPersistenceException;
 
+    public abstract Long getUsersCount() throws InvalidUserPersistenceException;
+
     public abstract void create(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException, EmailAlreadyUsedException, InvalidFieldException;
 
     public abstract void update(final User user) throws InvalidUserPersistenceException, ForbiddenOperationException;

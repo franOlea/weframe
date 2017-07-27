@@ -17,6 +17,8 @@ public interface UserRepository {
 
     User get(final String email, final String password) throws InvalidUserPersistenceException;
 
+    Long getCount() throws InvalidUserPersistenceException;
+
     Collection<User> getAll(final int size, final int page) throws InvalidUserPersistenceException;
 
 }

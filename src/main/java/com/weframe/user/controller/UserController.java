@@ -50,6 +50,15 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    private ResponseEntity getUsersCount() {
+        try {
+            return responseGenerator.generateCountResponse(userService.getUsersCount());
+        } catch (InvalidUserPersistenceException e) {
+            return responseGenerator.generateInternalServerErrorResponse();
+        }
+    }
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     private ResponseEntity create(@RequestBody User user) {
         try {

@@ -29,9 +29,8 @@ public class ResponseGenerator<T> {
 		);
 	}
 
-    public ResponseEntity<ErrorResponse> generateErrorResponse(
-            final Collection<Error> errors,
-            final HttpStatus httpStatus) {
+    public ResponseEntity<ErrorResponse> generateErrorResponse(final Collection<Error> errors,
+                                                               final HttpStatus httpStatus) {
         return new ResponseEntity<>(
                 new ErrorResponse(errors),
                 new HttpHeaders(),
@@ -39,9 +38,7 @@ public class ResponseGenerator<T> {
         );
     }
 
-    public ResponseEntity<ErrorResponse> generateErrorResponse(
-            final Error error,
-            final HttpStatus httpStatus) {
+    public ResponseEntity<ErrorResponse> generateErrorResponse(final Error error, final HttpStatus httpStatus) {
         return new ResponseEntity<>(
                 new ErrorResponse(Collections.singleton(error)),
                 new HttpHeaders(),
@@ -49,10 +46,9 @@ public class ResponseGenerator<T> {
         );
     }
 
-    public ResponseEntity<ErrorResponse> generateErrorResponse(
-            final String errorTitle,
-            final String errorDescription,
-            final HttpStatus httpStatus) {
+    public ResponseEntity<ErrorResponse> generateErrorResponse(final String errorTitle,
+                                                               final String errorDescription,
+                                                               final HttpStatus httpStatus) {
         return new ResponseEntity<>(
                 new ErrorResponse(
                         Collections.singleton(
@@ -86,10 +82,17 @@ public class ResponseGenerator<T> {
         );
     }
 
-    public ResponseEntity<Collection<T>> generateResponse(
-            final Collection<T> ts) {
+    public ResponseEntity<Collection<T>> generateResponse(final Collection<T> ts) {
         return new ResponseEntity<>(
                 ts,
+                new HttpHeaders(),
+                HttpStatus.OK
+        );
+    }
+
+    public ResponseEntity<Long> generateCountResponse(final Long count) {
+        return new ResponseEntity<>(
+                count,
                 new HttpHeaders(),
                 HttpStatus.OK
         );

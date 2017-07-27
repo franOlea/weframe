@@ -62,6 +62,15 @@ public interface UserJpaRepository extends JpaRepository<User, Long>, UserReposi
         }
     }
 
+    @Override
+    default Long getCount() throws InvalidUserPersistenceException {
+        try {
+            return count();
+        } catch(DataAccessException e) {
+            throw new InvalidUserPersistenceException(e);
+        }
+    }
+
     User findByEmail(String email);
     User findByEmailAndPassword(String email, String password);
 }

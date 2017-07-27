@@ -1,5 +1,6 @@
 package com.weframe.security;
 
+import com.weframe.controllers.EmptyResultException;
 import com.weframe.user.model.User;
 import com.weframe.user.service.persistence.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -40,6 +41,8 @@ public class WeFrameAuthenticationProvider implements AuthenticationProvider {
                     password,
                     grantedAuthentications
             );
+        } catch (EmptyResultException e) {
+            return null;
         } catch (Exception e) {
             logger.error(
                     "There was an unexpected error while trying " +
@@ -51,8 +54,9 @@ public class WeFrameAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public boolean supports(Class<?> authenticationClass) {
-        return authenticationClass.equals(UsernamePasswordAuthenticationToken.class);
+    public boolean supports(Class<?> authentication) {
+        boolean support = (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+        return support;
     }
 
 }
