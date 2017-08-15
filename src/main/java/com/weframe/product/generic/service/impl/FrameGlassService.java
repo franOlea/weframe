@@ -35,6 +35,11 @@ public class FrameGlassService extends GenericProductService<FrameGlass> {
     }
 
     @Override
+    public Long getCount() throws InvalidGenericProductPersistenceException {
+        return repository.getCount();
+    }
+
+    @Override
     public void persist(FrameGlass frameGlass) throws InvalidGenericProductPersistenceException {
         repository.persist(frameGlass);
     }

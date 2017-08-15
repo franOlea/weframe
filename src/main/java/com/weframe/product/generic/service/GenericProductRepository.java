@@ -19,6 +19,8 @@ public interface GenericProductRepository<T extends GenericProduct> {
     T get(final String uniqueName)
             throws InvalidGenericProductPersistenceException;
 
+    Long getCount() throws InvalidGenericProductPersistenceException;
+
     Collection<T> getAll(int size, int page)
             throws InvalidGenericProductPersistenceException;
 

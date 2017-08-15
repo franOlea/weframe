@@ -35,6 +35,11 @@ public class MatTypeService extends GenericProductService<MatType> {
     }
 
     @Override
+    public Long getCount() throws InvalidGenericProductPersistenceException {
+        return repository.getCount();
+    }
+
+    @Override
     public void persist(MatType matType) throws InvalidGenericProductPersistenceException {
         repository.persist(matType);
     }

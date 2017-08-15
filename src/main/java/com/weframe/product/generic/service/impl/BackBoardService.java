@@ -37,6 +37,11 @@ public class BackBoardService extends GenericProductService<BackBoard> {
     }
 
     @Override
+    public Long getCount() throws InvalidGenericProductPersistenceException {
+        return repository.getCount();
+    }
+
+    @Override
     public Collection<BackBoard> getAll(final int page,
                                              final int size) throws InvalidGenericProductPersistenceException, EmptyResultException {
         Collection<BackBoard> backBoards = repository.getAll(size, page);

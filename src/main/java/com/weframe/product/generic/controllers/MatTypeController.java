@@ -33,6 +33,15 @@ public class MatTypeController {
         this.responseGenerator = responseGenerator;
     }
 
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    private ResponseEntity getCount() {
+        try {
+            return responseGenerator.generateCountResponse(matTypeService.getCount());
+        } catch (InvalidGenericProductPersistenceException e) {
+            return responseGenerator.generateInternalServerErrorResponse();
+        }
+    }
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     private ResponseEntity getMatTypes(
             @RequestParam(value="page", defaultValue="0", required = false) final int page,

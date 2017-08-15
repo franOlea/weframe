@@ -50,6 +50,15 @@ public interface MatTypeJpaRepository extends GenericProductRepository<MatType>,
     }
 
     @Override
+    default Long getCount() throws InvalidGenericProductPersistenceException {
+        try {
+            return count();
+        } catch(DataAccessException e) {
+            throw new InvalidGenericProductPersistenceException(e);
+        }
+    }
+
+    @Override
     default Collection<MatType> getAll(final int size,
                                      final int page) throws InvalidGenericProductPersistenceException {
         try {

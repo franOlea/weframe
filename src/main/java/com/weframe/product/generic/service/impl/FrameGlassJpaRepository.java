@@ -50,6 +50,15 @@ public interface FrameGlassJpaRepository extends GenericProductRepository<FrameG
     }
 
     @Override
+    default Long getCount() throws InvalidGenericProductPersistenceException {
+        try {
+            return count();
+        } catch(DataAccessException e) {
+            throw new InvalidGenericProductPersistenceException(e);
+        }
+    }
+
+    @Override
     default Collection<FrameGlass> getAll(final int size,
                                      final int page) throws InvalidGenericProductPersistenceException {
         try {

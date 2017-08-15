@@ -14,6 +14,8 @@ public abstract class GenericProductService<T extends GenericProduct> {
         this.repository = repository;
     }
 
+    public abstract Long getCount() throws InvalidGenericProductPersistenceException;
+
     public abstract T getById(final Long id)
             throws InvalidGenericProductPersistenceException, EmptyResultException;
 
