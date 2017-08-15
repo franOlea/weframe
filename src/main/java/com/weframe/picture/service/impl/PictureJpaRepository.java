@@ -10,6 +10,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PictureJpaRepository extends PictureRepository, JpaRepository<Picture, Long> {
 
     @Override
+    default Long getCount() throws InvalidPicturePersistenceException {
+        try {
+            return count();
+        } catch(DataAccessException e) {
+            throw new InvalidPicturePersistenceException(e);
+        }
+    }
+
+    @Override
     default Picture persist(final Picture picture) throws InvalidPicturePersistenceException {
         try {
             return save(picture);

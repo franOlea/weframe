@@ -16,4 +16,6 @@ public interface UserPictureRepository {
 
     UserPicture getUserPicture(final String userEmail, final String uniqueKey) throws EmptyResultException, InvalidUserPicturePersistenceException;
 
+    Long getCount(final String userEmail) throws InvalidUserPicturePersistenceException;
+
 }

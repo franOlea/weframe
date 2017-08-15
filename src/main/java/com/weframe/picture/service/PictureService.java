@@ -41,6 +41,8 @@ public abstract class PictureService {
 
     public abstract void delete(final Long id) throws InvalidPicturePersistenceException;
 
+    public abstract Long getCount() throws InvalidPicturePersistenceException;
+
     protected BufferedImage createThumbnail(final BufferedImage original) throws IOException {
         return Thumbnails.of(original)
                 .size(thumbnailWidth, thumbnailHeight)

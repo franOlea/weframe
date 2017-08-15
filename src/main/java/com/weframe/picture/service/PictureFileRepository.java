@@ -1,5 +1,6 @@
 package com.weframe.picture.service;
 
+import com.weframe.picture.service.exception.InvalidPicturePersistenceException;
 import com.weframe.picture.service.exception.PictureFileIOException;
 
 import java.awt.image.BufferedImage;

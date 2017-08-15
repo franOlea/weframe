@@ -23,6 +23,11 @@ public class UserPictureServiceImpl extends UserPictureService {
     }
 
     @Override
+    public Long getCount(final String userEmail) throws InvalidUserPicturePersistenceException {
+        return userPictureRepository.getCount(userEmail);
+    }
+
+    @Override
     public UserPicture create(final String email, final String imageKey)
             throws InvalidUserPicturePersistenceException {
         try {

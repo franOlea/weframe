@@ -14,4 +14,6 @@ public interface PictureRepository {
 
     Picture get(final String uniqueName) throws InvalidPicturePersistenceException, EmptyResultException;
 
+    Long getCount() throws InvalidPicturePersistenceException;
+
 }

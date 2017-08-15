@@ -31,6 +31,15 @@ public class PictureController {
         this.responseGenerator = responseGenerator;
     }
 
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    private ResponseEntity getCount() {
+        try {
+            return responseGenerator.generateCountResponse(service.getCount());
+        } catch (InvalidPicturePersistenceException e) {
+            return responseGenerator.generateInternalServerErrorResponse();
+        }
+    }
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity create(@RequestParam(value = "file")final MultipartFile multipartFile,
                                  @RequestParam(value = "uniqueName") final String uniqueName,

@@ -44,6 +44,15 @@ public class UserPictureController {
         this.userIdentityResolver = userIdentityResolver;
     }
 
+    @RequestMapping(value = "/count/{userEmail}", method = RequestMethod.GET)
+    private ResponseEntity getCount(@PathVariable("userEmail") final String userEmail) {
+        try {
+            return responseGenerator.generateCountResponse(userPictureService.getCount(userEmail));
+        } catch (InvalidUserPicturePersistenceException e) {
+            return responseGenerator.generateInternalServerErrorResponse();
+        }
+    }
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity create(@RequestParam(value = "file") final MultipartFile multipartFile,
                                  @RequestParam(value = "uniqueName") final String uniqueName,

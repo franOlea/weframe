@@ -22,6 +22,8 @@ public abstract class UserPictureService {
         this.userPictureRepository = userPictureRepository;
     }
 
+    public abstract Long getCount(final String userEmail) throws InvalidUserPicturePersistenceException;
+
     public abstract UserPicture create(final String email, final String imageKey) throws InvalidUserPicturePersistenceException;
 
     public abstract void delete(final String userEmail, final String uniqueKey) throws InvalidUserPicturePersistenceException, EmptyResultException;

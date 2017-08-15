@@ -12,6 +12,15 @@ import java.util.Set;
 public interface UserPictureJpaRepository extends UserPictureRepository, JpaRepository<UserPicture, Long> {
 
     @Override
+    default Long getCount(final String userEmail) throws InvalidUserPicturePersistenceException {
+        try {
+            return countByUserEmail(userEmail);
+        } catch(DataAccessException e) {
+            throw new InvalidUserPicturePersistenceException(e);
+        }
+    }
+
+    @Override
     default UserPicture persist(final UserPicture userPicture) throws InvalidUserPicturePersistenceException {
         try {
             return save(userPicture);
@@ -59,5 +68,6 @@ public interface UserPictureJpaRepository extends UserPictureRepository, JpaRepo
 
     Set<UserPicture> findByUserEmail(final String userEmail);
     UserPicture findByUserEmailAndPictureImageKey(final String userEmail, final String pictureImageKey);
+    Long countByUserEmail(final String userEmail);
 
 }

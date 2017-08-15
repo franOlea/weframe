@@ -22,6 +22,11 @@ public class PictureServiceImpl extends PictureService {
     }
 
     @Override
+    public Long getCount() throws InvalidPicturePersistenceException {
+        return repository.getCount();
+    }
+
+    @Override
     public Picture getById(final Long id) throws EmptyResultException, InvalidPicturePersistenceException {
         return repository.get(id);
     }
